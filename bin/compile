@@ -26,10 +26,16 @@ if [ ! -d .grails ]; then
   echo " done"
 fi
 
+echo `which java`
+
+JAVA_HOME=/usr/lib/jvm/java-6-openjdk
 GRAILS_HOME=$CACHE_DIR/.grails
 PATH=$GRAILS_HOME/bin:$PATH
 
 cd $BUILD_DIR
+
+echo `which java`
+
 
 # build app
 BUILDCMD="grails war"
