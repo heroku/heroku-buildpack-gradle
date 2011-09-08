@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+if [ ! -d $CACHE_DIR ] ; then
+  mkdir $CACHE_DIR
+fi
+
+cd $CACHE_DIR
+
+# install grails
+GRAILS_URL="http://lang-pack-grails.s3.amazonaws.com/grails-1.3.7.tar.gz"
+
+if [ ! -d .grails ]; then
+  echo -n "-----> Installing Grails 1.3.7....."
+#  curl --silent --max-time 60 --location $GRAILS_URL | tar xz
+  curl --silent --location $GRAILS_URL | tar xz
+  mv grails-1.3.7 .grails
+  echo " done"
+fi
+
+GRAILS_HOME=$CACHE_DIR/.grails
+PATH=$GRAILS_HOME/bin:$PATH
+
+cd $BUILD_DIR
+
+# build app
+BUILDCMD="grails war"
+echo "-----> executing $BUILDCMD"
+
+$BUILDCMD 2>&1 | sed -u 's/^/       /'
+
+if [ "${PIPESTATUS[*]}" != "0 0" ]; then
+  echo " !     Failed to build app"
+  exit 1
+fi
+
+if [ ! -d server ] ; then
+    echo "-----> No server directory found. Adding jetty-runner 7.5.0.v20110901 automatically."
+    echo "       To use your own server, read http://devcenter.heroku.com/articles/grails-custom-server."
+    mkdir server
+    cp $GRAILS_HOME/jetty-runner-7.5.0.v20110901.jar server/jetty-runner.jar
+fi
+
+
