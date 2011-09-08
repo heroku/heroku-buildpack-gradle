@@ -26,11 +26,9 @@ if [ ! -d .grails ]; then
   echo " done"
 fi
 
-ls /usr/lib/jvm/java-6-openjdk
-
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
-GRAILS_HOME=$CACHE_DIR/.grails
-PATH=$GRAILS_HOME/bin:$PATH
+export GRAILS_HOME=$CACHE_DIR/.grails
+export PATH=$GRAILS_HOME/bin:$PATH
 
 cd $BUILD_DIR
 
