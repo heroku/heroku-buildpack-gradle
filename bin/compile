@@ -26,9 +26,9 @@ if [ ! -d .grails ]; then
   echo " done"
 fi
 
-echo `which java`
+ls /usr/lib/jvm/java-6-openjdk
 
-JAVA_HOME=/usr/lib/jvm/java-6-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
 GRAILS_HOME=$CACHE_DIR/.grails
 PATH=$GRAILS_HOME/bin:$PATH
 
