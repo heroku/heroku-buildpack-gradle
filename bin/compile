@@ -19,7 +19,7 @@ export GRADLE_USER_HOME=$CACHE_DIR
 
 if [ -f $BUILD_DIR/gradlew ] ; then
   
-  BUILDCMD="./gradlew -I $BIN_DIR/init.gradle"
+  BUILDCMD="./gradlew"
 
 else
 
@@ -31,7 +31,7 @@ else
     echo " done"
     echo "       (Use the Gradle Wrapper if you want to use a different gradle version)"
   fi
-  BUILDCMD="gradle -I $BIN_DIR/init.gradle"
+  BUILDCMD="gradle"
 
 fi
 
