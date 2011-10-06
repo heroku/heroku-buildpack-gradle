@@ -37,19 +37,7 @@ fi
 
 cd $BUILD_DIR
 
-MAVEN_SETTINGS_URL="http://s3.amazonaws.com/heroku-jvm-langpack-java/settings.xml"
-
-echo -n "-----> Installing settings.xml....."
-if [ -f .m2/settings.xml ]; then
-  rm settings.xml
-fi
-mkdir -p .m2
-curl --silent --max-time 10 --location $MAVEN_SETTINGS_URL --output .m2/settings.xml
-echo " done"
-
-
 export PATH=$CACHE_DIR/$GRADLEDIST/bin:$PATH
-
  
 # build app
 echo "-----> executing $BUILDCMD"
