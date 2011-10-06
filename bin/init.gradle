@@ -1,0 +1,5 @@
+allprojects{
+    repositories{
+        mavenRepo name: 'heroku-proxy', urls: "http://s3pository.heroku.com/jvm"
+    }
+}
