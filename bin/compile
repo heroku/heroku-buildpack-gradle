@@ -10,7 +10,7 @@ OPT_DIR=$(cd $BIN_DIR/../opt; pwd)
 BUILD_DIR=$1
 CACHE_DIR=$2
 
-GRADLE_DIST="gradle-1.0-milestone-3"
+GRADLE_DIST="gradle-1.0-milestone-5"
 GRADLE_TASK="stage"
 
 if [ ! -d $CACHE_DIR ] ; then
@@ -27,9 +27,9 @@ else
 
   if [ ! -d $CACHE_DIR/$GRADLE_DIST ] ; then
     cd $CACHE_DIR
-    GRADLE_URL="http://lang-pack-gradle.s3.amazonaws.com/$GRADLE_DIST.tar.gz"
+    GRADLE_URL="http://heroku-jvm-buildpack-gradle.s3.amazonaws.com/$GRADLE_DIST-bin.zip"
     echo -n "-----> Installing $GRADLE_DIST....."
-    curl --silent --location $GRADLE_URL | tar xz
+    curl --silent --location $GRADLE_URL | jar -x
     echo " done"
     echo "       (Use the Gradle Wrapper if you want to use a different gradle version)"
   fi
