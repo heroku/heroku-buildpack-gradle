@@ -27,7 +27,7 @@ else
 
   if [ ! -d $CACHE_DIR/$GRADLE_DIST ] ; then
     cd $CACHE_DIR
-    GRADLE_URL="http://lang-pack-gradle.s3.amazonaws.com/$GRADLE_DIST.tar.gz"
+    GRADLE_URL="http://heroku-jvm-buildpack-gradle.s3.amazonaws.com/$GRADLE_DIST.tar.gz"
     echo -n "-----> Installing $GRADLE_DIST....."
     curl --silent --location $GRADLE_URL | tar xz
     echo " done"
