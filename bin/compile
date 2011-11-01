@@ -5,6 +5,7 @@
 set -e
 
 BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+OPT_DIR=$(cd $BIN_DIR/../opt; pwd) 
 # parse args
 BUILD_DIR=$1
 CACHE_DIR=$2
@@ -32,7 +33,7 @@ else
     echo " done"
     echo "       (Use the Gradle Wrapper if you want to use a different gradle version)"
   fi
-  BUILDCMD="gradle"
+  BUILDCMD="gradle -I $OPT_DIR/init.gradle"
 
 fi
 
