@@ -9,7 +9,8 @@ BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
 BUILD_DIR=$1
 CACHE_DIR=$2
 
-GRADLEDIST="gradle-1.0-milestone-3"
+GRADLE_DIST="gradle-1.0-milestone-3"
+GRADLE_TASK="stage"
 
 if [ ! -d $CACHE_DIR ] ; then
   mkdir $CACHE_DIR
@@ -23,10 +24,10 @@ if [ -f $BUILD_DIR/gradlew ] ; then
 
 else
 
-  if [ ! -d $CACHE_DIR/$GRADLEDIST ] ; then
+  if [ ! -d $CACHE_DIR/$GRADLE_DIST ] ; then
     cd $CACHE_DIR
-    GRADLE_URL="http://lang-pack-gradle.s3.amazonaws.com/$GRADLEDIST.tar.gz"
-    echo -n "-----> Installing $GRADLEDIST....."
+    GRADLE_URL="http://lang-pack-gradle.s3.amazonaws.com/$GRADLE_DIST.tar.gz"
+    echo -n "-----> Installing $GRADLE_DIST....."
     curl --silent --location $GRADLE_URL | tar xz
     echo " done"
     echo "       (Use the Gradle Wrapper if you want to use a different gradle version)"
@@ -35,9 +36,11 @@ else
 
 fi
 
+BUILDCMD="$BUILDCMD $GRADLE_TASK"
+
 cd $BUILD_DIR
 
-export PATH=$CACHE_DIR/$GRADLEDIST/bin:$PATH
+export PATH=$CACHE_DIR/$GRADLE_DIST/bin:$PATH
  
 # build app
 echo "-----> executing $BUILDCMD"
