@@ -30,6 +30,7 @@ else
     GRADLE_URL="http://heroku-jvm-buildpack-gradle.s3.amazonaws.com/$GRADLE_DIST-bin.zip"
     echo -n "-----> Installing $GRADLE_DIST....."
     curl --silent --location $GRADLE_URL | jar -x
+    chmod -R 666 $GRADLE_DIST/bin
     echo " done"
     echo "       (Use the Gradle Wrapper if you want to use a different gradle version)"
   fi
