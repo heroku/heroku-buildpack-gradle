@@ -31,7 +31,6 @@ else
     echo -n "-----> Installing $GRADLE_DIST....."
     curl --silent --location $GRADLE_URL | tar xz
     echo " done"
-    echo "       (Use the Gradle Wrapper if you want to use a different gradle version)"
   fi
   BUILDCMD="gradle -I $OPT_DIR/init.gradle"
 
