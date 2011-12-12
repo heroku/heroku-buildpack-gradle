@@ -1,11 +1,5 @@
 #!/bin/sh
 
-capture()
-{
-  $@ >${STD_OUT} 2>${STD_ERR}
-  rtrn=$?
-}
-
 testDetect()
 {
   touch ${FIXTURE_DIR}/build.gradle
@@ -28,21 +22,5 @@ testNoDetectMissingBuildGradle()
   assertNull "`cat ${STD_ERR}`"
 }
 
-setUp()
-{
-  BUILDPACK_HOME=".."
-  OUTPUT_DIR="${SHUNIT_TMPDIR}/output"
-  mkdir "${OUTPUT_DIR}"  
-  FIXTURE_DIR="$(mktemp -d ${OUTPUT_DIR}/fixture.XXXX)"	
-  STD_OUT="${OUTPUT_DIR}/stdout"
-  STD_ERR="${OUTPUT_DIR}/stderr"
-}
-
-tearDown()
-{
-  rm -rf ${OUTPUT_DIR}
-}
-
 # load and run shUnit2
-[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
-. ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2
+. test_runner
