@@ -2,35 +2,45 @@
 
 capture()
 {
-  $@ >${stdoutF} 2>${stderrF}
+  $@ >${STD_OUT} 2>${STD_ERR}
   rtrn=$?
 }
 
 testDetect()
 {
-  capture ${BUILDPACK_HOME}/bin/detect ${BUILDPACK_FIXTURES}/basic
+  touch ${FIXTURE_DIR}/build.gradle
+  
+  capture ${BUILDPACK_HOME}/bin/detect ${FIXTURE_DIR}
+  
   assertEquals 0 ${rtrn}
-  assertEquals "Gradle" "`cat ${stdoutF}`"
-  assertNull "`cat ${stderrF}`"
+  assertEquals "Gradle" "`cat ${STD_OUT}`"
+  assertNull "`cat ${STD_ERR}`"
 }
 
-testNoDetect()
+testNoDetectMissingBuildGradle()
 {
-  capture ${BUILDPACK_HOME}/bin/detect ${BUILDPACK_FIXTURES}/invalid_type
+  touch ${FIXTURE_DIR}/build.xml
+
+  capture ${BUILDPACK_HOME}/bin/detect ${FIXTURE_DIR}/missing_build_gradle_file
+ 
   assertEquals 1 ${rtrn}
-  assertEquals "no" "`cat ${stdoutF}`"
-  assertNull "`cat ${stderrF}`"
+  assertEquals "no" "`cat ${STD_OUT}`"
+  assertNull "`cat ${STD_ERR}`"
 }
 
-oneTimeSetUp()
+setUp()
 {
-  outputDir="${SHUNIT_TMPDIR}/output"
-  mkdir "${outputDir}"
-  stdoutF="${outputDir}/stdout"
-  stderrF="${outputDir}/stderr"
-	
   BUILDPACK_HOME=".."
-  BUILDPACK_FIXTURES="${BUILDPACK_HOME}/test/fixtures"
+  OUTPUT_DIR="${SHUNIT_TMPDIR}/output"
+  mkdir "${OUTPUT_DIR}"  
+  FIXTURE_DIR="$(mktemp -d ${OUTPUT_DIR}/fixture.XXXX)"	
+  STD_OUT="${OUTPUT_DIR}/stdout"
+  STD_ERR="${OUTPUT_DIR}/stderr"
+}
+
+tearDown()
+{
+  rm -rf ${OUTPUT_DIR}
 }
 
 # load and run shUnit2
