@@ -1,3 +1,5 @@
+#!/bin/sh
+
 setUp()
 {
   BUILDPACK_HOME=".."
@@ -18,6 +20,3 @@ capture()
   $@ >${STD_OUT} 2>${STD_ERR}
   rtrn=$?
 }
-
-[ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
-. ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2

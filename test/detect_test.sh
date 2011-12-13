@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. lib/test_utils.sh
+
 testDetect()
 {
   touch ${FIXTURE_DIR}/build.gradle
@@ -21,6 +23,3 @@ testNoDetectMissingBuildGradle()
   assertEquals "no" "`cat ${STD_OUT}`"
   assertNull "`cat ${STD_ERR}`"
 }
-
-# load and run shUnit2
-. test_runner
