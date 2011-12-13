@@ -4,9 +4,9 @@
 
 testDetect()
 {
-  touch ${FIXTURE_DIR}/build.gradle
+  touch ${BUILD_DIR}/build.gradle
   
-  capture ${BUILDPACK_HOME}/bin/detect ${FIXTURE_DIR}
+  capture ${BUILDPACK_HOME}/bin/detect ${BUILD_DIR}
   
   assertEquals 0 ${rtrn}
   assertEquals "Gradle" "`cat ${STD_OUT}`"
@@ -15,9 +15,9 @@ testDetect()
 
 testNoDetectMissingBuildGradle()
 {
-  touch ${FIXTURE_DIR}/build.xml
+  touch ${BUILD_DIR}/build.xml
 
-  capture ${BUILDPACK_HOME}/bin/detect ${FIXTURE_DIR}/missing_build_gradle_file
+  capture ${BUILDPACK_HOME}/bin/detect ${BUILD_DIR}/missing_build_gradle_file
  
   assertEquals 1 ${rtrn}
   assertEquals "no" "`cat ${STD_OUT}`"
