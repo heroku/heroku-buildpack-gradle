@@ -17,7 +17,7 @@ testNoDetectMissingBuildGradle()
 {
   touch ${BUILD_DIR}/build.xml
 
-  capture ${BUILDPACK_HOME}/bin/detect ${BUILD_DIR}/missing_build_gradle_file
+  capture ${BUILDPACK_HOME}/bin/detect ${BUILD_DIR}
  
   assertEquals 1 ${rtrn}
   assertEquals "no" "`cat ${STD_OUT}`"
