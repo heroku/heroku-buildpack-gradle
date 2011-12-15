@@ -1,8 +1,8 @@
 #!/bin/sh
 
-. lib/test_utils.sh
+. ${BUILDPACK_HOME}/test/lib/test_utils.sh
 
-testCompile()
+_testCompile()
 {
   expected_stage_output="STAGING:${RANDOM}"
   
@@ -21,7 +21,7 @@ EOF
 }
 
 
-testCompile_Fail()
+_testCompile_Fail()
 {
   expected_stage_output="STAGING:${RANDOM}"
   

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. lib/test_utils.sh
+. ${BUILDPACK_HOME}/test/lib/test_utils.sh
 
 testDetect()
 {

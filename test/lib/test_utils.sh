@@ -2,7 +2,7 @@
 
 setUp()
 {
-  BUILDPACK_HOME=".."
+  #BUILDPACK_HOME=".."
   OUTPUT_DIR="$(mktemp -d ${SHUNIT_TMPDIR}/output.XXXX)"
   STD_OUT="${OUTPUT_DIR}/stdout"
   STD_ERR="${OUTPUT_DIR}/stderr"
