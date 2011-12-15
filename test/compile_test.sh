@@ -49,10 +49,9 @@ testCompile_Wrapper()
 EOF
   chmod +x ${BUILD_DIR}/gradlew
 
-  read -d '' expected_gradlew_output <<EOF
+  expected_gradlew_output=`cat <<EOF
 -----> executing ./gradlew stage
-EOF
-
+EOF`
 
   capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
   assertEquals 0 ${rtrn}

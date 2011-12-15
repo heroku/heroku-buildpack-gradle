@@ -29,7 +29,8 @@ assertContains()
   needle=$1
   haystack=$2
 
-  if [[ ${haystack} != *${needle}* ]]
+  echo "${haystack}" | grep -q -F -e "${needle}"
+  if [ 1 -eq $? ]
   then
     fail "Expected <${haystack}> to contain <${needle}>"
   fi 
