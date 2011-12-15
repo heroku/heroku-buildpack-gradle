@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ${BUILDPACK_HOME}/test/lib/test_utils.sh
+. ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh
 
 _testCompile()
 {
