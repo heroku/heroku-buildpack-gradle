@@ -4,13 +4,13 @@
 
 testRelease()
 {
-  read -d '' expected_release_output <<EOF
+  expected_release_output=`cat <<EOF
 ---
 config_vars:
   JAVA_OPTS: -Xmx384m -Xss512k -XX:+UseCompressedOops
 
 
-EOF
+EOF`
 
   capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
   assertEquals 0 ${rtrn}
