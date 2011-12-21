@@ -2,7 +2,7 @@
 
 . ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh
 
-_testCompile()
+testCompile()
 {
   expected_stage_output="STAGING:${RANDOM}"
   
@@ -21,7 +21,7 @@ EOF
 }
 
 
-_testCompile_Fail()
+testCompile_Fail()
 {
   expected_stage_output="STAGING:${RANDOM}"
   
