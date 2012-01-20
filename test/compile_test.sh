@@ -12,12 +12,12 @@ task stage {
 }
 EOF
 
-  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
-  assertEquals 0 ${rtrn}
-  assertContains "Installing gradle-1.0-milestone-5" "`cat ${STD_OUT}`"
-  assertContains "${expected_stage_output}" "`cat ${STD_OUT}`"
-  assertContains "BUILD SUCCESSFUL" "`cat ${STD_OUT}`"
-  assertEquals "" "`cat ${STD_ERR}`"
+  compile
+  
+  assertCapturedSuccess
+  assertFileContains "Installing gradle-1.0-milestone-5" "${STD_OUT}"
+  assertFileContains "${expected_stage_output}" "${STD_OUT}"
+  assertFileContains "BUILD SUCCESSFUL" "${STD_OUT}"
 }
 
 
@@ -31,12 +31,10 @@ task stage {
 }
 EOF
 
-  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
-  assertEquals 1 ${rtrn}
-  assertContains "Cause: ${expected_stage_output}" "`cat ${STD_OUT}`"
-  assertContains "BUILD FAILED" "`cat ${STD_OUT}`"
-  assertEquals "" "`cat ${STD_ERR}`"
-
+  compile
+  
+  assertCapturedError "Cause: ${expected_stage_output}"
+  assertCapturedError "BUILD FAILED"
 }
 
 
@@ -53,8 +51,8 @@ EOF
 -----> executing ./gradlew stage
 EOF`
 
-  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
-  assertEquals 0 ${rtrn}
-  assertEquals "${expected_gradlew_output}" "`cat ${STD_OUT}`"
-  assertEquals "" "`cat ${STD_ERR}`"
+  compile
+  
+  assertCapturedSuccess
+  assertFileContains "${expected_gradlew_output}" "${STD_OUT}"
 }
