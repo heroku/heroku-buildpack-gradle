@@ -15,9 +15,9 @@ EOF
   compile
   
   assertCapturedSuccess
-  assertFileContains "Installing gradle-1.0-milestone-5" "${STD_OUT}"
-  assertFileContains "${expected_stage_output}" "${STD_OUT}"
-  assertFileContains "BUILD SUCCESSFUL" "${STD_OUT}"
+  assertCaptured "Installing gradle-1.0-milestone-5" 
+  assertCaptured "${expected_stage_output}" 
+  assertCaptured "BUILD SUCCESSFUL" 
 }
 
 
@@ -54,5 +54,5 @@ EOF`
   compile
   
   assertCapturedSuccess
-  assertFileContains "${expected_gradlew_output}" "${STD_OUT}"
+  assertCaptured "${expected_gradlew_output}" 
 }
