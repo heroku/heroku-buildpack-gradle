@@ -43,6 +43,8 @@ cd $BUILD_DIR
 export PATH=$CACHE_DIR/$GRADLE_DIST/bin:$PATH
  
 # build app
+echo "-----> Building Gradle app..."
+echo "       WARNING: The Gradle buildpack is currently in Beta."
 echo "-----> executing $BUILDCMD"
 
 $BUILDCMD 2>&1 | sed -u 's/^/       /'
