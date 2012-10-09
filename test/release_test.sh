@@ -14,5 +14,5 @@ EOF`
   
   release
 
-  assertCaptured "${expected_release_output}"
+  assertCapturedEquals "${expected_release_output}"
 }
