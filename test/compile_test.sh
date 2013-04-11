@@ -15,9 +15,14 @@ EOF
   compile
   
   assertCapturedSuccess
+  assertCaptured "Installing OpenJDK 1.6" 
   assertCaptured "Installing gradle-1.0-milestone-5" 
   assertCaptured "${expected_stage_output}" 
-  assertCaptured "BUILD SUCCESSFUL" 
+  assertCaptured "BUILD SUCCESSFUL"
+  assertTrue "Java should be present in runtime." "[ -d ${BUILD_DIR}/.jdk ]"
+  assertTrue "Java version file should be present." "[ -f ${BUILD_DIR}/.jdk/version ]"
+  assertTrue "System properties file should be present in build dir." "[ -f ${BUILD_DIR}/system.properties ]" 
+  assertTrue "Gradle profile.d file should be present in build dir." "[ -f ${BUILD_DIR}/.profile.d/gradle.sh ]" 
 }
 
 
