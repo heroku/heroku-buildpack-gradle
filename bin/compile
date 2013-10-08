@@ -5,7 +5,9 @@
 set -e
 
 BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
-OPT_DIR=$(cd $BIN_DIR/../opt; pwd) 
+
+source "${BIN_DIR}/../conf/${PAAS_VENDOR}-env.properties"
+
 # parse args
 BUILD_DIR=$1
 CACHE_DIR=$2
@@ -13,7 +15,7 @@ CACHE_DIR=$2
 GRADLE_DIST="gradle-1.0-milestone-5"
 GRADLE_TASK="stage"
 
-curl --silent --location http://heroku-jvm-common.s3.amazonaws.com/jvm-buildpack-common.tar.gz | tar xz
+curl --silent --location "${JVM_BUILDPACK_COMMON_URL}" | tar xz
 . bin/java
 
 # create default system.properties 
@@ -39,12 +41,12 @@ if [ -f $BUILD_DIR/gradlew ] ; then
 else
   if [ ! -d $CACHE_DIR/$GRADLE_DIST ] ; then
     cd $CACHE_DIR
-    GRADLE_URL="http://heroku-jvm-buildpack-gradle.s3.amazonaws.com/$GRADLE_DIST.tar.gz"
+    GRADLE_URL="$GRADLE_DIST_URL$GRADLE_DIST.tar.gz"
     echo -n "-----> Installing $GRADLE_DIST....."
     curl --silent --location $GRADLE_URL | tar xz
     echo " done"
   fi
-  BUILDCMD="gradle -I $OPT_DIR/init.gradle"
+  BUILDCMD="gradle"
 fi
 
 BUILDCMD="$BUILDCMD $GRADLE_TASK"
