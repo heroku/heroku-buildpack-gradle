@@ -1,0 +1,27 @@
+initscript {
+  /*
+  repositories {
+    mavenRepo name: 'plugins-repo', urls: "http://repo.gradle.org/gradle/plugins-releases"
+  }
+  dependencies {
+    classpath 'XXX'
+  }
+  */
+}
+
+logger.debug("Applying PaaS Gradle Settings")
+ 
+addListener(new PaasGradleSettings())
+class PaasGradleSettings extends BuildAdapter implements BuildListener {
+ 
+  def void projectsLoaded(Gradle gradle) {
+    Project root = gradle.getRootProject()
+    root.allprojects {
+ 
+      repositories {
+        mavenRepo name: 'paas-proxy', url: "http://s3pository." + System.getenv("DOMAIN") + "/jvm"
+      }
+    }
+  }
+}
+
