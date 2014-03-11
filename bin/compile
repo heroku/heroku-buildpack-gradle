@@ -5,7 +5,6 @@
 set -e
 
 BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
-OPT_DIR=$(cd $BIN_DIR/../opt; pwd) 
 
 source "${BIN_DIR}/../conf/${PAAS_VENDOR}-env.properties"
 
@@ -47,7 +46,7 @@ else
     curl --silent --location $GRADLE_URL | tar xz
     echo " done"
   fi
-  BUILDCMD="gradle -I $OPT_DIR/init.gradle"
+  BUILDCMD="gradle"
 fi
 
 BUILDCMD="$BUILDCMD $GRADLE_TASK"
