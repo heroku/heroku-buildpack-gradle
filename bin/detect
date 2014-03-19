@@ -2,7 +2,9 @@
 # bin/use <build-dir>
 
 if [ -f $1/build.gradle ]; then
-   echo "Gradle" && exit 0
+  echo "Gradle" && exit 0
+elif [ -f $1/settings.gradle ]; then
+  echo "Gradle" && exit 0
 else
   echo "no" && exit 1
 fi
