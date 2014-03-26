@@ -2,7 +2,7 @@
 
 . ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh
 
-testDetechSettingsGradle()
+testDetectSettingsGradle()
 {
   touch ${BUILD_DIR}/settings.gradle
 
