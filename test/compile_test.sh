@@ -50,7 +50,6 @@ testCompile_Wrapper()
   cat > ${BUILD_DIR}/gradlew <<EOF
 #!/bin/sh
 EOF
-  chmod +x ${BUILD_DIR}/gradlew
 
   expected_gradlew_output=`cat <<EOF
 -----> executing ./gradlew stage
