@@ -12,18 +12,18 @@ source "${BIN_DIR}/../conf/${PAAS_VENDOR}-env.properties"
 BUILD_DIR=$1
 CACHE_DIR=$2
 
-GRADLE_DIST="gradle-1.0-milestone-5"
+GRADLE_DIST="gradle-1.11"
 GRADLE_TASK="stage"
 
 curl --silent --location "${JVM_BUILDPACK_COMMON_URL}" | tar xz
 . bin/java
 
-# create default system.properties 
+# create default system.properties
 if [ ! -f ${BUILD_DIR}/system.properties ]; then
   echo "java.runtime.version=1.6" > ${BUILD_DIR}/system.properties
 fi
 
-# install JDK 
+# install JDK
 javaVersion=$(detect_java_version ${BUILD_DIR})
 echo -n "-----> Installing OpenJDK ${javaVersion}... "
 install_java ${BUILD_DIR} ${javaVersion}
@@ -54,7 +54,7 @@ BUILDCMD="$BUILDCMD $GRADLE_TASK"
 cd $BUILD_DIR
 
 export PATH=$CACHE_DIR/$GRADLE_DIST/bin:$PATH
- 
+
 # build app
 echo "-----> Building Gradle app..."
 echo "       WARNING: The Gradle buildpack is currently in Beta."
