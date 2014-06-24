@@ -16,7 +16,7 @@ EOF
   
   assertCapturedSuccess
   assertCaptured "Installing OpenJDK 1.6" 
-  assertCaptured "Installing gradle-1.0-milestone-5" 
+  assertCaptured "Installing gradle-1.11"
   assertCaptured "${expected_stage_output}" 
   assertCaptured "BUILD SUCCESSFUL"
   assertTrue "Java should be present in runtime." "[ -d ${BUILD_DIR}/.jdk ]"
@@ -37,8 +37,9 @@ task stage {
 EOF
 
   compile
-  
-  assertCapturedError "Cause: ${expected_stage_output}"
+
+  assertCapturedError "A problem occurred evaluating root project"
+  assertCapturedError "${expected_stage_output}"
   assertCapturedError "BUILD FAILED"
 }
 
