@@ -37,6 +37,25 @@ EOF
   assertTrue "GRADLE_USER_HOME should be CACHE_DIR/.gradle." "[ -d ${CACHE_DIR}/.gradle ]"
 }
 
+testCompileWithCustomTask()
+{
+  installWrapper
+  expected_stage_output="STAGING:${RANDOM}"
+
+  cat > ${BUILD_DIR}/build.gradle <<EOF
+task foo << {
+  println "${expected_stage_output}"
+}
+EOF
+
+  export GRADLE_TASK=foo
+  compile
+  unset GRADLE_TASK
+
+  assertCapturedSuccess
+  assertCaptured "executing ./gradlew foo"
+}
+
 testCompile_Fail()
 {
   installWrapper
