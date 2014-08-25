@@ -12,7 +12,6 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
-GRADLE_DIST="gradle-1.0-milestone-5"
 GRADLE_TASK="stage"
 
 curl --silent --location http://heroku-jvm-common.s3.amazonaws.com/jvm-buildpack-common.tar.gz | tar xz
@@ -43,21 +42,13 @@ if [ -f $BUILD_DIR/gradlew ] ; then
   BUILDCMD="./gradlew"
   chmod +x ${BUILD_DIR}/gradlew
 else
-  if [ ! -d $CACHE_DIR/$GRADLE_DIST ] ; then
-    cd $CACHE_DIR
-    GRADLE_URL="http://heroku-jvm-buildpack-gradle.s3.amazonaws.com/$GRADLE_DIST.tar.gz"
-    echo -n "-----> Installing $GRADLE_DIST....."
-    curl --silent --location $GRADLE_URL | tar xz
-    echo " done"
-  fi
-  BUILDCMD="gradle -I $OPT_DIR/init.gradle"
+  echo " !     './gradlew' script not found - please enable the Gradle Wrapper for this project."
+  exit 1
 fi
 
 BUILDCMD="$BUILDCMD $GRADLE_TASK"
 
 cd $BUILD_DIR
-
-export PATH=$CACHE_DIR/$GRADLE_DIST/bin:$PATH
  
 # build app
 echo "-----> Building Gradle app..."

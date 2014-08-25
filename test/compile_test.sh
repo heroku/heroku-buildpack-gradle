@@ -2,61 +2,52 @@
 
 . ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh
 
-testCompile()
-{
-  expected_stage_output="STAGING:${RANDOM}"
+WRAPPER_DIR=${BUILDPACK_HOME}/test/wrapper
   
+installWrapper() {
+  cp -r "$WRAPPER_DIR"/* ${BUILD_DIR}
+}
+
+testCompileWithoutWrapper()
+{
+  compile 
+  assertCapturedError "'./gradlew' script not found - please enable the Gradle Wrapper for this project."
+}
+
+testCompileWithWrapper() 
+{
+  installWrapper
+  expected_stage_output="STAGING:${RANDOM}"
+
   cat > ${BUILD_DIR}/build.gradle <<EOF
-task stage {
+task stage << {
   println "${expected_stage_output}"
 }
 EOF
 
   compile
-  
   assertCapturedSuccess
   assertCaptured "Installing OpenJDK 1.6" 
-  assertCaptured "Installing gradle-1.0-milestone-5" 
   assertCaptured "${expected_stage_output}" 
   assertCaptured "BUILD SUCCESSFUL"
   assertTrue "Java should be present in runtime." "[ -d ${BUILD_DIR}/.jdk ]"
   assertTrue "Java version file should be present." "[ -f ${BUILD_DIR}/.jdk/version ]"
   assertTrue "System properties file should be present in build dir." "[ -f ${BUILD_DIR}/system.properties ]" 
-  assertTrue "Gradle profile.d file should be present in build dir." "[ -f ${BUILD_DIR}/.profile.d/gradle.sh ]" 
+  assertTrue "Gradle profile.d file should be present in build dir." "[ -f ${BUILD_DIR}/.profile.d/gradle.sh ]"   
 }
-
 
 testCompile_Fail()
 {
-  expected_stage_output="STAGING:${RANDOM}"
+  installWrapper
+  expected_stage_output="STAGING:${RANDOM}"  
   
   cat > ${BUILD_DIR}/build.gradle <<EOF
-task stage {
+task stage << {
   throw new GradleException("${expected_stage_output}")
 }
 EOF
 
-  compile
-  
-  assertCapturedError "Cause: ${expected_stage_output}"
+  compile  
+  assertCapturedError "${expected_stage_output}"
   assertCapturedError "BUILD FAILED"
-}
-
-
-testCompile_Wrapper()
-{
-  touch ${BUILD_DIR}/build.gradle
-
-  cat > ${BUILD_DIR}/gradlew <<EOF
-#!/bin/sh
-EOF
-
-  expected_gradlew_output=`cat <<EOF
------> executing ./gradlew stage
-EOF`
-
-  compile
-  
-  assertCapturedSuccess
-  assertCaptured "${expected_gradlew_output}" 
 }
