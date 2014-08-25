@@ -33,7 +33,8 @@ EOF
   assertTrue "Java should be present in runtime." "[ -d ${BUILD_DIR}/.jdk ]"
   assertTrue "Java version file should be present." "[ -f ${BUILD_DIR}/.jdk/version ]"
   assertTrue "System properties file should be present in build dir." "[ -f ${BUILD_DIR}/system.properties ]" 
-  assertTrue "Gradle profile.d file should be present in build dir." "[ -f ${BUILD_DIR}/.profile.d/gradle.sh ]"   
+  assertTrue "Gradle profile.d file should be present in build dir." "[ -f ${BUILD_DIR}/.profile.d/gradle.sh ]"
+  assertTrue "GRADLE_USER_HOME should be CACHE_DIR/.gradle." "[ -d ${CACHE_DIR}/.gradle ]"
 }
 
 testCompile_Fail()

@@ -36,7 +36,7 @@ if [ ! -d $CACHE_DIR ] ; then
   mkdir $CACHE_DIR
 fi
 
-export GRADLE_USER_HOME=$CACHE_DIR
+export GRADLE_USER_HOME=$CACHE_DIR/.gradle
 
 if [ -f $BUILD_DIR/gradlew ] ; then
   BUILDCMD="./gradlew"
