@@ -5,7 +5,7 @@
 set -e
 
 BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
-OPT_DIR=$(cd $BIN_DIR/../opt; pwd) 
+OPT_DIR=$(cd $BIN_DIR/../opt; pwd)
 
 # parse args
 BUILD_DIR=$1
@@ -20,12 +20,12 @@ curl --silent --location http://heroku-jvm-common.s3.amazonaws.com/jvm-buildpack
 
 export_env_dir $ENV_DIR
 
-# create default system.properties 
+# create default system.properties
 if [ ! -f ${BUILD_DIR}/system.properties ]; then
   echo "java.runtime.version=1.6" > ${BUILD_DIR}/system.properties
 fi
 
-# install JDK 
+# install JDK
 javaVersion=$(detect_java_version ${BUILD_DIR})
 echo -n "-----> Installing OpenJDK ${javaVersion}... "
 install_java ${BUILD_DIR} ${javaVersion}
@@ -38,18 +38,18 @@ fi
 
 export GRADLE_USER_HOME=$CACHE_DIR/.gradle
 
-if [ -f $BUILD_DIR/gradlew ] ; then
-  BUILDCMD="./gradlew"
-  chmod +x ${BUILD_DIR}/gradlew
-else
-  echo " !     './gradlew' script not found - please enable the Gradle Wrapper for this project."
-  exit 1
+if [ ! -f $BUILD_DIR/gradlew ] ; then
+  echo -n "-----> Installing Gradle Wrapper..."
+  cp -rn ${OPT_DIR}/wrapper/* ${BUILD_DIR}
+  echo " done"
 fi
+BUILDCMD="./gradlew"
+chmod +x ${BUILD_DIR}/gradlew
 
 BUILDCMD="$BUILDCMD $GRADLE_TASK"
 
 cd $BUILD_DIR
- 
+
 # build app
 echo "-----> Building Gradle app..."
 echo "       WARNING: The Gradle buildpack is currently in Beta."
