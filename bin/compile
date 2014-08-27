@@ -39,9 +39,11 @@ fi
 export GRADLE_USER_HOME=$CACHE_DIR/.gradle
 
 if [ ! -f $BUILD_DIR/gradlew ] ; then
-  echo -n "-----> Installing Gradle Wrapper..."
+  echo "-----> Installing Gradle Wrapper..."
+  echo "       WARNING: Your application does not have it's own gradlew file."
+  echo "       We'll install one for you, but this is a deprecated feature and"
+  echo "       in the future may not be supported."
   cp -rn ${OPT_DIR}/wrapper/* ${BUILD_DIR}
-  echo " done"
 fi
 BUILDCMD="./gradlew"
 chmod +x ${BUILD_DIR}/gradlew
