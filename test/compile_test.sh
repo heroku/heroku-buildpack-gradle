@@ -55,9 +55,8 @@ task foo << {
 }
 EOF
 
-  export GRADLE_TASK=foo
+  echo -n "foo" > ${ENV_DIR}/GRADLE_TASK
   compile
-  unset GRADLE_TASK
 
   assertCapturedSuccess
   assertCaptured "executing ./gradlew foo"
