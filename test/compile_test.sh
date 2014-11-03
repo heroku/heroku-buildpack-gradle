@@ -34,7 +34,7 @@ EOF
 
   compile
   assertCapturedSuccess
-  assertCaptured "Installing OpenJDK 1.6"
+  assertCaptured "Installing OpenJDK 1.8"
   assertCaptured "${expected_stage_output}"
   assertCaptured "BUILD SUCCESSFUL"
   assertTrue "Java should be present in runtime." "[ -d ${BUILD_DIR}/.jdk ]"
