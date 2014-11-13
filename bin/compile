@@ -14,25 +14,13 @@ ENV_DIR=$3
 
 GRADLE_TASK=${GRADLE_TASK-stage}
 
-JVM_COMMON_BUILDPACK=http://lang-jvm.s3.amazonaws.com/jvm-buildpack-common-v3.tar.gz
+JVM_COMMON_BUILDPACK=http://lang-jvm.s3.amazonaws.com/jvm-buildpack-common-v7.tar.gz
 mkdir -p /tmp/jvm-common
 curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
 . /tmp/jvm-common/bin/util
 . /tmp/jvm-common/bin/java
 
 export_env_dir $ENV_DIR
-
-# create default system.properties
-if [ ! -f ${BUILD_DIR}/system.properties ]; then
-  if [ "$STACK" == "cedar" ]; then
-    defaultJdkVersion="1.6"
-  else
-    defaultJdkVersion="1.8"
-  fi
-  cat > ${BUILD_DIR}/system.properties <<EOF
-java.runtime.version=${defaultJdkVersion}
-EOF
-fi
 
 # install JDK
 javaVersion=$(detect_java_version ${BUILD_DIR})
@@ -72,7 +60,3 @@ if [ "${PIPESTATUS[*]}" != "0 0" ]; then
   echo " !     Failed to build app"
   exit 1
 fi
-
-PROFILE_PATH="$BUILD_DIR/.profile.d/gradle.sh"
-mkdir -p $(dirname $PROFILE_PATH)
-echo 'export PATH="/app/.jdk/bin:$PATH"' >> $PROFILE_PATH
