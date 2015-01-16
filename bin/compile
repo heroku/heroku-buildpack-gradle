@@ -14,6 +14,7 @@ ENV_DIR=$3
 
 GRADLE_TASK=${GRADLE_TASK-stage}
 
+JDK_URL_1_7="http://lang-jvm.s3.amazonaws.com/jdk/openjdk1.7.0_71-cedar14.tar.gz"
 JVM_COMMON_BUILDPACK=http://lang-jvm.s3.amazonaws.com/jvm-buildpack-common-v10.tar.gz
 mkdir -p /tmp/jvm-common
 curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common
