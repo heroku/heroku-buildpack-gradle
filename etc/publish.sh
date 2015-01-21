@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -12,7 +12,7 @@ if [ ! -z "$1" ]; then
   git checkout master
   headHash=$(git rev-parse HEAD)
 
-  find . ! -name '.' ! -name '..' ! -name 'bin' ! -name 'opt' -maxdepth 1 -print0 | xargs -0 rm -rf --
+  find . ! -name '.' ! -name '..' ! -name 'bin' ! -name 'lib' ! -name 'opt' -maxdepth 1 -print0 | xargs -0 rm -rf --
   heroku buildpacks:publish $1/$BP_NAME
 
   if [ "$1" = "heroku" ]; then
