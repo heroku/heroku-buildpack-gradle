@@ -9,6 +9,7 @@ BIN_DIR=$BP_DIR/bin
 OPT_DIR=$BP_DIR/opt
 LIB_DIR=$BP_DIR/lib
 . $LIB_DIR/common.sh
+. $LIB_DIR/failures.sh
 
 # parse args
 BUILD_DIR=$1
@@ -57,9 +58,10 @@ echo "-----> Building Gradle app..."
 echo "       WARNING: The Gradle buildpack is currently in Beta."
 echo "-----> executing $BUILDCMD"
 
-$BUILDCMD 2>&1 | sed -u 's/^/       /'
+buildLogFile=$(create_build_log_file)
+
+$BUILDCMD 2>&1 | output $buildLogFile
 
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-  echo " !     Failed to build app"
-  exit 1
+  handle_gradle_errors $buildLogFile
 fi
