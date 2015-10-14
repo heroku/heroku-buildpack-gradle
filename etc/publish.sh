@@ -2,7 +2,7 @@
 
 set -e
 
-BP_NAME="scala"
+BP_NAME="gradle"
 
 if [ ! -z "$1" ]; then
   pushd . > /dev/null 2>&1
