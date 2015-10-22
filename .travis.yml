@@ -10,7 +10,7 @@ before_install:
 
 install: true
 
-script: /tmp/testrunner/bin/run -c .
+script: /tmp/testrunner/bin/run .
 
 env:
   global:
