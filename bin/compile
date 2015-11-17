@@ -17,6 +17,7 @@ CACHE_DIR=$2
 ENV_DIR=$3
 
 GRADLE_TASK=${GRADLE_TASK-stage}
+export GRADLE_OPTS=${GRADLE_OPTS-"-Dorg.gradle.daemon=false"}
 
 export_env_dir $ENV_DIR
 
