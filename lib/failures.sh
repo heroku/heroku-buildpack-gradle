@@ -22,6 +22,17 @@ If you're stilling having trouble, please submit a ticket so we can help:
 https://help.heroku.com
 
 ${footer}"
+  elif grep -qi "Could not find or load main class org.gradle.wrapper.GradleWrapperMain" "$log_file"; then
+    error "${header}
+It looks like you don't have a gradle-wrapper.jar file checked into your Git repo.
+Heroku needs this JAR file in order to run Gradle.  Our Dev Center article on preparing
+a Gradle application for Heroku describes how to fix this:
+https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
+
+If you're stilling having trouble, please submit a ticket so we can help:
+https://help.heroku.com
+
+${footer}"
   else
     error "${header}
 We're sorry this build is failing. If you can't find the issue in application
