@@ -5,8 +5,4 @@ BUILD_DIR=$1
 
 cat <<EOF
 ---
-config_vars:
-  JAVA_OPTS: -Xmx384m -Xss512k -XX:+UseCompressedOops
-
-
 EOF
