@@ -4,9 +4,7 @@
 
 testRelease()
 {
-  expected_release_output=`cat <<EOF
----
-EOF`
+  expected_release_output=`echo "--- {}"`
 
   release
 
