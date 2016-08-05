@@ -8,7 +8,12 @@ BUILD_DIR=$1
 
 _ratpack_proc() {
   local ctxDir=$1
-  (cd $ctxDir; find build/install/*/bin -type f -executable | head -n 1)
+  (cd $ctxDir; find build/install/*/bin -type f -executable | grep -v "\.bat$")
+}
+
+_ratpack_proc_count() {
+  local ctxDir=$1
+  _ratpack_proc $ctxDir | wc -l
 }
 
 _webapp_runner() {
@@ -25,7 +30,7 @@ if [ ! -f $BUILD_DIR/Procfile ]; then
     else
       echo "  web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar build/libs/*.jar"
     fi
-  elif is_ratpack $BUILD_DIR; then
+  elif is_ratpack $BUILD_DIR && [ $(_ratpack_proc_count $BUILD_DIR) -eq 1 ]; then
     echo "default_process_types:"
     echo "  web: $(_ratpack_proc $BUILD_DIR)"
   else
