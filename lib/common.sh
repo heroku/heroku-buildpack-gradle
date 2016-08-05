@@ -13,6 +13,37 @@ export_env_dir() {
   fi
 }
 
+has_stage_task() {
+  local buildDir=${1}
+   test -f ${buildDir}/build.gradle &&
+     test -n "$(grep "^ *task *stage" ${buildDir}/build.gradle)"
+}
+
+is_spring_boot() {
+  local buildDir=${1}
+   test -f ${buildDir}/build.gradle &&
+     test -n "$(grep "^[^/].*org.springframework.boot:spring-boot" ${buildDir}/build.gradle)" &&
+     test -z "$(grep "org.grails:grails-" ${buildDir}/build.gradle)"
+}
+
+is_ratpack() {
+  local buildDir=${1}
+  test -f ${buildDir}/build.gradle &&
+    test -n "$(grep "^[^/].*io.ratpack.ratpack" ${buildDir}/build.gradle)"
+}
+
+is_grails() {
+  local buildDir=${1}
+   test -f ${buildDir}/build.gradle &&
+     test -n "$(grep "^[^/].*org.grails:grails-" ${buildDir}/build.gradle)"
+}
+
+is_webapp_runner() {
+  local buildDir=${1}
+  test -f ${buildDir}/build.gradle &&
+    test -n "$(grep "^[^/].*io.ratpack.ratpack" ${buildDir}/build.gradle)"
+}
+
 create_build_log_file() {
   local buildLogFile=".heroku/gradle-build.log"
   echo "" > $buildLogFile

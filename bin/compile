@@ -16,9 +16,6 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
-GRADLE_TASK=${GRADLE_TASK-stage}
-export GRADLE_OPTS=${GRADLE_OPTS-"-Dorg.gradle.daemon=false"}
-
 export_env_dir $ENV_DIR
 
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-"https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz"}
@@ -28,6 +25,26 @@ curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-c
 . /tmp/jvm-common/bin/java
 
 install_java_with_overlay ${BUILD_DIR}
+
+if is_spring_boot $BUILD_DIR; then
+  if is_webapp_runner $BUILD_DIR; then
+    echo "-----> Detected Spring Boot and Webapp Runner"
+  else
+    echo "-----> Detected Spring Boot"
+  fi
+  DEFEAULT_GRADLE_TASK="build"
+elif is_ratpack $BUILD_DIR; then
+  echo "-----> Detected Ratpack"
+  DEFEAULT_GRADLE_TASK="installDist"
+else
+  DEFEAULT_GRADLE_TASK="stage"
+fi
+
+if [ -z "$GRADLE_TASK" ]; then
+  GRADLE_TASK="${DEFEAULT_GRADLE_TASK}"
+fi
+
+export GRADLE_OPTS=${GRADLE_OPTS-"-Dorg.gradle.daemon=false"}
 
 if [ ! -d $CACHE_DIR ] ; then
   mkdir $CACHE_DIR
