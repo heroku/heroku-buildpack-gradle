@@ -7,7 +7,7 @@ describe "Ratpack" do
   end
 
   context "on JDK 8" do
-    let(:app) { Hatchet::Runner.new("ratpack-gradle") }
+    let(:app) { Hatchet::Runner.new("example-ratpack-gradle-groovy-app") }
     let(:jdk_version) { "1.8" }
 
     it "deploys successfully" do
