@@ -28,13 +28,13 @@ install_java_with_overlay ${BUILD_DIR}
 
 if is_spring_boot $BUILD_DIR; then
   if is_webapp_runner $BUILD_DIR; then
-    echo "-----> Detected Spring Boot and Webapp Runner"
+    echo "-----> Spring Boot and Webapp Runner detected"
   else
-    echo "-----> Detected Spring Boot"
+    echo "-----> Spring Boot detected"
   fi
   DEFEAULT_GRADLE_TASK="build"
 elif is_ratpack $BUILD_DIR; then
-  echo "-----> Detected Ratpack"
+  echo "-----> Ratpack detected"
   DEFEAULT_GRADLE_TASK="installDist"
 else
   DEFEAULT_GRADLE_TASK="stage"
