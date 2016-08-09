@@ -32,10 +32,10 @@ if is_spring_boot $BUILD_DIR; then
   else
     echo "-----> Spring Boot detected"
   fi
-  DEFEAULT_GRADLE_TASK="build"
+  DEFEAULT_GRADLE_TASK="build -x test"
 elif is_ratpack $BUILD_DIR; then
   echo "-----> Ratpack detected"
-  DEFEAULT_GRADLE_TASK="installDist"
+  DEFEAULT_GRADLE_TASK="installDist -x test"
 else
   DEFEAULT_GRADLE_TASK="stage"
 fi
