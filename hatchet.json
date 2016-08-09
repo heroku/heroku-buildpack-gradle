@@ -1,0 +1,8 @@
+{
+  "hatchet": {
+    "directory": "spec/fixtures"
+  },
+  "spring": [
+    "kissaten/spring-boot-gradle"
+  ]
+}
