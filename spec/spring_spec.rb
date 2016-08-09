@@ -10,7 +10,7 @@ describe "Spring" do
     let(:app) { Hatchet::Runner.new("spring-boot-gradle") }
     let(:jdk_version) { "1.8" }
 
-    it "should reinstall maven" do
+    it "deploy twice" do
       app.deploy do |app|
         expect(app.output).to include("Spring Boot detected")
         expect(app.output).to include("Building Gradle app")
