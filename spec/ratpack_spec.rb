@@ -17,7 +17,7 @@ describe "Ratpack" do
         expect(app.output).to include("executing ./gradlew installDist -x test")
         expect(app.output).not_to include(":test")
         expect(app.output).to include("BUILD SUCCESSFUL")
-        expect(successful_body(app)).to eq("Groovy Web Console")
+        expect(successful_body(app)).to include("Groovy Web Console")
       end
     end
   end
