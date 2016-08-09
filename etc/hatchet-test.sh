@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 gem install rspec-retry -v 0.4.0
+gem install rspec-expectations -v 3.4.0
+gem install rspec-mocks -v 3.4.1
 gem install heroku_hatchet -v 1.4.1
 
 hatchet install &&
