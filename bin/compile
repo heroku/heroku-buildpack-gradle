@@ -18,22 +18,24 @@ ENV_DIR=$3
 
 export_env_dir $ENV_DIR
 
-if is_spring_boot $BUILD_DIR; then
+if has_stage_task $BUILD_DIR; then
+  DEFAULT_GRADLE_TASK="stage"
+elif is_spring_boot $BUILD_DIR; then
   if is_webapp_runner $BUILD_DIR; then
     echo "-----> Spring Boot and Webapp Runner detected"
   else
     echo "-----> Spring Boot detected"
   fi
-  DEFEAULT_GRADLE_TASK="build -x test"
+  DEFAULT_GRADLE_TASK="build -x test"
 elif is_ratpack $BUILD_DIR; then
   echo "-----> Ratpack detected"
-  DEFEAULT_GRADLE_TASK="installDist -x test"
+  DEFAULT_GRADLE_TASK="installDist -x test"
 else
-  DEFEAULT_GRADLE_TASK="stage"
+  DEFAULT_GRADLE_TASK="stage"
 fi
 
 if [ -z "$GRADLE_TASK" ]; then
-  GRADLE_TASK="${DEFEAULT_GRADLE_TASK}"
+  GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
 fi
 
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-"https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz"}

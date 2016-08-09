@@ -6,7 +6,8 @@
     "kissaten/spring-boot-gradle"
   ],
   "ratpack": [
-    "ratpack/example-ratpack-gradle-groovy-app"
+    "ratpack/example-ratpack-gradle-groovy-app",
+    "heroku/gradle-getting-started"
   ],
   "grails": [
     "kissaten/grails3-example"
