@@ -4,7 +4,7 @@
 
 testRelease()
 {
-  expected_release_output=`echo "--- {}"`
+  expected_release_output=`echo "---\n{}"`
 
   release
 
