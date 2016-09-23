@@ -3,8 +3,8 @@ branches:
   only:
   - master
 before_install:
-- curl --silent https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz | tar xz -C
-  /tmp/
+- curl --silent https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/shunit2/shunit2-2.1.6.tgz
+  | tar xz -C /tmp/
 - git clone https://github.com/heroku/heroku-buildpack-testrunner.git /tmp/testrunner
 - "./etc/travis-setup.sh"
 install: false
@@ -17,7 +17,7 @@ env:
   - HATCHET_BUILDPACK_BASE="https://github.com/heroku/heroku-buildpack-gradle.git"
   - HATCHET_APP_LIMIT=2
   - SHUNIT_HOME="/tmp/shunit2-2.1.6"
-  - secure: KDvFPdlXJWuUDiESWzC4Oyl0fJv3Y+uNVjTMUGJDX2LY+LSbXqRr7oF8kq6rMzl1pGUOFVXPHPClsJsUmo1xz0L9q7nD44ZGvTL1mv6lYyPYCvF35wBD6ZvdcDOSj8aE3Og5MVaOcD2eE7f7yGlwY6ZvdWPmAF6jo31SGnr03Wo=
+  - secure: 426T7FQmTDl3nOfa+mNcvdwMm5jp46KqLZJDHbtwNeFP7eqxuhH5GLYXFY7oCKzaVRAXL+0M8dzqFUH8XJvldlb0HjQeTRlBt/dTVmfkPooUbZ9m09RYmGobjC1GqjW60VeZjxy9FKPTwyGNSJymTaEpVlr6tIYOaGarQ6rG0BA=
   matrix:
   - TEST_CMD='sh etc/hatchet-test.sh'
   - TEST_CMD="/tmp/testrunner/bin/run -c ."
