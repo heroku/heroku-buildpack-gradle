@@ -17,7 +17,7 @@ env:
   - HATCHET_BUILDPACK_BASE="https://github.com/heroku/heroku-buildpack-gradle.git"
   - HATCHET_APP_LIMIT=2
   - SHUNIT_HOME="/tmp/shunit2-2.1.6"
-  - secure: 426T7FQmTDl3nOfa+mNcvdwMm5jp46KqLZJDHbtwNeFP7eqxuhH5GLYXFY7oCKzaVRAXL+0M8dzqFUH8XJvldlb0HjQeTRlBt/dTVmfkPooUbZ9m09RYmGobjC1GqjW60VeZjxy9FKPTwyGNSJymTaEpVlr6tIYOaGarQ6rG0BA=
+  - secure: z7Oc7f9+woaoIYpyssV8OXA5sWbyawls1WPutMebHFkjAVvbu2muXQ0KKesiQMZUwhVO45uaQquDiah8MJPfEa8TTDI3r5kvCPah3u/RU9NAd8aTnx893/CFScVU7I/KPbLG4g+dfwTzPHmEmWsDrA/ta61pyOaqrHFpsjWhSpo=
   matrix:
   - TEST_CMD='sh etc/hatchet-test.sh'
   - TEST_CMD="/tmp/testrunner/bin/run -c ."
