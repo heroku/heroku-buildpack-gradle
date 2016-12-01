@@ -8,7 +8,7 @@ BUILD_DIR=$1
 
 _ratpack_proc() {
   local ctxDir=$1
-  if [ -d build/install/*/bin ]; then
+  if [ -d $ctxDir/build/install/*/bin ]; then
     (cd $ctxDir; find build/install/*/bin -type f -executable | grep -v "\.bat$")
   else
     echo -n ""
