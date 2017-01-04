@@ -17,5 +17,29 @@ export GRADLE_TASK="testClasses"
 export GRADLE_USER_HOME=$BUILD_DIR/.gradle
 
 cache_copy ".gradle" $CACHE_DIR $BUILD_DIR
+
 $BIN_DIR/compile "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR"
+
+HEROKU_GRADLE_INIT_SCRIPT="/tmp/resolve.gradle"
+cat << EOF > $HEROKU_GRADLE_INIT_SCRIPT
+apply plugin:MyInitPlugin
+
+class MyInitPlugin implements Plugin<Gradle> {
+  @Override
+  void apply(Gradle gradle) {
+    gradle.allprojects{ project ->
+      project.task('resolveTestRuntime') {
+        doLast {
+          project.configurations.testRuntime.resolve()
+        }
+      }
+    }
+  }
+}
+EOF
+
+echo "-----> Resolving testRuntime dependencies..."
+cd $BUILD_DIR
+./gradlew --no-daemon --init-script $HEROKU_GRADLE_INIT_SCRIPT resolveTestRuntime 2>&1 | output /tmp/.resolveTestRuntime.log
+
 cache_copy ".gradle" $BUILD_DIR $CACHE_DIR
