@@ -22,9 +22,9 @@ $BIN_DIR/compile "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR"
 
 HEROKU_GRADLE_INIT_SCRIPT="/tmp/resolve.gradle"
 cat << EOF > $HEROKU_GRADLE_INIT_SCRIPT
-apply plugin:MyInitPlugin
+apply plugin:HerokuInitPlugin
 
-class MyInitPlugin implements Plugin<Gradle> {
+class HerokuInitPlugin implements Plugin<Gradle> {
   @Override
   void apply(Gradle gradle) {
     gradle.allprojects{ project ->
