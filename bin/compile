@@ -69,7 +69,6 @@ cd $BUILD_DIR
 
 # build app
 echo "-----> Building Gradle app..."
-echo "       WARNING: The Gradle buildpack is currently in Beta."
 echo "-----> executing $BUILDCMD"
 
 buildLogFile=$(create_build_log_file)
