@@ -23,16 +23,20 @@ source <(curl -s --retry 3 -L $BUILDPACK_STDLIB_URL)
 export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
 if has_stage_task $BUILD_DIR; then
+  mcount "task.stage"
   DEFAULT_GRADLE_TASK="stage"
 elif is_spring_boot $BUILD_DIR; then
   if is_webapp_runner $BUILD_DIR; then
     echo "-----> Spring Boot and Webapp Runner detected"
+    mcount "task.webapprunner"
   else
     echo "-----> Spring Boot detected"
+    mcount "task.spring"
   fi
   DEFAULT_GRADLE_TASK="build -x test"
 elif is_ratpack $BUILD_DIR; then
   echo "-----> Ratpack detected"
+  mcount "task.ratpack"
   DEFAULT_GRADLE_TASK="installDist -x test"
 else
   DEFAULT_GRADLE_TASK="stage"
@@ -53,6 +57,7 @@ fi
 export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
 
 if [ ! -f $BUILD_DIR/gradlew ] ; then
+  mcount "wrapperless"
   echo "-----> Installing Gradle Wrapper..."
   echo "       WARNING: Your application does not have it's own gradlew file."
   echo "       We'll install one for you, but this is a deprecated feature and"
@@ -72,8 +77,11 @@ echo "-----> executing $BUILDCMD"
 
 buildLogFile=$(create_build_log_file)
 
+let start=$(nowms)
 $BUILDCMD 2>&1 | output $buildLogFile
 
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
   handle_gradle_errors $buildLogFile
 fi
+
+mtime "build.time" "${start}"
