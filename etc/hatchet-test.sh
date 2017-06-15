@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ "$TRAVIS" = "true" ] && [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ -n "$HEROKU_API_KEY" ]; then
+if [ "$CI" = "true" ] && [ "$CI_PULL_REQUEST" != "false" ] && [ -n "$HEROKU_API_KEY" ]; then
   echo "Skipping Hatchet tests on Pull Request."
 else
   gem install bundler

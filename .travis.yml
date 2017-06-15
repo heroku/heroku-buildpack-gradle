@@ -3,7 +3,7 @@ dist: trusty
 branches:
   only:
   - master
-before_install: bash etc/travis-setup.sh
+before_install: bash etc/ci-setup.sh
 install: false
 script: eval $TEST_CMD
 after_script: heroku keys:remove $USER@`hostname`
@@ -12,7 +12,7 @@ env:
   - HATCHET_RETRIES=3
   - HATCHET_DEPLOY_STRATEGY=git
   - HATCHET_BUILDPACK_BASE="https://github.com/heroku/heroku-buildpack-gradle.git"
-  - HATCHET_APP_LIMIT=2
+  - HATCHET_APP_LIMIT=10
   - SHUNIT_HOME="/tmp/shunit2-2.1.6"
   matrix:
   - TEST_CMD='sh etc/hatchet-test.sh'
