@@ -18,7 +18,7 @@ ENV_DIR=$3
 
 source $LIB_DIR/common.sh
 source $LIB_DIR/failures.sh
-source <(curl -s --retry 3 -L $BUILDPACK_STDLIB_URL)
+source <(curl --retry 3 -fsSL $BUILDPACK_STDLIB_URL)
 
 export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
