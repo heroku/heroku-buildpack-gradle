@@ -11,5 +11,9 @@
   ],
   "grails": [
     "kissaten/grails3-example"
+  ],
+  "kotlin": [
+    "kissaten/gradle-kotlin-dsl-sample",
+    "kissaten/spring-boot-gradle-kotlin-dsl"
   ]
 }
