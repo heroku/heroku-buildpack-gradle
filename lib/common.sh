@@ -2,35 +2,44 @@
 
 export BUILDPACK_STDLIB_URL="https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh"
 
-has_stage_task() {
+gradle_build_file() {
   local buildDir=${1}
-   test -f ${buildDir}/build.gradle &&
-     test -n "$(grep "^ *task *stage" ${buildDir}/build.gradle)"
+  if [ -f ${buildDir}/build.gradle.kts ]; then
+    echo "${buildDir}/build.gradle.kts"
+  else
+    echo "${buildDir}/build.gradle"
+  fi
+}
+
+has_stage_task() {
+  local gradleFile="$(gradle_build_file ${1})"
+   test -f ${gradleFile} &&
+     test -n "$(grep "^ *task *stage" ${gradleFile})"
 }
 
 is_spring_boot() {
-  local buildDir=${1}
-   test -f ${buildDir}/build.gradle &&
-     test -n "$(grep "^[^/].*org.springframework.boot:spring-boot" ${buildDir}/build.gradle)" &&
-     test -z "$(grep "org.grails:grails-" ${buildDir}/build.gradle)"
+  local gradleFile="$(gradle_build_file ${1})"
+   test -f ${gradleFile} &&
+     test -n "$(grep "^[^/].*org.springframework.boot:spring-boot" ${gradleFile})" &&
+     test -z "$(grep "org.grails:grails-" ${gradleFile})"
 }
 
 is_ratpack() {
-  local buildDir=${1}
-  test -f ${buildDir}/build.gradle &&
-    test -n "$(grep "^[^/].*io.ratpack.ratpack" ${buildDir}/build.gradle)"
+  local gradleFile="$(gradle_build_file ${1})"
+  test -f ${gradleFile} &&
+    test -n "$(grep "^[^/].*io.ratpack.ratpack" ${gradleFile})"
 }
 
 is_grails() {
-  local buildDir=${1}
-   test -f ${buildDir}/build.gradle &&
-     test -n "$(grep "^[^/].*org.grails:grails-" ${buildDir}/build.gradle)"
+  local gradleFile="$(gradle_build_file ${1})"
+   test -f ${gradleFile} &&
+     test -n "$(grep "^[^/].*org.grails:grails-" ${gradleFile})"
 }
 
 is_webapp_runner() {
-  local buildDir=${1}
-  test -f ${buildDir}/build.gradle &&
-    test -n "$(grep "^[^/].*io.ratpack.ratpack" ${buildDir}/build.gradle)"
+  local gradleFile="$(gradle_build_file ${1})"
+  test -f ${gradleFile} &&
+    test -n "$(grep "^[^/].*io.ratpack.ratpack" ${gradleFile})"
 }
 
 create_build_log_file() {
