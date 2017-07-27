@@ -1,4 +1,4 @@
-Heroku buildpack: Gradle
+# Heroku buildpack: Gradle
 
 [![Build Status](https://travis-ci.org/heroku/heroku-buildpack-gradle.svg?branch=master)](https://travis-ci.org/heroku/heroku-buildpack-gradle)
 [![CircleCI](https://circleci.com/gh/heroku/heroku-buildpack-gradle/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-buildpack-gradle/tree/master)
