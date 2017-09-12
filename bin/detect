@@ -11,5 +11,6 @@ elif [ -f $1/build.gradle ]; then
 elif [ -f $1/settings.gradle ]; then
   echo "Gradle" && exit 0
 else
-  echo "no" && exit 1
+  (>&2 echo "Could not find a 'gradlew' script or a 'build.gradle' file! Please check that they exist and are commited to Git.")
+  exit 1
 fi
