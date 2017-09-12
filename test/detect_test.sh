@@ -27,12 +27,12 @@ testNoDetectAntProject()
 {
   touch ${BUILD_DIR}/build.xml
   detect
-  assertNoAppDetected
+  assertEquals "1" "${RETURN}"
 }
 
 testNoDetectMavenProject()
 {
   touch ${BUILD_DIR}/pom.xml
   detect
-  assertNoAppDetected
+  assertEquals "1" "${RETURN}"
 }
