@@ -20,6 +20,7 @@ describe "Spring" do
         expect(app.output).to include("BUILD SUCCESSFUL")
         expect(successful_body(app)).to eq("Hello from Spring Boot")
 
+        sleep 10 # make sure the cache has time to update
         `git commit -am "redeploy" --allow-empty`
         app.push!
         expect(app.output).to include("Spring Boot detected")
