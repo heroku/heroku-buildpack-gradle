@@ -4,6 +4,7 @@ require 'fileutils'
 require 'hatchet'
 require 'rspec/retry'
 require 'date'
+require 'tmpdir'
 
 ENV['RACK_ENV'] = 'test'
 
