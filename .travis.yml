@@ -5,11 +5,13 @@ branches:
   - master
 before_install: bash etc/ci-setup.sh
 install: false
-script: eval $TEST_CMD
+script:
+  - /tmp/testrunner/bin/run -c
+  - bash etc/hatchet.sh
 after_script: heroku keys:remove $USER@`hostname`
 env:
   global:
   - SHUNIT_HOME="/tmp/shunit2-2.1.6"
   matrix:
-  - TEST_CMD='bash etc/hatchet.sh'
-  - TEST_CMD="/tmp/testrunner/bin/run -c ."
+  - HEROKU_TEST_STACK="heroku-16"
+  - HEROKU_TEST_STACK="heroku-18"
