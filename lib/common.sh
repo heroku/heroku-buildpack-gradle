@@ -52,8 +52,8 @@ create_build_log_file() {
 # using the --project-cache-dir option, which muddies up the command, we
 # symlink this directory to the cache.
 create_project_cache_symlink() {
-  local buildpackCacheDir="${1}/.gradle-project"
-  local projectCacheLink="${2}/.gradle"
+  local buildpackCacheDir="${1:?}/.gradle-project"
+  local projectCacheLink="${2:?}/.gradle"
   if [ ! -d "$projectCacheLink" ]; then
     mkdir -p "$buildpackCacheDir"
     ln -s "$buildpackCacheDir" "$projectCacheLink"
