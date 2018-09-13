@@ -50,11 +50,10 @@ install_jdk ${BUILD_DIR}
 
 export GRADLE_OPTS=${GRADLE_OPTS-"-Dorg.gradle.daemon=false"}
 
-if [ ! -d $CACHE_DIR ] ; then
-  mkdir $CACHE_DIR
-fi
-
+mkdir -p "$CACHE_DIR/.gradle"
 export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
+
+create_project_cache_symlink "$CACHE_DIR" "$BUILD_DIR"
 
 if [ ! -f $BUILD_DIR/gradlew ] ; then
   mcount "wrapperless"
