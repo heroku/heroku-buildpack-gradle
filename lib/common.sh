@@ -57,16 +57,7 @@ create_project_cache_symlink() {
   if [ ! -d "$projectCacheLink" ]; then
     mkdir -p "$buildpackCacheDir"
     ln -s "$buildpackCacheDir" "$projectCacheLink"
-    trap "remove_project_cache_symlink $projectCacheLink" EXIT
-  fi
-}
-
-# Remove the symlink created in create_project_cache_symlink, but only if it
-# is a symlink.
-remove_project_cache_symlink() {
-  local projectCacheDir="${1}"
-  if [[ -L "$projectCacheDir" && -d "$projectCacheDir" ]]; then
-    rm -f "$projectCacheDir"
+    trap "rm -f $projectCacheLink" EXIT
   fi
 }
 
