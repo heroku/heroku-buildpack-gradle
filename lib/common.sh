@@ -48,6 +48,23 @@ create_build_log_file() {
   echo "$buildLogFile"
 }
 
+create_project_cache_symlink() {
+  local buildpackCacheDir="${1}"
+  local projectCacheLink="${2}"
+  if [ ! -d "$projectCacheLink" ]; then
+    mkdir -p "$buildpackCacheDir"
+    ln -s "$buildpackCacheDir" "$projectCacheLink"
+    trap "remove_project_cache_symlink $projectCacheLink" EXIT
+  fi
+}
+
+remove_project_cache_symlink() {
+  local projectCacheDir="${1}"
+  if [[ -L "$projectCacheDir" && -d "$projectCacheDir" ]]; then
+    rm -f "$projectCacheDir"
+  fi
+}
+
 # sed -l basically makes sed replace and buffer through stdin to stdout
 # so you get updates while the command runs and dont wait for the end
 # e.g. sbt stage | indent
