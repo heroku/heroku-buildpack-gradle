@@ -48,9 +48,12 @@ create_build_log_file() {
   echo "$buildLogFile"
 }
 
+# By default gradle will write its cache in `$BUILD_DIR/.gradle`. Rather than
+# using the --project-cache-dir option, which muddies up the command, we
+# symlink this directory to the cache.
 create_project_cache_symlink() {
-  local buildpackCacheDir="${1}"
-  local projectCacheLink="${2}"
+  local buildpackCacheDir="${1}/.gradle-project"
+  local projectCacheLink="${2}/.gradle"
   if [ ! -d "$projectCacheLink" ]; then
     mkdir -p "$buildpackCacheDir"
     ln -s "$buildpackCacheDir" "$projectCacheLink"
@@ -58,6 +61,8 @@ create_project_cache_symlink() {
   fi
 }
 
+# Remove the symlink created in create_project_cache_symlink, but only if it
+# is a symlink.
 remove_project_cache_symlink() {
   local projectCacheDir="${1}"
   if [[ -L "$projectCacheDir" && -d "$projectCacheDir" ]]; then
