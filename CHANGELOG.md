@@ -1,5 +1,9 @@
 # Gradle Buildpack Changelog
 
-## master
+## v28
+
+* Disable Gradle welcome message
+
+## v27
 
 * Add symlink from project .gradle to the cache
