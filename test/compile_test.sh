@@ -41,6 +41,7 @@ EOF
   assertTrue "Java version file should be present." "[ -f ${BUILD_DIR}/.jdk/version ]"
   assertTrue "Gradle profile.d file should be present in build dir." "[ -f ${BUILD_DIR}/.profile.d/jvmcommon.sh ]"
   assertTrue "GRADLE_USER_HOME should be CACHE_DIR/.gradle." "[ -d ${CACHE_DIR}/.gradle ]"
+  assertTrue "system.properties was not cached" "[ -f $CACHE_DIR/system.properties ]"
 }
 
 testCompileWithCustomTask()
@@ -59,6 +60,7 @@ EOF
 
   assertCapturedSuccess
   assertCaptured "executing ./gradlew foo"
+  assertTrue "system.properties was not cached" "[ -f $CACHE_DIR/system.properties ]"
 }
 
 testCompile_Fail()
