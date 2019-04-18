@@ -1,5 +1,9 @@
 # Gradle Buildpack Changelog
 
+## v30
+
+* Exclude nodejs dir created by gradle-node-plugin from cache
+
 ## v28
 
 * Disable Gradle welcome message
