@@ -1,5 +1,9 @@
 # Gradle Buildpack Changelog
 
+## master
+
+* Search for spring-boot-detect-plugin when detecting Spring Boot apps
+
 ## v30
 
 * Exclude nodejs dir created by gradle-node-plugin from cache
