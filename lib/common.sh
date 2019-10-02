@@ -20,7 +20,11 @@ has_stage_task() {
 is_spring_boot() {
   local gradleFile="$(gradle_build_file ${1})"
    test -f ${gradleFile} &&
-     test -n "$(grep "^[^/].*org.springframework.boot:spring-boot" ${gradleFile})" &&
+     (
+       test -n "$(grep "^[^/].*org.springframework.boot:spring-boot" ${gradleFile})" ||
+       test -n "$(grep "^[^/].*spring-boot-gradle-plugin" ${gradleFile})" ||
+       test -n "$(grep "^[^/].*id.*org.springframework.boot" ${gradleFile})"
+     ) &&
      test -z "$(grep "org.grails:grails-" ${gradleFile})"
 }
 
