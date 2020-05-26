@@ -1,10 +1,9 @@
 language: java
-dist: trusty
+dist: xenial
 branches:
   only:
   - master
 before_install: bash etc/ci-setup.sh
-install: false
 script:
   - /tmp/testrunner/bin/run -c
   - bash etc/hatchet.sh
