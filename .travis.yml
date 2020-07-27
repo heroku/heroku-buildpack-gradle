@@ -2,7 +2,7 @@ language: java
 dist: xenial
 branches:
   only:
-  - master
+  - main
 before_install: bash etc/ci-setup.sh
 script:
   - /tmp/testrunner/bin/run -c
