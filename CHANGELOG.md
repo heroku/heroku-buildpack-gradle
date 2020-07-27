@@ -1,6 +1,6 @@
 # Gradle Buildpack Changelog
 
-## master
+## main
 
 * Search for spring-boot-detect-plugin when detecting Spring Boot apps
 
