@@ -2,6 +2,12 @@
 
 ## main
 
+## v32
+
+* Update tests
+
+## v31
+
 * Search for spring-boot-detect-plugin when detecting Spring Boot apps
 
 ## v30
