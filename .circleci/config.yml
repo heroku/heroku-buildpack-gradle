@@ -26,7 +26,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.7
     environment:
-      PARALLEL_SPLIT_TEST_PROCESSES: 8
+      PARALLEL_SPLIT_TEST_PROCESSES: 6
       # Hatchet Configuration (https://github.com/heroku/hatchet#env-vars)
       HATCHET_BUILDPACK_BASE: https://github.com/heroku/heroku-buildpack-gradle
       HATCHET_BUILDPACK_BRANCH: << pipeline.git.branch >>
