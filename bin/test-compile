@@ -18,6 +18,17 @@ export GRADLE_USER_HOME=$BUILD_DIR/.gradle
 
 cache_copy ".gradle" $CACHE_DIR $BUILD_DIR
 
+# Temporary workaround for issue #80 (https://github.com/heroku/heroku-buildpack-gradle/issues/80):
+# /bin/compile will not create a .gradle directory if it doesn't already exist. It will instead symlink
+# ${BUILD_DIR}/.gradle to ${CACHE_DIR}/.gradle-project and remove that link after /bin/compile exits. This works well
+# for normal compiles. However, /bin/test will then not have access to the cache and will do a fresh recompile.
+#
+# To work around this issue, we create ${BUILD_DIR}/.gradle here, disabling the symlink feature and allowing /bin/test
+# to make use of the cache.
+if [[ ! -d "${GRADLE_USER_HOME}" ]]; then
+  mkdir -p "${GRADLE_USER_HOME}"
+fi
+
 $BIN_DIR/compile "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR"
 
 HEROKU_GRADLE_INIT_SCRIPT="/tmp/resolve.gradle"

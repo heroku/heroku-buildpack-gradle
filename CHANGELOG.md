@@ -3,6 +3,7 @@
 ## main
 
 * Enable heroku-20 testing
+* Ensure Gradle cache is used between /bin/test-compile and /bin/test runs (#82)
 
 ## v32
 
