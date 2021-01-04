@@ -2,6 +2,8 @@
 
 ## main
 
+* Actually execute tests
+
 ## v33
 
 * Enable heroku-20 testing
