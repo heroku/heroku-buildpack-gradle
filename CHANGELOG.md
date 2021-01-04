@@ -2,6 +2,8 @@
 
 ## main
 
+* Run all tests defined by "check" task (Set `GRADLE_TESTPACK_LEGACY_TASK` to a non-empty value to restore old behavior)
+
 ## v33
 
 * Enable heroku-20 testing
