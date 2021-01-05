@@ -12,7 +12,7 @@ describe "Ratpack" do
         app.deploy do
           expect(app.output).to include("Ratpack detected")
           expect(app.output).to include("Building Gradle app")
-          expect(app.output).to include("executing ./gradlew installDist -x test")
+          expect(app.output).to include("executing ./gradlew installDist -x check")
           expect(app.output).not_to include(":test")
           expect(app.output).to include("BUILD SUCCESSFUL")
           expect(http_get(app)).to include("Groovy Web Console")

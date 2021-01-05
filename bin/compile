@@ -22,6 +22,11 @@ source <(curl --retry 3 -fsSL $BUILDPACK_STDLIB_URL)
 
 export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
+GRADLE_CHECK_TASK=check
+if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then
+  GRADLE_CHECK_TASK=test
+fi
+
 if has_stage_task $BUILD_DIR; then
   mcount "task.stage"
   DEFAULT_GRADLE_TASK="stage"
@@ -33,11 +38,11 @@ elif is_spring_boot $BUILD_DIR; then
     echo "-----> Spring Boot detected"
     mcount "task.spring"
   fi
-  DEFAULT_GRADLE_TASK="build -x test"
+  DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
 elif is_ratpack $BUILD_DIR; then
   echo "-----> Ratpack detected"
   mcount "task.ratpack"
-  DEFAULT_GRADLE_TASK="installDist -x test"
+  DEFAULT_GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
 else
   DEFAULT_GRADLE_TASK="stage"
 fi
