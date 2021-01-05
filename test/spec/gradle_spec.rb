@@ -15,7 +15,7 @@ describe "Gradle" do
           expect(app.output).not_to include("Spring Boot and Webapp Runner detected")
           expect(app.output).to include("Building Gradle app")
           expect(app.output).not_to include("executing ./gradlew stage")
-          expect(app.output).to include("executing ./gradlew build -x test")
+          expect(app.output).to include("executing ./gradlew build -x check")
           expect(app.output).to include("BUILD SUCCESSFUL")
         end
       end

@@ -12,7 +12,7 @@ describe "Spring" do
         app.deploy do
           expect(app.output).to include("Spring Boot detected")
           expect(app.output).to include("Building Gradle app")
-          expect(app.output).to include("executing ./gradlew build -x test")
+          expect(app.output).to include("executing ./gradlew build -x check")
           expect(app.output).to include("Downloading https://services.gradle.org/distributions/gradle-")
           expect(app.output).not_to include(":test")
           expect(app.output).to include("BUILD SUCCESSFUL")
@@ -25,7 +25,7 @@ describe "Spring" do
 
           expect(app.output).to include("Spring Boot detected")
           expect(app.output).to include("Building Gradle app")
-          expect(app.output).to include("executing ./gradlew build -x test")
+          expect(app.output).to include("executing ./gradlew build -x check")
           expect(app.output).not_to include("Downloading https://services.gradle.org/distributions/gradle-")
           expect(app.output).not_to include(":test")
           expect(app.output).to include("BUILD SUCCESSFUL")
