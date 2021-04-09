@@ -2,6 +2,8 @@
 
 ## main
 
+* Fix a bug causing Gradle daemon to be unintentionally used when executing builds 
+
 ## v35
 
 * Update tests
