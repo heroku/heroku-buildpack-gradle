@@ -53,7 +53,7 @@ fi
 
 install_jdk "${BUILD_DIR}" "${CACHE_DIR}"
 
-export GRADLE_OPTS=${GRADLE_OPTS-"-Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"}
+export GRADLE_OPTS="${GRADLE_OPTS}${GRADLE_OPTS:+ }-Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
 
 mkdir -p "$CACHE_DIR/.gradle"
 export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
