@@ -2,6 +2,12 @@
 
 ## main
 
+## v37
+
+* Add heroku-22 support
+
+## v36
+
 * Fix a bug causing Gradle daemon to be unintentionally used when executing builds 
 * Remove heroku-16 support
 
