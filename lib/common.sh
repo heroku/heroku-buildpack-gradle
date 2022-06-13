@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-export BUILDPACK_STDLIB_URL="https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh"
-
 gradle_build_file() {
   local buildDir=${1}
   if [ -f ${buildDir}/build.gradle.kts ]; then
