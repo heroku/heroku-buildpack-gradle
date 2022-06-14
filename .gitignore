@@ -1,2 +1,3 @@
 test/spec/fixtures/repos/
+.DS_Store
 .idea
