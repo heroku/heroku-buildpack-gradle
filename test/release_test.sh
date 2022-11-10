@@ -4,7 +4,8 @@
 
 testRelease()
 {
-  expected_release_output=`echo "---\n{}"`
+  # shellcheck disable=SC2039
+  expected_release_output=$(echo -e "---\n{}")
 
   release
 
