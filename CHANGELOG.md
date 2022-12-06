@@ -2,6 +2,8 @@
 
 ## main
 
+## v39
+
 * Only use `--retry-connrefused` on Ubuntu based stacks. ([#115](https://github.com/heroku/heroku-buildpack-gradle/pull/115))
 * Allow usage of Kotlin DSL files (settings.gradle.kts, build.gradle.kts) ([#103](https://github.com/heroku/heroku-buildpack-gradle/pull/103))
 
