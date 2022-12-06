@@ -2,6 +2,9 @@
 
 ## main
 
+* Only use `--retry-connrefused` on Ubuntu based stacks. 
+([#115](https://github.com/heroku/heroku-buildpack-gradle/pull/115))
+
 ## v38
 
 * Adjust curl retry and connection timeout handling
