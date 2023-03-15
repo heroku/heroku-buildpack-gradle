@@ -26,6 +26,14 @@ _webapp_runner() {
 }
 
 echo "---"
+
+if has_postgres $BUILD_DIR; then
+  cat <<EOF
+addons:
+  - heroku-postgresql
+EOF
+fi
+
 if [ ! -f $BUILD_DIR/Procfile ]; then
   if is_spring_boot $BUILD_DIR; then
     echo "default_process_types:"

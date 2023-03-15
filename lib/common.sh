@@ -15,6 +15,12 @@ has_stage_task() {
      test -n "$(grep "^ *task *stage" ${gradleFile})"
 }
 
+has_postgres() {
+  local gradleFile="$(gradle_build_file ${1})"
+  test -f ${gradleFile} &&
+    test -n "$(grep "^[^/].*org.postgresql:postgresql" ${gradleFile})"
+}
+
 is_spring_boot() {
   local gradleFile="$(gradle_build_file ${1})"
    test -f ${gradleFile} &&

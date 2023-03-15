@@ -2,6 +2,10 @@
 
 ## main
 
+## v40
+
+* Provision a Heroku Postgres addon when the app declares a dependency to the Postgres driver. This only affects new apps. This behaviour is now consistent with the `heroku/java` buildpack. ([#125](https://github.com/heroku/heroku-buildpack-gradle/pull/125))
+
 ## v39
 
 * Only use `--retry-connrefused` on Ubuntu based stacks. ([#115](https://github.com/heroku/heroku-buildpack-gradle/pull/115))
