@@ -2,6 +2,8 @@
 
 ## main
 
+* Remove heroku-18 support ([#128](https://github.com/heroku/heroku-buildpack-gradle/pull/128))
+
 ## v39
 
 * Only use `--retry-connrefused` on Ubuntu based stacks. ([#115](https://github.com/heroku/heroku-buildpack-gradle/pull/115))
