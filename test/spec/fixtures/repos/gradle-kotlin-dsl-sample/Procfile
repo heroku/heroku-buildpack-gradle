@@ -1,0 +1,1 @@
+web: java -cp "build/libs/*" samples.HelloWorldKt
