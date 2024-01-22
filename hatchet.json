@@ -2,18 +2,8 @@
   "hatchet": {
     "directory": "test/spec/fixtures"
   },
-  "spring": [
-    "kissaten/spring-boot-gradle"
-  ],
   "ratpack": [
     "ratpack/example-ratpack-gradle-groovy-app",
     "heroku/gradle-getting-started"
-  ],
-  "grails": [
-    "kissaten/grails3-example"
-  ],
-  "kotlin": [
-    "kissaten/gradle-kotlin-dsl-sample",
-    "kissaten/spring-boot-gradle-kotlin-dsl"
   ]
 }

@@ -1,13 +1,5 @@
 ---
-- - test/spec/fixtures/repos/grails/grails3-example
-  - c47a582e5b61dd069d17b7178697472d90fbc1bc
-- - test/spec/fixtures/repos/kotlin/gradle-kotlin-dsl-sample
-  - 57c0c86437ac17fdf8a416845eb8a34c014305bf
-- - test/spec/fixtures/repos/kotlin/spring-boot-gradle-kotlin-dsl
-  - cd66c342c01377325eed141465586e473dc6e41f
 - - test/spec/fixtures/repos/ratpack/example-ratpack-gradle-groovy-app
   - 13c508d77f6ca910d4d1fd71586d3b1016a4faa0
 - - test/spec/fixtures/repos/ratpack/gradle-getting-started
-  - e73be20fda0ba4a0e5d972638acdb76eff1d66c2
-- - test/spec/fixtures/repos/spring/spring-boot-gradle
-  - cc13b4b70fe49a8cae7c0ea6691dcf92d4a7b30e
+  - 5bb11371e64ce29429a7d86a5e941dd20529efd6
