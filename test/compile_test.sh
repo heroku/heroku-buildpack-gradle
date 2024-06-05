@@ -8,8 +8,15 @@ installWrapper() {
   cp -r "$WRAPPER_DIR"/* ${BUILD_DIR}
 }
 
+requestOpenJdk8() {
+  cat > ${BUILD_DIR}/system.properties <<EOF
+java.runtime.version=8
+EOF
+}
+
 testCompileWithoutWrapper()
 {
+  requestOpenJdk8
   cat > ${BUILD_DIR}/build.gradle <<EOF
 task stage << {
   println "${expected_stage_output}"
@@ -23,6 +30,7 @@ EOF
 
 testCompileWithWrapper()
 {
+  requestOpenJdk8
   installWrapper
   expected_stage_output="STAGING:${RANDOM}"
 
@@ -34,7 +42,7 @@ EOF
 
   compile
   assertCapturedSuccess
-  assertCaptured "Installing OpenJDK 1.8"
+  assertCaptured "Installing OpenJDK 8"
   assertCaptured "${expected_stage_output}"
   assertCaptured "BUILD SUCCESSFUL"
   assertTrue "Java should be present in runtime." "[ -d ${BUILD_DIR}/.jdk ]"
@@ -46,6 +54,7 @@ EOF
 
 testCompileWithCustomTask()
 {
+  requestOpenJdk8
   installWrapper
   expected_stage_output="STAGING:${RANDOM}"
 
@@ -65,6 +74,7 @@ EOF
 
 testCompile_Fail()
 {
+  requestOpenJdk8
   installWrapper
   expected_stage_output="STAGING:${RANDOM}"
 
