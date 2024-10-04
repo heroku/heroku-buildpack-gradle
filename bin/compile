@@ -39,6 +39,12 @@ elif is_spring_boot $BUILD_DIR; then
     mcount "task.spring"
   fi
   DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
+elif is_micronaut $BUILD_DIR; then
+  echo "-----> Micronaut detected"
+  DEFAULT_GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
+elif is_quarkus $BUILD_DIR; then
+  echo "-----> Quarkus detected"
+  DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
 elif is_ratpack $BUILD_DIR; then
   echo "-----> Ratpack detected"
   mcount "task.ratpack"
