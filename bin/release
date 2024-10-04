@@ -37,6 +37,12 @@ if [ ! -f $BUILD_DIR/Procfile ]; then
   elif is_ratpack $BUILD_DIR && [ $(_ratpack_proc_count $BUILD_DIR) -eq 1 ]; then
     echo "default_process_types:"
     echo "  web: $(_ratpack_proc $BUILD_DIR)"
+  elif is_micronaut $BUILD_DIR; then
+    echo "default_process_types:"
+    echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar build/libs/*.jar"
+  elif is_quarkus $BUILD_DIR; then
+    echo "default_process_types:"
+    echo "  web: java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
   else
     echo "{}"
   fi

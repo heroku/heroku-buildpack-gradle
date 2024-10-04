@@ -26,6 +26,16 @@ is_spring_boot() {
      test -z "$(grep "org.grails:grails-" ${gradleFile})"
 }
 
+is_micronaut() {
+  local gradleFile="$(gradle_build_file ${1})"
+  test -f ${gradleFile} && test -n "$(grep "io.micronaut" ${gradleFile})"
+}
+
+is_quarkus() {
+  local gradleFile="$(gradle_build_file ${1})"
+  test -f ${gradleFile} && test -n "$(grep "io.quarkus" ${gradleFile})"
+}
+
 is_ratpack() {
   local gradleFile="$(gradle_build_file ${1})"
   test -f ${gradleFile} &&

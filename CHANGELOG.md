@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 * Remove heroku-18 support ([#128](https://github.com/heroku/heroku-buildpack-gradle/pull/128))
+* Add default process type and build task detection for Micronaut and Quarkus. ([#144](https://github.com/heroku/heroku-buildpack-gradle/pull/144))
 
 ## [v39] - 2022-12-06
 
