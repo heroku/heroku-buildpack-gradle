@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v40] - 2024-10-04
+
 * Remove heroku-18 support ([#128](https://github.com/heroku/heroku-buildpack-gradle/pull/128))
 * Add default process type and build task detection for Micronaut and Quarkus. ([#144](https://github.com/heroku/heroku-buildpack-gradle/pull/144))
 
@@ -66,7 +69,8 @@
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v39...HEAD
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v40...main
+[v40]: https://github.com/heroku/heroku-buildpack-gradle/compare/v39...v40
 [v39]: https://github.com/heroku/heroku-buildpack-gradle/compare/v38...v39
 [v38]: https://github.com/heroku/heroku-buildpack-gradle/compare/v37...v38
 [v37]: https://github.com/heroku/heroku-buildpack-gradle/compare/v36...v37
