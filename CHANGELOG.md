@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Remove heroku-20 support ([#150](https://github.com/heroku/heroku-buildpack-gradle/pull/150))
 
 ## [v40] - 2024-10-04
 
