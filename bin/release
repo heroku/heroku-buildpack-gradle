@@ -25,6 +25,11 @@ _webapp_runner() {
   (cd $ctxDir; find . -type f -name webapp-runner-*.jar)
 }
 
+_spring_boot_micronaut_main_jar() {
+  local ctxDir=$1
+  (cd $ctxDir; find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$")
+}
+
 echo "---"
 if [ ! -f $BUILD_DIR/Procfile ]; then
   if is_spring_boot $BUILD_DIR; then
@@ -32,14 +37,14 @@ if [ ! -f $BUILD_DIR/Procfile ]; then
     if is_webapp_runner $BUILD_DIR; then
       echo "  web: web: cd build ; java \$JAVA_OPTS -jar $(_webapp_runner ${BUILD_DIR}/build) --expand-war --port \$PORT libs/*.war"
     else
-      echo "  web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar build/libs/*.jar"
+      echo "  web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar $(_spring_boot_micronaut_main_jar "${BUILD_DIR}")"
     fi
   elif is_ratpack $BUILD_DIR && [ $(_ratpack_proc_count $BUILD_DIR) -eq 1 ]; then
     echo "default_process_types:"
     echo "  web: $(_ratpack_proc $BUILD_DIR)"
   elif is_micronaut $BUILD_DIR; then
     echo "default_process_types:"
-    echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar build/libs/*.jar"
+    echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar $(_spring_boot_micronaut_main_jar "${BUILD_DIR}")"
   elif is_quarkus $BUILD_DIR; then
     echo "default_process_types:"
     echo "  web: java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
