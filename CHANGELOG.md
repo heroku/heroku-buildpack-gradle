@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 * Remove heroku-20 support ([#150](https://github.com/heroku/heroku-buildpack-gradle/pull/150))
+* Exclude JAR files with `plain`, `sources` and `javadoc` file name suffixes from being used as default process types for Spring Boot and Micronaut apps. ([#152](https://github.com/heroku/heroku-buildpack-gradle/pull/152))
 
 ## [v40] - 2024-10-04
 
