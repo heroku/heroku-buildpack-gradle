@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+## [v42] - 2025-06-16
+
+* This release is identical with `v40`, rolling back changes introduced in `v41`.
 
 ## [v41] - 2025-06-16
 
