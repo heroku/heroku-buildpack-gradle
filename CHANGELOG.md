@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v41] - 2025-06-16
+
 * Remove heroku-20 support ([#150](https://github.com/heroku/heroku-buildpack-gradle/pull/150))
 * Exclude JAR files with `plain`, `sources` and `javadoc` file name suffixes from being used as default process types for Spring Boot and Micronaut apps. ([#152](https://github.com/heroku/heroku-buildpack-gradle/pull/152))
 
@@ -71,7 +74,8 @@
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v40...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v41...main
+[v41]: https://github.com/heroku/heroku-buildpack-gradle/compare/v40...v41
 [v40]: https://github.com/heroku/heroku-buildpack-gradle/compare/v39...v40
 [v39]: https://github.com/heroku/heroku-buildpack-gradle/compare/v38...v39
 [v38]: https://github.com/heroku/heroku-buildpack-gradle/compare/v37...v38
