@@ -27,7 +27,7 @@ _webapp_runner() {
 
 _spring_boot_micronaut_main_jar() {
   local ctxDir=$1
-  (cd $ctxDir; find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$")
+  (cd $ctxDir; find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)
 }
 
 echo "---"
