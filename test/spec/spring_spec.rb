@@ -33,5 +33,14 @@ describe "Spring" do
         end
       end
     end
+
+    it "works with multiple JAR files" do
+      new_default_hatchet_runner("test/spec/fixtures/spring-boot-web-multiple-jar").tap do |app|
+        app.deploy do
+          expect(app.output).to include("BUILD SUCCESSFUL")
+          expect(http_get(app)).to eq("Hello Heroku!")
+        end
+      end
+    end
   end
 end
