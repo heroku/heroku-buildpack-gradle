@@ -79,7 +79,8 @@
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v41...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v42...main
+[v42]: https://github.com/heroku/heroku-buildpack-gradle/compare/v41...v42
 [v41]: https://github.com/heroku/heroku-buildpack-gradle/compare/v40...v41
 [v40]: https://github.com/heroku/heroku-buildpack-gradle/compare/v39...v40
 [v39]: https://github.com/heroku/heroku-buildpack-gradle/compare/v38...v39
