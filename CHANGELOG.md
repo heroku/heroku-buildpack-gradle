@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v43] - 2025-07-14
+
 * Exclude JAR files with `plain`, `sources` and `javadoc` file name suffixes from being used as default process types for Spring Boot and Micronaut apps. ([#152](https://github.com/heroku/heroku-buildpack-gradle/pull/152), [#155](https://github.com/heroku/heroku-buildpack-gradle/pull/155))
 
 ## [v42] - 2025-06-16
@@ -79,7 +82,8 @@
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v42...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v43...main
+[v43]: https://github.com/heroku/heroku-buildpack-gradle/compare/v42...v43
 [v42]: https://github.com/heroku/heroku-buildpack-gradle/compare/v41...v42
 [v41]: https://github.com/heroku/heroku-buildpack-gradle/compare/v40...v41
 [v40]: https://github.com/heroku/heroku-buildpack-gradle/compare/v39...v40
