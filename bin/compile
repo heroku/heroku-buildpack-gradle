@@ -84,7 +84,8 @@ cd $BUILD_DIR
 output::step "Building Gradle app..."
 echo "-----> executing $BUILDCMD" | output::indent
 
-buildLogFile=\".heroku/gradle-build.log\"\necho \"\" > \"${buildLogFile}\"
+buildLogFile=".heroku/gradle-build.log"
+echo "" > "${buildLogFile}"
 
 $BUILDCMD 2>&1 | output $buildLogFile
 
