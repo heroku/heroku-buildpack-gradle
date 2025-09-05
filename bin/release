@@ -5,15 +5,16 @@ set -euo pipefail
 
 BP_DIR=$(cd $(dirname $0)/..; pwd)
 . $BP_DIR/lib/common.sh
+. $BP_DIR/lib/frameworks.sh
 
 BUILD_DIR=$1
 
 _ratpack_proc() {
 	local ctxDir=$1
-	if [ -d $ctxDir/build/install/*/bin ]; then
-		(cd $ctxDir; find build/install/*/bin -type f -executable | grep -v "\.bat$")
+	if [[ -d "$ctxDir/build/install" ]]; then
+		(cd "$ctxDir"; find build/install/*/bin -type f -executable 2>/dev/null | grep -v "\.bat$" | head -1)
 	else
-		echo -n ""
+		echo ""
 	fi
 }
 
@@ -24,33 +25,55 @@ _ratpack_proc_count() {
 
 _webapp_runner() {
 	local ctxDir=$1
-	(cd $ctxDir; find . -type f -name webapp-runner-*.jar)
+	if [[ -d "$ctxDir" ]]; then
+		(cd "$ctxDir"; find . -type f -name "webapp-runner-*.jar" 2>/dev/null | head -1)
+	else
+		echo ""
+	fi
 }
 
 _spring_boot_micronaut_main_jar() {
 	local ctxDir=$1
-	(cd $ctxDir; find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)
+	if [[ -d "$ctxDir/build/libs" ]]; then
+		(cd "$ctxDir"; find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)
+	else
+		echo ""
+	fi
 }
 
 echo "---"
-if [ ! -f $BUILD_DIR/Procfile ]; then
-	if is_spring_boot $BUILD_DIR; then
-		echo "default_process_types:"
-		if is_webapp_runner $BUILD_DIR; then
-			echo "  web: web: cd build ; java \$JAVA_OPTS -jar $(_webapp_runner ${BUILD_DIR}/build) --expand-war --port \$PORT libs/*.war"
+
+if [[ ! -f "${BUILD_DIR}/Procfile" ]]; then
+	if frameworks::is_spring_boot "${BUILD_DIR}"; then
+		if frameworks::is_webapp_runner "${BUILD_DIR}"; then
+			webapp_runner_jar=$(_webapp_runner "${BUILD_DIR}/build")
+			if [[ -n "${webapp_runner_jar}" ]]; then
+				echo "default_process_types:"
+				echo "  web: cd build ; java \$JAVA_OPTS -jar ${webapp_runner_jar} --expand-war --port \$PORT libs/*.war"
+			fi
 		else
-			echo "  web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar $(_spring_boot_micronaut_main_jar "${BUILD_DIR}")"
+			main_jar=$(_spring_boot_micronaut_main_jar "${BUILD_DIR}")
+			if [[ -n "${main_jar}" ]]; then
+				echo "default_process_types:"
+				echo "  web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
+			fi
 		fi
-	elif is_ratpack $BUILD_DIR && [ $(_ratpack_proc_count $BUILD_DIR) -eq 1 ]; then
-		echo "default_process_types:"
-		echo "  web: $(_ratpack_proc $BUILD_DIR)"
-	elif is_micronaut $BUILD_DIR; then
-		echo "default_process_types:"
-		echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar $(_spring_boot_micronaut_main_jar "${BUILD_DIR}")"
-	elif is_quarkus $BUILD_DIR; then
-		echo "default_process_types:"
-		echo "  web: java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
-	else
-		echo "{}"
+	elif frameworks::is_ratpack "${BUILD_DIR}" && [[ $(_ratpack_proc_count "${BUILD_DIR}") -eq 1 ]]; then
+		ratpack_proc=$(_ratpack_proc "${BUILD_DIR}")
+		if [[ -n "${ratpack_proc}" ]]; then
+			echo "default_process_types:"
+			echo "  web: ${ratpack_proc}"
+		fi
+	elif frameworks::is_micronaut "${BUILD_DIR}"; then
+		main_jar=$(_spring_boot_micronaut_main_jar "${BUILD_DIR}")
+		if [[ -n "${main_jar}" ]]; then
+			echo "default_process_types:"
+			echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
+		fi
+	elif frameworks::is_quarkus "${BUILD_DIR}"; then
+		if [[ -f "${BUILD_DIR}/build/quarkus-app/quarkus-run.jar" ]]; then
+			echo "default_process_types:"
+			echo "  web: java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
+		fi
 	fi
 fi
