@@ -8,6 +8,7 @@ handle_gradle_errors() {
 	# Load required libraries
 	BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 	source "${BUILDPACK_DIR}/lib/output.sh"
+	source "${BUILDPACK_DIR}/lib/metrics.sh"
 
 	local header="Failed to run Gradle!"
 
@@ -30,6 +31,9 @@ Heroku"
 
 			${footer}
 		EOF
+		
+		metrics::set_string "failure_reason" "gradle_build::stage_task_not_found"
+		exit 1
 	elif grep -qi "Could not find or load main class org.gradle.wrapper.GradleWrapperMain" "$log_file"; then
 		output::error <<-EOF
 			${header}
@@ -43,6 +47,9 @@ Heroku"
 
 			${footer}
 		EOF
+		
+		metrics::set_string "failure_reason" "gradle_build::missing_wrapper_jar"
+		exit 1
 	else
 		output::error <<-EOF
 			${header}
@@ -52,5 +59,8 @@ Heroku"
 
 			${footer}
 		EOF
+		
+		metrics::set_string "failure_reason" "gradle_build::generic_failure"
+		exit 1
 	fi
 }
