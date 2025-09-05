@@ -22,6 +22,11 @@ source "$LIB_DIR"/output.sh
 source "$LIB_DIR"/util.sh
 source "$LIB_DIR"/openjdk.sh
 source "$LIB_DIR"/frameworks.sh
+source "$LIB_DIR"/metrics.sh
+
+metrics::init "${CACHE_DIR}" "gradle"
+metrics::setup
+
 util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
 GRADLE_CHECK_TASK=check

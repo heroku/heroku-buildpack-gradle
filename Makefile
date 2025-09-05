@@ -1,7 +1,7 @@
 # These targets are not files
 .PHONY: lint lint-scripts check-format format run publish
 
-STACK ?= heroku-24
+STACK ?= heroku-22
 FIXTURE ?= test/spec/fixtures/repos/spring-boot-gradle
 
 # Converts a stack name of `heroku-NN` to its build Docker image tag of `heroku/heroku:NN-build`.

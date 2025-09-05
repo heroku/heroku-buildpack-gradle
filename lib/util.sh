@@ -62,6 +62,16 @@ function util::cache_copy() {
 	fi
 }
 
+# Returns the current time in milliseconds since epoch.
+#
+# Usage:
+# ```
+# timestamp=$(util::nowms)
+# ```
+function util::nowms() {
+	date +%s%3N
+}
+
 # Legacy function name for compatibility with existing code
 function cache_copy() {
 	local rel_directory="${1}"
