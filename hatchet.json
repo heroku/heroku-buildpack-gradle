@@ -1,0 +1,6 @@
+{
+  "hatchet": {
+    "directory": "test/spec/fixtures"
+  },
+  "github": ["heroku/gradle-getting-started"]
+}
