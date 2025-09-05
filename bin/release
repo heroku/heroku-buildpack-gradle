@@ -3,9 +3,9 @@
 
 set -euo pipefail
 
-BP_DIR=$(cd "$(dirname "${0}")"/..; pwd)
-. "${BP_DIR}/lib/common.sh"
-. "${BP_DIR}/lib/frameworks.sh"
+BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+. "${BUILDPACK_DIR}/lib/common.sh"
+. "${BUILDPACK_DIR}/lib/frameworks.sh"
 
 BUILD_DIR="${1}"
 

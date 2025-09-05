@@ -6,10 +6,10 @@ set -euo pipefail
 
 BPLOG_PREFIX="buildpack.gradle"
 
-BP_DIR=$(cd "$(dirname "${0}")"/.. && pwd) # absolute path
-BIN_DIR="${BP_DIR}/bin"
-OPT_DIR="${BP_DIR}/opt"
-LIB_DIR="${BP_DIR}/lib"
+BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+BIN_DIR="${BUILDPACK_DIR}/bin"
+OPT_DIR="${BUILDPACK_DIR}/opt"
+LIB_DIR="${BUILDPACK_DIR}/lib"
 
 # parse args
 BUILD_DIR="${1}"
@@ -60,7 +60,7 @@ if [ -z "${GRADLE_TASK:-}" ]; then
 	GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
 fi
 
-openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BP_DIR}"
+openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BUILDPACK_DIR}"
 
 export GRADLE_OPTS="${GRADLE_OPTS:-}${GRADLE_OPTS:+ }-Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
 
