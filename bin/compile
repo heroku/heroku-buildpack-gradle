@@ -20,6 +20,7 @@ source "$LIB_DIR"/common.sh
 source "$LIB_DIR"/failures.sh
 source "$LIB_DIR"/output.sh
 source "$LIB_DIR"/util.sh
+source "$LIB_DIR"/openjdk.sh
 util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
 GRADLE_CHECK_TASK=check
@@ -53,7 +54,7 @@ if [ -z "${GRADLE_TASK:-}" ]; then
 	GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
 fi
 
-install_jdk "${BUILD_DIR}" "${CACHE_DIR}"
+openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BP_DIR}"
 
 export GRADLE_OPTS="${GRADLE_OPTS:-}${GRADLE_OPTS:+ }-Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
 
