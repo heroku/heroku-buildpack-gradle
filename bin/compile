@@ -34,20 +34,12 @@ fi
 if has_stage_task "${BUILD_DIR}"; then
 	DEFAULT_GRADLE_TASK="stage"
 elif frameworks::is_spring_boot "${BUILD_DIR}"; then
-	if frameworks::is_webapp_runner "${BUILD_DIR}"; then
-		output::step "Spring Boot and Webapp Runner detected"
-	else
-		output::step "Spring Boot detected"
-	fi
 	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
 elif frameworks::is_micronaut "${BUILD_DIR}"; then
-	output::step "Micronaut detected"
 	DEFAULT_GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
 elif frameworks::is_quarkus "${BUILD_DIR}"; then
-	output::step "Quarkus detected"
 	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
 elif frameworks::is_ratpack "${BUILD_DIR}"; then
-	output::step "Ratpack detected"
 	DEFAULT_GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
 else
 	DEFAULT_GRADLE_TASK="stage"
