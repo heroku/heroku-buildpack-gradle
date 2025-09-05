@@ -2,7 +2,7 @@
 # bin/test <build-dir> <env-dir> <artifact-dir>
 
 # fail fast
-set -e
+set -euo pipefail
 
 GRADLE_CHECK_TASK=check
 if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then

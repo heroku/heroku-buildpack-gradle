@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # bin/release <build-dir>
 
+set -euo pipefail
+
 BP_DIR=$(cd $(dirname $0)/..; pwd)
 . $BP_DIR/lib/common.sh
 

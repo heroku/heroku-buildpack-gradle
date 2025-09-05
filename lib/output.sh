@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 ANSI_BLUE='\033[1;34m'
 ANSI_RED='\033[1;31m'
 ANSI_YELLOW='\033[1;33m'

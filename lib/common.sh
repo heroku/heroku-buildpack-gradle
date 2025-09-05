@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 gradle_build_file() {
 	local buildDir=${1}
 	if [ -f ${buildDir}/build.gradle.kts ]; then
