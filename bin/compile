@@ -80,7 +80,7 @@ echo "-----> executing ./gradlew ${GRADLE_TASK}" | output::indent
 buildLogFile=".heroku/gradle-build.log"
 echo "" > "${buildLogFile}"
 
-./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" -Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false "${GRADLE_TASK}" 2>&1 | output "${buildLogFile}"
+./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" -Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false "${GRADLE_TASK}" 2>&1 | tee -a "${buildLogFile}" | output::indent
 
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
 	handle_gradle_errors "${buildLogFile}"
