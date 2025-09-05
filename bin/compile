@@ -81,7 +81,7 @@ chmod +x "${BUILD_DIR}/gradlew"
 
 # build app
 output::step "Building Gradle app..."
-echo "-----> executing ./gradlew ${GRADLE_TASK}" | output::indent
+echo "-----> executing ./gradlew ${GRADLE_TASK}"
 
 # We rely on word splitting for GRADLE_TASK
 # shellcheck disable=SC2086
