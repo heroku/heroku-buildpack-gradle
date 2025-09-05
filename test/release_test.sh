@@ -4,10 +4,10 @@
 
 testRelease()
 {
-  # shellcheck disable=SC2039
-  expected_release_output=$(echo -e "---\n{}")
+	# shellcheck disable=SC2039
+	expected_release_output=$(echo -e "---\n{}")
 
-  release
+	release
 
-  assertCapturedEquals "${expected_release_output}"
+	assertCapturedEquals "${expected_release_output}"
 }

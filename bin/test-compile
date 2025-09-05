@@ -26,7 +26,7 @@ cache_copy ".gradle" $CACHE_DIR $BUILD_DIR
 # To work around this issue, we create ${BUILD_DIR}/.gradle here, disabling the symlink feature and allowing /bin/test
 # to make use of the cache.
 if [[ ! -d "${GRADLE_USER_HOME}" ]]; then
-  mkdir -p "${GRADLE_USER_HOME}"
+	mkdir -p "${GRADLE_USER_HOME}"
 fi
 
 $BIN_DIR/compile "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR"
@@ -36,16 +36,16 @@ cat << EOF > $HEROKU_GRADLE_INIT_SCRIPT
 apply plugin:HerokuInitPlugin
 
 class HerokuInitPlugin implements Plugin<Gradle> {
-  @Override
-  void apply(Gradle gradle) {
-    gradle.allprojects{ project ->
-      project.task('resolveTestRuntime') {
-        doLast {
-          project.configurations.testRuntime.resolve()
-        }
-      }
-    }
-  }
+	@Override
+	void apply(Gradle gradle) {
+		gradle.allprojects{ project ->
+			project.task('resolveTestRuntime') {
+				doLast {
+				  project.configurations.testRuntime.resolve()
+				}
+			}
+		}
+	}
 }
 EOF
 

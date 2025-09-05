@@ -6,7 +6,7 @@ set -e
 
 GRADLE_CHECK_TASK=check
 if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then
-  GRADLE_CHECK_TASK=test
+	GRADLE_CHECK_TASK=test
 fi
 
 cd ${1} && ./gradlew --gradle-user-home "$1/.gradle" --no-daemon "${GRADLE_CHECK_TASK}"

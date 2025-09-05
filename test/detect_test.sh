@@ -4,35 +4,35 @@
 
 testDetectGradlew()
 {
-  touch ${BUILD_DIR}/gradlew
-  detect
-  assertAppDetected "Gradle"
+	touch ${BUILD_DIR}/gradlew
+	detect
+	assertAppDetected "Gradle"
 }
 
 testDetectSettingsGradle()
 {
-  touch ${BUILD_DIR}/settings.gradle
-  detect
-  assertAppDetected "Gradle"
+	touch ${BUILD_DIR}/settings.gradle
+	detect
+	assertAppDetected "Gradle"
 }
 
 testDetectBuildGradle()
 {
-  touch ${BUILD_DIR}/build.gradle
-  detect
-  assertAppDetected "Gradle"
+	touch ${BUILD_DIR}/build.gradle
+	detect
+	assertAppDetected "Gradle"
 }
 
 testNoDetectAntProject()
 {
-  touch ${BUILD_DIR}/build.xml
-  detect
-  assertEquals "1" "${RETURN}"
+	touch ${BUILD_DIR}/build.xml
+	detect
+	assertEquals "1" "${RETURN}"
 }
 
 testNoDetectMavenProject()
 {
-  touch ${BUILD_DIR}/pom.xml
-  detect
-  assertEquals "1" "${RETURN}"
+	touch ${BUILD_DIR}/pom.xml
+	detect
+	assertEquals "1" "${RETURN}"
 }

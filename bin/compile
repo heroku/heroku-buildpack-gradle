@@ -24,37 +24,37 @@ export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
 GRADLE_CHECK_TASK=check
 if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then
-  GRADLE_CHECK_TASK=test
+	GRADLE_CHECK_TASK=test
 fi
 
 if has_stage_task $BUILD_DIR; then
-  mcount "task.stage"
-  DEFAULT_GRADLE_TASK="stage"
+	mcount "task.stage"
+	DEFAULT_GRADLE_TASK="stage"
 elif is_spring_boot $BUILD_DIR; then
-  if is_webapp_runner $BUILD_DIR; then
-    echo "-----> Spring Boot and Webapp Runner detected"
-    mcount "task.webapprunner"
-  else
-    echo "-----> Spring Boot detected"
-    mcount "task.spring"
-  fi
-  DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
+	if is_webapp_runner $BUILD_DIR; then
+		echo "-----> Spring Boot and Webapp Runner detected"
+		mcount "task.webapprunner"
+	else
+		echo "-----> Spring Boot detected"
+		mcount "task.spring"
+	fi
+	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
 elif is_micronaut $BUILD_DIR; then
-  echo "-----> Micronaut detected"
-  DEFAULT_GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
+	echo "-----> Micronaut detected"
+	DEFAULT_GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
 elif is_quarkus $BUILD_DIR; then
-  echo "-----> Quarkus detected"
-  DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
+	echo "-----> Quarkus detected"
+	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
 elif is_ratpack $BUILD_DIR; then
-  echo "-----> Ratpack detected"
-  mcount "task.ratpack"
-  DEFAULT_GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
+	echo "-----> Ratpack detected"
+	mcount "task.ratpack"
+	DEFAULT_GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
 else
-  DEFAULT_GRADLE_TASK="stage"
+	DEFAULT_GRADLE_TASK="stage"
 fi
 
 if [ -z "$GRADLE_TASK" ]; then
-  GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
+	GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
 fi
 
 install_jdk "${BUILD_DIR}" "${CACHE_DIR}"
@@ -67,12 +67,12 @@ export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
 create_project_cache_symlink "$CACHE_DIR" "$BUILD_DIR"
 
 if [ ! -f $BUILD_DIR/gradlew ] ; then
-  mcount "wrapperless"
-  echo "-----> Installing Gradle Wrapper..."
-  echo "       WARNING: Your application does not have it's own gradlew file."
-  echo "       We'll install one for you, but this is a deprecated feature and"
-  echo "       in the future may not be supported."
-  cp -rn ${OPT_DIR}/wrapper/* ${BUILD_DIR}
+	mcount "wrapperless"
+	echo "-----> Installing Gradle Wrapper..."
+	echo "       WARNING: Your application does not have it's own gradlew file."
+	echo "       We'll install one for you, but this is a deprecated feature and"
+	echo "       in the future may not be supported."
+	cp -rn ${OPT_DIR}/wrapper/* ${BUILD_DIR}
 fi
 BUILDCMD="./gradlew"
 chmod +x ${BUILD_DIR}/gradlew
@@ -94,7 +94,7 @@ let start=$(nowms)
 $BUILDCMD 2>&1 | output $buildLogFile
 
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-  handle_gradle_errors $buildLogFile
+	handle_gradle_errors $buildLogFile
 fi
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49
