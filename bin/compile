@@ -31,22 +31,20 @@ if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then
 	GRADLE_CHECK_TASK="test"
 fi
 
-if has_stage_task "${BUILD_DIR}"; then
-	DEFAULT_GRADLE_TASK="stage"
-elif frameworks::is_spring_boot "${BUILD_DIR}"; then
-	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
-elif frameworks::is_micronaut "${BUILD_DIR}"; then
-	DEFAULT_GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
-elif frameworks::is_quarkus "${BUILD_DIR}"; then
-	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
-elif frameworks::is_ratpack "${BUILD_DIR}"; then
-	DEFAULT_GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
-else
-	DEFAULT_GRADLE_TASK="stage"
-fi
-
 if [ -z "${GRADLE_TASK:-}" ]; then
-	GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
+	if has_stage_task "${BUILD_DIR}"; then
+		GRADLE_TASK="stage"
+	elif frameworks::is_spring_boot "${BUILD_DIR}"; then
+		GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
+	elif frameworks::is_micronaut "${BUILD_DIR}"; then
+		GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
+	elif frameworks::is_quarkus "${BUILD_DIR}"; then
+		GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
+	elif frameworks::is_ratpack "${BUILD_DIR}"; then
+		GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
+	else
+		GRADLE_TASK="stage"
+	fi
 fi
 
 openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BUILDPACK_DIR}"
