@@ -22,8 +22,11 @@ fi
 
 "${BUILDPACK_DIR}/bin/compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
 
-HEROKU_GRADLE_INIT_SCRIPT="/tmp/resolve.gradle"
-cat << EOF > "${HEROKU_GRADLE_INIT_SCRIPT}"
+# We need to resolve the testRuntime dependencies for the tests to run, but Gradle doesn't have a built-in way to do this.
+# Instead, we use a custom init script to resolve the dependencies.
+# https://docs.gradle.org/current/userguide/init_scripts.html
+heroku_gradle_init_script=$(mktemp)
+cat << EOF > "${heroku_gradle_init_script}"
 apply plugin:HerokuInitPlugin
 
 class HerokuInitPlugin implements Plugin<Gradle> {
@@ -41,6 +44,6 @@ class HerokuInitPlugin implements Plugin<Gradle> {
 EOF
 
 echo "-----> Resolving testRuntime dependencies..."
-(cd "${BUILD_DIR}" && ./gradlew --no-daemon --init-script "${HEROKU_GRADLE_INIT_SCRIPT}" resolveTestRuntime) 2>&1 | output::indent
+(cd "${BUILD_DIR}" && ./gradlew --no-daemon --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
 
 cache_copy ".gradle" "${BUILD_DIR}" "${CACHE_DIR}"
