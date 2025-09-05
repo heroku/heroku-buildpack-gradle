@@ -44,12 +44,8 @@ fi
 
 openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BUILDPACK_DIR}"
 
-export GRADLE_OPTS="${GRADLE_OPTS:-}${GRADLE_OPTS:+ }-Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
-
 mkdir -p "${CACHE_DIR}/.gradle"
 export GRADLE_USER_HOME="${GRADLE_USER_HOME:-${CACHE_DIR}/.gradle}"
-
-create_project_cache_symlink "${CACHE_DIR}" "${BUILD_DIR}"
 
 if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
 	output::error <<-EOF
@@ -73,22 +69,18 @@ if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
 	metrics::set_string "failure_reason" "gradle_wrapper::missing"
 	exit 1
 fi
-BUILDCMD="./gradlew"
 chmod +x "${BUILD_DIR}/gradlew"
-
-BUILDCMD="${BUILDCMD} ${GRADLE_TASK}"
 
 cd "${BUILD_DIR}"
 
-
 # build app
 output::step "Building Gradle app..."
-echo "-----> executing ${BUILDCMD}" | output::indent
+echo "-----> executing ./gradlew ${GRADLE_TASK}" | output::indent
 
 buildLogFile=".heroku/gradle-build.log"
 echo "" > "${buildLogFile}"
 
-${BUILDCMD} 2>&1 | output "${buildLogFile}"
+./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" -Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false "${GRADLE_TASK}" 2>&1 | output "${buildLogFile}"
 
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
 	handle_gradle_errors "${buildLogFile}"

@@ -11,20 +11,6 @@ gradle_build_file() {
 	fi
 }
 
-
-# By default gradle will write its cache in `$BUILD_DIR/.gradle`. Rather than
-# using the --project-cache-dir option, which muddies up the command, we
-# symlink this directory to the cache.
-create_project_cache_symlink() {
-	local buildpackCacheDir="${1:?}/.gradle-project"
-	local projectCacheLink="${2:?}/.gradle"
-	if [ ! -d "${projectCacheLink}" ]; then
-		mkdir -p "${buildpackCacheDir}"
-		ln -s "${buildpackCacheDir}" "${projectCacheLink}"
-		trap "rm -f ${projectCacheLink}" EXIT
-	fi
-}
-
 # sed -l basically makes sed replace and buffer through stdin to stdout
 # so you get updates while the command runs and dont wait for the end
 # e.g. sbt stage | indent
