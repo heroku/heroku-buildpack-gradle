@@ -87,6 +87,8 @@ if [ ! -f $BUILD_DIR/gradlew ] ; then
 		For more information about Gradle Wrapper, see:
 		https://docs.gradle.org/current/userguide/gradle_wrapper.html
 	EOF
+
+	metrics::set_string "failure_reason" "gradle_wrapper::missing"
 	exit 1
 fi
 BUILDCMD="./gradlew"
