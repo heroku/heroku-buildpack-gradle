@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
-# bin/detect <build-dir>
 
-if [ -f $1/gradlew ]; then
-	echo "Gradle" && exit 0
+set -euo pipefail
 
-# Detect these Gradle specific files, so we can fail with a message
-# asking the user to enable the Gradle Wrapper for their project.
-elif [ -f $1/build.gradle ] || [ -f $1/build.gradle.kts ]; then
-	echo "Gradle" && exit 0
-elif [ -f $1/settings.gradle ] || [ -f $1/settings.gradle.kts ]; then
-	echo "Gradle" && exit 0
-else
-	(>&2 echo "Could not find a 'gradlew' script or a 'build.gradle(.kts)' file! Please check that they exist and are commited to Git.")
-	exit 1
-fi
+BUILD_DIR="${1}"
+
+gradle_files=(
+	"gradlew"
+	"build.gradle"
+	"build.gradle.kts"
+	"settings.gradle"
+	"settings.gradle.kts"
+)
+
+for gradle_file in "${gradle_files[@]}"; do
+	if [[ -f "${BUILD_DIR}/${gradle_file}" ]]; then
+		echo "Gradle"
+		exit 0
+	fi
+done
+
+(>&2 echo "Could not find a Gradle project! Please check that you have a gradlew script or build.gradle(.kts) file and that they are committed to Git.")
+exit 1
