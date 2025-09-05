@@ -49,7 +49,7 @@ else
 	DEFAULT_GRADLE_TASK="stage"
 fi
 
-if [ -z "$GRADLE_TASK" ]; then
+if [ -z "${GRADLE_TASK:-}" ]; then
 	GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
 fi
 
