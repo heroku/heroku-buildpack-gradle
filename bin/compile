@@ -14,7 +14,6 @@ CACHE_DIR="${2}"
 ENV_DIR="${3}"
 
 source "${BUILDPACK_DIR}/lib/common.sh"
-source "${BUILDPACK_DIR}/lib/failures.sh"
 source "${BUILDPACK_DIR}/lib/output.sh"
 source "${BUILDPACK_DIR}/lib/util.sh"
 source "${BUILDPACK_DIR}/lib/openjdk.sh"
@@ -71,18 +70,36 @@ if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
 fi
 chmod +x "${BUILD_DIR}/gradlew"
 
-cd "${BUILD_DIR}"
-
 # build app
 output::step "Building Gradle app..."
 echo "-----> executing ./gradlew ${GRADLE_TASK}" | output::indent
 
-build_log_file=$(mktemp)
+# We rely on word splitting for GRADLE_TASK
+# shellcheck disable=SC2086
+if ! (cd "${BUILD_DIR}" && ./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" --no-daemon -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false ${GRADLE_TASK}) 2>&1 | output::indent; then
+	output::error <<-EOF
+		Error: Gradle build failed.
 
-./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" -Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false "${GRADLE_TASK}" 2>&1 | tee "${build_log_file}" | output::indent
+		An error occurred during the Gradle build process. This usually
+		indicates an issue with your application's dependencies, configuration,
+		or source code.
 
-if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-	handle_gradle_errors "${build_log_file}"
+		First, check the build output above for specific error messages
+		from Gradle that might indicate what went wrong. Common issues include:
+
+		- Missing or incompatible dependencies in your build.gradle
+		- Compilation errors in your application source code
+		- Test failures (if tests are enabled during the build)
+		- Invalid Gradle configuration or settings
+		- Using an incompatible OpenJDK version for your project
+
+		If you're unable to determine the cause from the Gradle output,
+		try building your application locally with the same Gradle command
+		to reproduce and debug the issue.
+	EOF
+
+	metrics::set_string "failure_reason" "gradle_build::non_zero_exit_code"
+	exit 1
 fi
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49

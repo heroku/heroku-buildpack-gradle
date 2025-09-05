@@ -41,7 +41,6 @@ class HerokuInitPlugin implements Plugin<Gradle> {
 EOF
 
 echo "-----> Resolving testRuntime dependencies..."
-cd "${BUILD_DIR}"
-./gradlew --no-daemon --init-script "${HEROKU_GRADLE_INIT_SCRIPT}" resolveTestRuntime 2>&1 | output::indent
+(cd "${BUILD_DIR}" && ./gradlew --no-daemon --init-script "${HEROKU_GRADLE_INIT_SCRIPT}" resolveTestRuntime) 2>&1 | output::indent
 
 cache_copy ".gradle" "${BUILD_DIR}" "${CACHE_DIR}"

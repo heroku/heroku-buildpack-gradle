@@ -4,4 +4,4 @@
 # fail fast
 set -euo pipefail
 
-cd "${1}" && ./gradlew --gradle-user-home "${1}/.gradle" --no-daemon "check"
+(cd "${1}" && ./gradlew --gradle-user-home "${1}/.gradle" --no-daemon check)
