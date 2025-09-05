@@ -4,19 +4,19 @@
 # fail fast
 set -euo pipefail
 
-BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
-BIN_DIR=$BP_DIR/bin
-LIB_DIR=$BP_DIR/lib
-. $LIB_DIR/common.sh
+BP_DIR=$(cd "$(dirname "${0}")"/..; pwd) # absolute path
+BIN_DIR="${BP_DIR}/bin"
+LIB_DIR="${BP_DIR}/lib"
+. "${LIB_DIR}/common.sh"
 
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
+BUILD_DIR="${1}"
+CACHE_DIR="${2}"
+ENV_DIR="${3}"
 
 export GRADLE_TASK="testClasses"
-export GRADLE_USER_HOME=$BUILD_DIR/.gradle
+export GRADLE_USER_HOME="${BUILD_DIR}/.gradle"
 
-cache_copy ".gradle" $CACHE_DIR $BUILD_DIR
+cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
 
 # Temporary workaround for issue #80 (https://github.com/heroku/heroku-buildpack-gradle/issues/80):
 # /bin/compile will not create a .gradle directory if it doesn't already exist. It will instead symlink
@@ -29,10 +29,10 @@ if [[ ! -d "${GRADLE_USER_HOME}" ]]; then
 	mkdir -p "${GRADLE_USER_HOME}"
 fi
 
-$BIN_DIR/compile "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR"
+"${BIN_DIR}/compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
 
 HEROKU_GRADLE_INIT_SCRIPT="/tmp/resolve.gradle"
-cat << EOF > $HEROKU_GRADLE_INIT_SCRIPT
+cat << EOF > "${HEROKU_GRADLE_INIT_SCRIPT}"
 apply plugin:HerokuInitPlugin
 
 class HerokuInitPlugin implements Plugin<Gradle> {
@@ -50,7 +50,7 @@ class HerokuInitPlugin implements Plugin<Gradle> {
 EOF
 
 echo "-----> Resolving testRuntime dependencies..."
-cd $BUILD_DIR
-./gradlew --no-daemon --init-script $HEROKU_GRADLE_INIT_SCRIPT resolveTestRuntime 2>&1 | output /tmp/.resolveTestRuntime.log
+cd "${BUILD_DIR}"
+./gradlew --no-daemon --init-script "${HEROKU_GRADLE_INIT_SCRIPT}" resolveTestRuntime 2>&1 | output /tmp/.resolveTestRuntime.log
 
-cache_copy ".gradle" $BUILD_DIR $CACHE_DIR
+cache_copy ".gradle" "${BUILD_DIR}" "${CACHE_DIR}"

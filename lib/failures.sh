@@ -18,7 +18,7 @@ $ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-gradle#previo
 	local footer="Thanks,
 Heroku"
 
-	if grep -qi "Task 'stage' not found in root project" "$log_file"; then
+	if grep -qi "Task 'stage' not found in root project" "${log_file}"; then
 		output::error <<-EOF
 			${header}
 			It looks like your project does not contain a 'stage' task, which Heroku needs in order
@@ -34,7 +34,7 @@ Heroku"
 		
 		metrics::set_string "failure_reason" "gradle_build::stage_task_not_found"
 		exit 1
-	elif grep -qi "Could not find or load main class org.gradle.wrapper.GradleWrapperMain" "$log_file"; then
+	elif grep -qi "Could not find or load main class org.gradle.wrapper.GradleWrapperMain" "${log_file}"; then
 		output::error <<-EOF
 			${header}
 			It looks like you don't have a gradle-wrapper.jar file checked into your Git repo.

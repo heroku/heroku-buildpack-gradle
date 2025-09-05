@@ -3,8 +3,8 @@
 set -euo pipefail
 
 gradle_build_file() {
-	local buildDir=${1}
-	if [ -f ${buildDir}/build.gradle.kts ]; then
+	local buildDir="${1}"
+	if [ -f "${buildDir}/build.gradle.kts" ]; then
 		echo "${buildDir}/build.gradle.kts"
 	else
 		echo "${buildDir}/build.gradle"
@@ -18,10 +18,10 @@ gradle_build_file() {
 create_project_cache_symlink() {
 	local buildpackCacheDir="${1:?}/.gradle-project"
 	local projectCacheLink="${2:?}/.gradle"
-	if [ ! -d "$projectCacheLink" ]; then
-		mkdir -p "$buildpackCacheDir"
-		ln -s "$buildpackCacheDir" "$projectCacheLink"
-		trap "rm -f $projectCacheLink" EXIT
+	if [ ! -d "${projectCacheLink}" ]; then
+		mkdir -p "${buildpackCacheDir}"
+		ln -s "${buildpackCacheDir}" "${projectCacheLink}"
+		trap "rm -f ${projectCacheLink}" EXIT
 	fi
 }
 
@@ -29,23 +29,23 @@ create_project_cache_symlink() {
 # so you get updates while the command runs and dont wait for the end
 # e.g. sbt stage | indent
 output() {
-	local logfile="$1"
+	local logfile="${1}"
 	local c='s/^/       /'
 
 	case $(uname) in
-		Darwin) tee -a "$logfile" | sed -l "$c";; # mac/bsd sed: -l buffers on line boundaries
-		*)      tee -a "$logfile" | sed -u "$c";; # unix/gnu sed: -u unbuffered (arbitrary) chunks of data
+		Darwin) tee -a "${logfile}" | sed -l "${c}";; # mac/bsd sed: -l buffers on line boundaries
+		*)      tee -a "${logfile}" | sed -u "${c}";; # unix/gnu sed: -u unbuffered (arbitrary) chunks of data
 	esac
 }
 
 cache_copy() {
-	rel_dir=$1
-	from_dir=$2
-	to_dir=$3
-	rm -rf $to_dir/$rel_dir
-	if [ -d $from_dir/$rel_dir ]; then
-		mkdir -p $to_dir/$rel_dir
-		cp -pr $from_dir/$rel_dir/. $to_dir/$rel_dir
+	rel_dir="${1}"
+	from_dir="${2}"
+	to_dir="${3}"
+	rm -rf "${to_dir}/${rel_dir}"
+	if [ -d "${from_dir}/${rel_dir}" ]; then
+		mkdir -p "${to_dir}/${rel_dir}"
+		cp -pr "${from_dir}/${rel_dir}"/. "${to_dir}/${rel_dir}"
 	fi
 }
 

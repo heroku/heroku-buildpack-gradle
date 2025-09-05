@@ -6,23 +6,23 @@ set -euo pipefail
 
 BPLOG_PREFIX="buildpack.gradle"
 
-BP_DIR=$(cd "$(dirname "$0")"/.. && pwd) # absolute path
-BIN_DIR=$BP_DIR/bin
-OPT_DIR=$BP_DIR/opt
-LIB_DIR=$BP_DIR/lib
+BP_DIR=$(cd "$(dirname "${0}")"/.. && pwd) # absolute path
+BIN_DIR="${BP_DIR}/bin"
+OPT_DIR="${BP_DIR}/opt"
+LIB_DIR="${BP_DIR}/lib"
 
 # parse args
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
+BUILD_DIR="${1}"
+CACHE_DIR="${2}"
+ENV_DIR="${3}"
 
-source "$LIB_DIR"/common.sh
-source "$LIB_DIR"/failures.sh
-source "$LIB_DIR"/output.sh
-source "$LIB_DIR"/util.sh
-source "$LIB_DIR"/openjdk.sh
-source "$LIB_DIR"/frameworks.sh
-source "$LIB_DIR"/metrics.sh
+source "${LIB_DIR}/common.sh"
+source "${LIB_DIR}/failures.sh"
+source "${LIB_DIR}/output.sh"
+source "${LIB_DIR}/util.sh"
+source "${LIB_DIR}/openjdk.sh"
+source "${LIB_DIR}/frameworks.sh"
+source "${LIB_DIR}/metrics.sh"
 
 metrics::init "${CACHE_DIR}" "gradle"
 metrics::setup
@@ -34,22 +34,22 @@ if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then
 	GRADLE_CHECK_TASK="test"
 fi
 
-if has_stage_task "$BUILD_DIR"; then
+if has_stage_task "${BUILD_DIR}"; then
 	DEFAULT_GRADLE_TASK="stage"
-elif frameworks::is_spring_boot "$BUILD_DIR"; then
-	if frameworks::is_webapp_runner "$BUILD_DIR"; then
+elif frameworks::is_spring_boot "${BUILD_DIR}"; then
+	if frameworks::is_webapp_runner "${BUILD_DIR}"; then
 		output::step "Spring Boot and Webapp Runner detected"
 	else
 		output::step "Spring Boot detected"
 	fi
 	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
-elif frameworks::is_micronaut "$BUILD_DIR"; then
+elif frameworks::is_micronaut "${BUILD_DIR}"; then
 	output::step "Micronaut detected"
 	DEFAULT_GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
-elif frameworks::is_quarkus "$BUILD_DIR"; then
+elif frameworks::is_quarkus "${BUILD_DIR}"; then
 	output::step "Quarkus detected"
 	DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
-elif frameworks::is_ratpack "$BUILD_DIR"; then
+elif frameworks::is_ratpack "${BUILD_DIR}"; then
 	output::step "Ratpack detected"
 	DEFAULT_GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
 else
@@ -64,12 +64,12 @@ openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BP_DIR}"
 
 export GRADLE_OPTS="${GRADLE_OPTS:-}${GRADLE_OPTS:+ }-Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
 
-mkdir -p "$CACHE_DIR/.gradle"
-export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
+mkdir -p "${CACHE_DIR}/.gradle"
+export GRADLE_USER_HOME="${GRADLE_USER_HOME:-${CACHE_DIR}/.gradle}"
 
-create_project_cache_symlink "$CACHE_DIR" "$BUILD_DIR"
+create_project_cache_symlink "${CACHE_DIR}" "${BUILD_DIR}"
 
-if [ ! -f $BUILD_DIR/gradlew ] ; then
+if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
 	output::error <<-EOF
 		Error: Gradle Wrapper is missing.
 
@@ -92,25 +92,25 @@ if [ ! -f $BUILD_DIR/gradlew ] ; then
 	exit 1
 fi
 BUILDCMD="./gradlew"
-chmod +x ${BUILD_DIR}/gradlew
+chmod +x "${BUILD_DIR}/gradlew"
 
-BUILDCMD="$BUILDCMD $GRADLE_TASK"
+BUILDCMD="${BUILDCMD} ${GRADLE_TASK}"
 
-cd $BUILD_DIR
+cd "${BUILD_DIR}"
 
 
 # build app
 output::step "Building Gradle app..."
-echo "-----> executing $BUILDCMD" | output::indent
+echo "-----> executing ${BUILDCMD}" | output::indent
 
 buildLogFile=".heroku/gradle-build.log"
 echo "" > "${buildLogFile}"
 
-$BUILDCMD 2>&1 | output $buildLogFile
+${BUILDCMD} 2>&1 | output "${buildLogFile}"
 
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-	handle_gradle_errors $buildLogFile
+	handle_gradle_errors "${buildLogFile}"
 fi
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49
-rm -rf "$CACHE_DIR/.gradle/nodejs"
+rm -rf "${CACHE_DIR}/.gradle/nodejs"
