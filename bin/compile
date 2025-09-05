@@ -4,8 +4,6 @@
 # fail fast
 set -euo pipefail
 
-BPLOG_PREFIX="buildpack.gradle"
-
 BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 
 # parse args
