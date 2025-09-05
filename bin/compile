@@ -85,8 +85,7 @@ gradle_daemon_start=$(util::nowms)
 (cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) | output::indent
 metrics::set_duration "gradle_daemon_start_duration" "${gradle_daemon_start}"
 
-output::step "Building Gradle app..."
-
+# Determine the Gradle task to execute
 if [ -z "${GRADLE_TASK:-}" ]; then
 	if has_stage_task "${BUILD_DIR}"; then
 		GRADLE_TASK="stage"
@@ -103,7 +102,8 @@ if [ -z "${GRADLE_TASK:-}" ]; then
 	fi
 fi
 
-echo "-----> executing ./gradlew ${GRADLE_TASK}"
+output::step "Executing Gradle"
+echo "$ ./gradlew ${GRADLE_TASK}" | output::indent
 
 # We rely on word splitting for GRADLE_TASK
 # shellcheck disable=SC2086
