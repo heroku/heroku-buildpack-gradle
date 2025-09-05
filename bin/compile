@@ -85,6 +85,10 @@ gradle_daemon_start=$(util::nowms)
 (cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) | output::indent
 metrics::set_duration "gradle_daemon_start_duration" "${gradle_daemon_start}"
 
+gradle_version="unknown"
+gradle_version="$( (cd "${BUILD_DIR}" && ./gradlew --version 2>/dev/null | awk '/^Gradle/ {gsub(/\x1b\[[0-9;]*m/, ""); print $2}') || true)"
+metrics::set_string "gradle_version" "${gradle_version}"
+
 # Determine the Gradle task to execute
 if [ -z "${GRADLE_TASK:-}" ]; then
 	if has_stage_task "${BUILD_DIR}"; then
