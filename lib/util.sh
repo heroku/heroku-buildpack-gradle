@@ -79,4 +79,3 @@ function cache_copy() {
 	local to_directory="${3}"
 	util::cache_copy "${rel_directory}" "${from_directory}" "${to_directory}"
 }
-

@@ -12,7 +12,10 @@ BUILD_DIR="${1}"
 _ratpack_proc() {
 	local ctxDir="${1}"
 	if [[ -d "${ctxDir}/build/install" ]]; then
-		(cd "${ctxDir}"; find build/install/*/bin -type f -executable 2>/dev/null | grep -v "\.bat$" | head -1)
+		(
+			cd "${ctxDir}"
+			find build/install/*/bin -type f -executable 2>/dev/null | grep -v "\.bat$" | head -1
+		)
 	else
 		echo ""
 	fi
@@ -26,7 +29,10 @@ _ratpack_proc_count() {
 _webapp_runner() {
 	local ctxDir="${1}"
 	if [[ -d "${ctxDir}" ]]; then
-		(cd "${ctxDir}"; find . -type f -name "webapp-runner-*.jar" 2>/dev/null | head -1)
+		(
+			cd "${ctxDir}"
+			find . -type f -name "webapp-runner-*.jar" 2>/dev/null | head -1
+		)
 	else
 		echo ""
 	fi
@@ -35,7 +41,10 @@ _webapp_runner() {
 _spring_boot_micronaut_main_jar() {
 	local ctxDir="${1}"
 	if [[ -d "${ctxDir}/build/libs" ]]; then
-		(cd "${ctxDir}"; find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)
+		(
+			cd "${ctxDir}"
+			find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1
+		)
 	else
 		echo ""
 	fi

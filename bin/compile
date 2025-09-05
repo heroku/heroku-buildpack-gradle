@@ -28,7 +28,7 @@ util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS|GRADLE_USER_H
 
 openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BUILDPACK_DIR}"
 
-if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
+if [ ! -f "${BUILD_DIR}/gradlew" ]; then
 	output::error <<-EOF
 		Error: Gradle Wrapper is missing.
 
@@ -63,7 +63,7 @@ mkdir -p "${GRADLE_USER_HOME}"
 rm -rf "${GRADLE_USER_HOME}/daemon"
 
 # https://docs.gradle.org/8.3/userguide/build_environment.html#sec:gradle_configuration_properties
-cat <<-EOF > "${GRADLE_USER_HOME}/gradle.properties"
+cat <<-EOF >"${GRADLE_USER_HOME}/gradle.properties"
 	org.gradle.welcome=never
 	org.gradle.caching=true
 EOF
@@ -71,7 +71,7 @@ EOF
 # We're adding this empty task to all projects to ensure we have a task we can run when
 # we start the Gradle daemon that doesn't side effect or output anything to the console.
 # https://docs.gradle.org/8.3/userguide/init_scripts.html
-cat <<-EOF > "${GRADLE_USER_HOME}/init.gradle"
+cat <<-EOF >"${GRADLE_USER_HOME}/init.gradle"
 	allprojects {
 		// Intentionally using task over task.register for compatibility with older Gradle versions.
 		task('heroku-start-gradle-daemon')

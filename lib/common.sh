@@ -7,7 +7,7 @@ set -euo pipefail
 # Uses gradlew to get the definitive list of available tasks.
 has_stage_task() {
 	local build_directory="${1}"
-	
+
 	# Use gradlew to list tasks and check if 'stage' is available
 	# Redirect stderr to avoid noise if gradle wrapper has issues
 	(cd "${build_directory}" && ./gradlew tasks --all 2>/dev/null | grep -q "^stage ")

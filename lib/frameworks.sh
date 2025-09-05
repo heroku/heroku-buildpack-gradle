@@ -17,7 +17,7 @@ source "${BUILDPACK_DIR}/lib/util.sh"
 # ```
 function frameworks::get_gradle_build_file() {
 	local build_directory="${1}"
-	
+
 	if [[ -f "${build_directory}/build.gradle.kts" ]]; then
 		echo "${build_directory}/build.gradle.kts"
 	else
@@ -38,11 +38,11 @@ function frameworks::is_spring_boot() {
 	local build_directory="${1}"
 	local gradle_file
 	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-	
+
 	[[ -f "${gradle_file}" ]] && {
 		grep -qs "^[^/].*org.springframework.boot:spring-boot" "${gradle_file}" ||
-		grep -qs "^[^/].*spring-boot-gradle-plugin" "${gradle_file}" ||
-		grep -qs "^[^/].*id.*org.springframework.boot" "${gradle_file}"
+			grep -qs "^[^/].*spring-boot-gradle-plugin" "${gradle_file}" ||
+			grep -qs "^[^/].*id.*org.springframework.boot" "${gradle_file}"
 	} && ! grep -qs "org.grails:grails-" "${gradle_file}"
 }
 
@@ -59,7 +59,7 @@ function frameworks::is_micronaut() {
 	local build_directory="${1}"
 	local gradle_file
 	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-	
+
 	[[ -f "${gradle_file}" ]] && grep -qs "io.micronaut" "${gradle_file}"
 }
 
@@ -76,7 +76,7 @@ function frameworks::is_quarkus() {
 	local build_directory="${1}"
 	local gradle_file
 	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-	
+
 	[[ -f "${gradle_file}" ]] && grep -qs "io.quarkus" "${gradle_file}"
 }
 
@@ -93,7 +93,7 @@ function frameworks::is_ratpack() {
 	local build_directory="${1}"
 	local gradle_file
 	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-	
+
 	[[ -f "${gradle_file}" ]] && grep -qs "^[^/].*io.ratpack.ratpack" "${gradle_file}"
 }
 
@@ -110,7 +110,7 @@ function frameworks::is_grails() {
 	local build_directory="${1}"
 	local gradle_file
 	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-	
+
 	[[ -f "${gradle_file}" ]] && grep -qs "^[^/].*org.grails:grails-" "${gradle_file}"
 }
 
@@ -127,6 +127,6 @@ function frameworks::is_webapp_runner() {
 	local build_directory="${1}"
 	local gradle_file
 	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-	
+
 	[[ -f "${gradle_file}" ]] && grep -qs "webapp-runner" "${gradle_file}"
 }

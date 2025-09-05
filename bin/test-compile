@@ -24,7 +24,7 @@ util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
 # Instead, we use a custom init script to resolve the dependencies.
 # https://docs.gradle.org/current/userguide/init_scripts.html
 heroku_gradle_init_script=$(mktemp)
-cat << EOF > "${heroku_gradle_init_script}"
+cat <<EOF >"${heroku_gradle_init_script}"
 apply plugin:HerokuInitPlugin
 
 class HerokuInitPlugin implements Plugin<Gradle> {
