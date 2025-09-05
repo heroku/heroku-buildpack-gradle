@@ -13,15 +13,12 @@ CACHE_DIR="${2}"
 ENV_DIR="${3}"
 
 export GRADLE_TASK="testClasses"
-export GRADLE_USER_HOME="${BUILD_DIR}/.gradle"
-
-util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
-
-if [[ ! -d "${GRADLE_USER_HOME}" ]]; then
-	mkdir -p "${GRADLE_USER_HOME}"
-fi
 
 "${BUILDPACK_DIR}/bin/compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
+
+# Copy the contents of the Gradle user home to the build directory so that configuration
+# and build caches are available as runtime for tests.
+util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
 
 # We need to resolve the testRuntime dependencies for the tests to run, but Gradle doesn't have a built-in way to do this.
 # Instead, we use a custom init script to resolve the dependencies.
@@ -45,6 +42,12 @@ class HerokuInitPlugin implements Plugin<Gradle> {
 EOF
 
 echo "-----> Resolving testRuntime dependencies..."
-(cd "${BUILD_DIR}" && ./gradlew --no-daemon --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
+(cd "${BUILD_DIR}" && ./gradlew --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
 
+# Write the Gradle user home back into the cache to make sure the test dependencies get permanently cached too.
 util::cache_copy ".gradle" "${BUILD_DIR}" "${CACHE_DIR}"
+
+mkdir -p "${BUILD_DIR}/.profile.d"
+cat <<-EOF >"${BUILD_DIR}/.profile.d/gradle.sh"
+	export GRADLE_USER_HOME="\${HOME}/.gradle"
+EOF

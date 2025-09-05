@@ -23,7 +23,19 @@ source "${BUILDPACK_DIR}/lib/metrics.sh"
 metrics::init "${CACHE_DIR}" "gradle"
 metrics::setup
 
-util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
+# Exclude environment variables:
+# - JAVA_OPTS/JAVA_TOOL_OPTIONS: JVM options are configured by users for their application, not the build process.
+# - GRADLE_USER_HOME: Controlled by buildpack for proper caching and configuration behavior
+util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS|GRADLE_USER_HOME"
+
+# Setup Gradle user home with global configuration in the cache directory
+GRADLE_USER_HOME="${CACHE_DIR}/.gradle"
+mkdir -p "${GRADLE_USER_HOME}"
+
+cat << EOF > "${GRADLE_USER_HOME}/gradle.properties"
+	org.gradle.welcome=never
+	org.gradle.caching=true
+EOF
 
 if [ -z "${GRADLE_TASK:-}" ]; then
 	if has_stage_task "${BUILD_DIR}"; then
@@ -42,9 +54,6 @@ if [ -z "${GRADLE_TASK:-}" ]; then
 fi
 
 openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BUILDPACK_DIR}"
-
-mkdir -p "${CACHE_DIR}/.gradle"
-export GRADLE_USER_HOME="${GRADLE_USER_HOME:-${CACHE_DIR}/.gradle}"
 
 if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
 	output::error <<-EOF
@@ -76,7 +85,7 @@ echo "-----> executing ./gradlew ${GRADLE_TASK}" | output::indent
 
 # We rely on word splitting for GRADLE_TASK
 # shellcheck disable=SC2086
-if ! (cd "${BUILD_DIR}" && ./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" --no-daemon -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false ${GRADLE_TASK}) 2>&1 | output::indent; then
+if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | output::indent; then
 	output::error <<-EOF
 		Error: Gradle build failed.
 
