@@ -77,13 +77,12 @@ cd "${BUILD_DIR}"
 output::step "Building Gradle app..."
 echo "-----> executing ./gradlew ${GRADLE_TASK}" | output::indent
 
-buildLogFile=".heroku/gradle-build.log"
-echo "" > "${buildLogFile}"
+build_log_file=$(mktemp)
 
-./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" -Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false "${GRADLE_TASK}" 2>&1 | tee -a "${buildLogFile}" | output::indent
+./gradlew --project-cache-dir="${CACHE_DIR}/.gradle-project" -Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false "${GRADLE_TASK}" 2>&1 | tee "${build_log_file}" | output::indent
 
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-	handle_gradle_errors "${buildLogFile}"
+	handle_gradle_errors "${build_log_file}"
 fi
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49
