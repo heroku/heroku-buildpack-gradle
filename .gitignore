@@ -1,2 +1,7 @@
+.idea/
+*.swp
+target
+*.iml
 .DS_Store
-.idea
+.rspec_status
+test/spec/fixtures/repos/github

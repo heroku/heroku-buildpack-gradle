@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* Remove `GRADLE_TESTPACK_LEGACY_TASK` legacy feature - always exclude `check` task during builds instead of just `test` task ([#000](https://github.com/heroku/heroku-buildpack-gradle/pull/000))
+
 
 ## [v43] - 2025-07-14
 
