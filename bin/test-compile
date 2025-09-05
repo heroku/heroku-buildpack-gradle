@@ -6,6 +6,7 @@ set -euo pipefail
 
 BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 source "${BUILDPACK_DIR}/lib/common.sh"
+source "${BUILDPACK_DIR}/lib/util.sh"
 
 BUILD_DIR="${1}"
 CACHE_DIR="${2}"
@@ -14,7 +15,7 @@ ENV_DIR="${3}"
 export GRADLE_TASK="testClasses"
 export GRADLE_USER_HOME="${BUILD_DIR}/.gradle"
 
-cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
+util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
 
 if [[ ! -d "${GRADLE_USER_HOME}" ]]; then
 	mkdir -p "${GRADLE_USER_HOME}"
@@ -46,4 +47,4 @@ EOF
 echo "-----> Resolving testRuntime dependencies..."
 (cd "${BUILD_DIR}" && ./gradlew --no-daemon --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
 
-cache_copy ".gradle" "${BUILD_DIR}" "${CACHE_DIR}"
+util::cache_copy ".gradle" "${BUILD_DIR}" "${CACHE_DIR}"
