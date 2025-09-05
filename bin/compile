@@ -7,22 +7,19 @@ set -euo pipefail
 BPLOG_PREFIX="buildpack.gradle"
 
 BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-BIN_DIR="${BUILDPACK_DIR}/bin"
-OPT_DIR="${BUILDPACK_DIR}/opt"
-LIB_DIR="${BUILDPACK_DIR}/lib"
 
 # parse args
 BUILD_DIR="${1}"
 CACHE_DIR="${2}"
 ENV_DIR="${3}"
 
-source "${LIB_DIR}/common.sh"
-source "${LIB_DIR}/failures.sh"
-source "${LIB_DIR}/output.sh"
-source "${LIB_DIR}/util.sh"
-source "${LIB_DIR}/openjdk.sh"
-source "${LIB_DIR}/frameworks.sh"
-source "${LIB_DIR}/metrics.sh"
+source "${BUILDPACK_DIR}/lib/common.sh"
+source "${BUILDPACK_DIR}/lib/failures.sh"
+source "${BUILDPACK_DIR}/lib/output.sh"
+source "${BUILDPACK_DIR}/lib/util.sh"
+source "${BUILDPACK_DIR}/lib/openjdk.sh"
+source "${BUILDPACK_DIR}/lib/frameworks.sh"
+source "${BUILDPACK_DIR}/lib/metrics.sh"
 
 metrics::init "${CACHE_DIR}" "gradle"
 metrics::setup

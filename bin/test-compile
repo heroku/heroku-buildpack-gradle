@@ -5,9 +5,7 @@
 set -euo pipefail
 
 BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-BIN_DIR="${BUILDPACK_DIR}/bin"
-LIB_DIR="${BUILDPACK_DIR}/lib"
-source "${LIB_DIR}/common.sh"
+source "${BUILDPACK_DIR}/lib/common.sh"
 
 BUILD_DIR="${1}"
 CACHE_DIR="${2}"
