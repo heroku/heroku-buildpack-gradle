@@ -65,14 +65,24 @@ export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
 create_project_cache_symlink "$CACHE_DIR" "$BUILD_DIR"
 
 if [ ! -f $BUILD_DIR/gradlew ] ; then
-	output::step "Installing Gradle Wrapper..."
-	output::warning <<-EOF
-		Warning: Your application does not have it's own gradlew file.
+	output::error <<-EOF
+		Error: Gradle Wrapper is missing.
 
-		We'll install one for you, but this is a deprecated feature and
-		in the future may not be supported.
+		The Gradle wrapper (gradlew) is required to build your application on Heroku.
+		This ensures that your application builds with the same version of Gradle
+		that you use during development.
+
+		To fix this issue, run this command in your project directory
+		locally and commit the generated files:
+		$ gradle wrapper
+
+		If you don't have Gradle installed locally, you can install it first:
+		https://gradle.org/install/
+
+		For more information about Gradle Wrapper, see:
+		https://docs.gradle.org/current/userguide/gradle_wrapper.html
 	EOF
-	cp -rn ${OPT_DIR}/wrapper/* ${BUILD_DIR}
+	exit 1
 fi
 BUILDCMD="./gradlew"
 chmod +x ${BUILD_DIR}/gradlew
