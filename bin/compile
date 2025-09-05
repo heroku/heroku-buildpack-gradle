@@ -26,22 +26,17 @@ metrics::setup
 
 util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
 
-GRADLE_CHECK_TASK=check
-if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then
-	GRADLE_CHECK_TASK="test"
-fi
-
 if [ -z "${GRADLE_TASK:-}" ]; then
 	if has_stage_task "${BUILD_DIR}"; then
 		GRADLE_TASK="stage"
 	elif frameworks::is_spring_boot "${BUILD_DIR}"; then
-		GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
+		GRADLE_TASK="build -x check"
 	elif frameworks::is_micronaut "${BUILD_DIR}"; then
-		GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
+		GRADLE_TASK="shadowJar -x check"
 	elif frameworks::is_quarkus "${BUILD_DIR}"; then
-		GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
+		GRADLE_TASK="build -x check"
 	elif frameworks::is_ratpack "${BUILD_DIR}"; then
-		GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
+		GRADLE_TASK="installDist -x check"
 	else
 		GRADLE_TASK="stage"
 	fi
