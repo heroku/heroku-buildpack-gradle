@@ -28,31 +28,6 @@ metrics::setup
 # - GRADLE_USER_HOME: Controlled by buildpack for proper caching and configuration behavior
 util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS|GRADLE_USER_HOME"
 
-# Setup Gradle user home with global configuration in the cache directory
-GRADLE_USER_HOME="${CACHE_DIR}/.gradle"
-mkdir -p "${GRADLE_USER_HOME}"
-
-cat << EOF > "${GRADLE_USER_HOME}/gradle.properties"
-	org.gradle.welcome=never
-	org.gradle.caching=true
-EOF
-
-if [ -z "${GRADLE_TASK:-}" ]; then
-	if has_stage_task "${BUILD_DIR}"; then
-		GRADLE_TASK="stage"
-	elif frameworks::is_spring_boot "${BUILD_DIR}"; then
-		GRADLE_TASK="build -x check"
-	elif frameworks::is_micronaut "${BUILD_DIR}"; then
-		GRADLE_TASK="shadowJar -x check"
-	elif frameworks::is_quarkus "${BUILD_DIR}"; then
-		GRADLE_TASK="build -x check"
-	elif frameworks::is_ratpack "${BUILD_DIR}"; then
-		GRADLE_TASK="installDist -x check"
-	else
-		GRADLE_TASK="stage"
-	fi
-fi
-
 openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BUILDPACK_DIR}"
 
 if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
@@ -77,10 +52,59 @@ if [ ! -f "${BUILD_DIR}/gradlew" ] ; then
 	metrics::set_string "failure_reason" "gradle_wrapper::missing"
 	exit 1
 fi
+
 chmod +x "${BUILD_DIR}/gradlew"
 
-# build app
+# Setup Gradle user home with global configuration in the cache directory
+GRADLE_USER_HOME="${CACHE_DIR}/.gradle"
+mkdir -p "${GRADLE_USER_HOME}"
+
+# Remove daemon metadata from the cached directory. Among other things, it contains a list
+# of PIDs from previous runs that will clutter up the output and aren't meaningful with
+# containerized builds anyway.
+rm -rf "${GRADLE_USER_HOME}/daemon"
+
+# https://docs.gradle.org/8.3/userguide/build_environment.html#sec:gradle_configuration_properties
+cat <<-EOF > "${GRADLE_USER_HOME}/gradle.properties"
+	org.gradle.welcome=never
+	org.gradle.caching=true
+EOF
+
+# We're adding this empty task to all projects to ensure we have a task we can run when
+# we start the Gradle daemon that doesn't side effect or output anything to the console.
+# https://docs.gradle.org/8.3/userguide/init_scripts.html
+cat <<-EOF > "${GRADLE_USER_HOME}/init.gradle"
+	allprojects {
+		// Intentionally using task over task.register for compatibility with older Gradle versions.
+		task('heroku-start-gradle-daemon')
+	}
+EOF
+
+export GRADLE_USER_HOME
+
+output::step "Starting Gradle daemon..."
+gradle_daemon_start=$(util::nowms)
+(cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) | output::indent
+metrics::set_duration "gradle_daemon_start_duration" "${gradle_daemon_start}"
+
 output::step "Building Gradle app..."
+
+if [ -z "${GRADLE_TASK:-}" ]; then
+	if has_stage_task "${BUILD_DIR}"; then
+		GRADLE_TASK="stage"
+	elif frameworks::is_spring_boot "${BUILD_DIR}"; then
+		GRADLE_TASK="build -x check"
+	elif frameworks::is_micronaut "${BUILD_DIR}"; then
+		GRADLE_TASK="shadowJar -x check"
+	elif frameworks::is_quarkus "${BUILD_DIR}"; then
+		GRADLE_TASK="build -x check"
+	elif frameworks::is_ratpack "${BUILD_DIR}"; then
+		GRADLE_TASK="installDist -x check"
+	else
+		GRADLE_TASK="stage"
+	fi
+fi
+
 echo "-----> executing ./gradlew ${GRADLE_TASK}"
 
 # We rely on word splitting for GRADLE_TASK
@@ -110,6 +134,9 @@ if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | output::indent; then
 	metrics::set_string "failure_reason" "gradle_build::non_zero_exit_code"
 	exit 1
 fi
+
+output::step "Stopping Gradle daemon..."
+(cd "${BUILD_DIR}" && ./gradlew -q --stop) | output::indent
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49
 rm -rf "${CACHE_DIR}/.gradle/nodejs"
