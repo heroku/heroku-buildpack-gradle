@@ -86,7 +86,7 @@ gradle_daemon_start=$(util::nowms)
 
 gradle_daemon_output_log_files=$(mktemp)
 if ! (cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) >"${gradle_daemon_output_log_files}" 2>&1; then
-	cat "${gradle_daemon_output_log_files}" | output::indent
+	output::indent <"${gradle_daemon_output_log_files}"
 
 	output::error <<-EOF
 		Error: Failed to start Gradle daemon.
