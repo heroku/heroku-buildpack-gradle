@@ -66,6 +66,7 @@ rm -rf "${GRADLE_USER_HOME}/daemon"
 cat <<-EOF >"${GRADLE_USER_HOME}/gradle.properties"
 	org.gradle.welcome=never
 	org.gradle.caching=true
+	org.gradle.projectcachedir=${CACHE_DIR}/.gradle-project
 EOF
 
 # We're adding this empty task to all projects to ensure we have a task we can run when
