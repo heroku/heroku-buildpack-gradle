@@ -82,7 +82,35 @@ export GRADLE_USER_HOME
 
 output::step "Starting Gradle daemon..."
 gradle_daemon_start=$(util::nowms)
-(cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) | output::indent
+
+gradle_daemon_output_log_files=$(mktemp)
+if ! (cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) >"${gradle_daemon_output_log_files}" 2>&1; then
+	cat "${gradle_daemon_output_log_files}" | output::indent
+
+	output::error <<-EOF
+		Error: Failed to start Gradle daemon.
+
+		An error occurred while starting the Gradle daemon. This usually
+		indicates an issue with the Gradle wrapper, build configuration,
+		or system resources.
+
+		Check the output above for specific error messages from Gradle.
+		Common causes include:
+
+		- Corrupted or missing Gradle wrapper files
+		- Invalid Gradle configuration in build.gradle or settings.gradle
+		- Insufficient memory or disk space
+		- Network connectivity issues downloading Gradle dependencies
+		- Incompatible Gradle version with the current Java runtime
+
+		Try building your application locally with the same Gradle version
+		to reproduce and debug the issue.
+	EOF
+
+	metrics::set_string "failure_reason" "gradle_daemon::start_failed"
+	exit 1
+fi
+
 metrics::set_duration "gradle_daemon_start_duration" "${gradle_daemon_start}"
 
 gradle_version="unknown"
