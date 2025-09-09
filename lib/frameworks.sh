@@ -80,23 +80,6 @@ function frameworks::is_quarkus() {
 	[[ -f "${gradle_file}" ]] && grep -qs "io.quarkus" "${gradle_file}"
 }
 
-# Detects if the application is a Grails project by checking for Grails
-# dependencies in the Gradle build file.
-#
-# Usage:
-# ```
-# if frameworks::is_grails "${BUILD_DIR}"; then
-#     echo "Grails application detected"
-# fi
-# ```
-function frameworks::is_grails() {
-	local build_directory="${1}"
-	local gradle_file
-	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-
-	[[ -f "${gradle_file}" ]] && grep -qs "^[^/].*org.grails:grails-" "${gradle_file}"
-}
-
 # Detects if the application uses Webapp Runner by checking for
 # webapp-runner dependencies in the Gradle build file.
 #

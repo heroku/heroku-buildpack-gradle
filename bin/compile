@@ -9,7 +9,6 @@ BUILD_DIR="${1}"
 CACHE_DIR="${2}"
 ENV_DIR="${3}"
 
-source "${BUILDPACK_DIR}/lib/common.sh"
 source "${BUILDPACK_DIR}/lib/output.sh"
 source "${BUILDPACK_DIR}/lib/util.sh"
 source "${BUILDPACK_DIR}/lib/openjdk.sh"
@@ -120,7 +119,8 @@ metrics::set_string "gradle_version" "${gradle_version}"
 
 # Determine the Gradle task to execute
 if [ -z "${GRADLE_TASK:-}" ]; then
-	if has_stage_task "${BUILD_DIR}"; then
+	# If a stage task is available, use it instead of trying to guess the task to run
+	if (cd "${BUILD_DIR}" && ./gradlew tasks --all 2>/dev/null | grep -q "^stage "); then
 		GRADLE_TASK="stage"
 	elif frameworks::is_spring_boot "${BUILD_DIR}"; then
 		GRADLE_TASK="build -x check"
