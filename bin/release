@@ -10,8 +10,9 @@ BUILD_DIR="${1}"
 echo "---"
 
 if [[ ! -f "${BUILD_DIR}/Procfile" ]]; then
-	if frameworks::is_spring_boot "${BUILD_DIR}"; then
-		if frameworks::is_webapp_runner "${BUILD_DIR}"; then
+	framework=$(frameworks::detect "${BUILD_DIR}")
+	case "${framework}" in
+		"spring-boot-webapp-runner")
 			if [[ -d "${BUILD_DIR}/build" ]]; then
 				webapp_runner_jar="$(cd "${BUILD_DIR}/build" && find . -type f -name "webapp-runner-*.jar" 2>/dev/null | head -1)"
 				if [[ -n "${webapp_runner_jar}" ]]; then
@@ -19,7 +20,8 @@ if [[ ! -f "${BUILD_DIR}/Procfile" ]]; then
 					echo "  web: cd build ; java \$JAVA_OPTS -jar ${webapp_runner_jar} --expand-war --port \$PORT libs/*.war"
 				fi
 			fi
-		else
+			;;
+		"spring-boot")
 			if [[ -d "${BUILD_DIR}/build/libs" ]]; then
 				main_jar="$(cd "${BUILD_DIR}" && find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)"
 				if [[ -n "${main_jar}" ]]; then
@@ -27,19 +29,21 @@ if [[ ! -f "${BUILD_DIR}/Procfile" ]]; then
 					echo "  web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
 				fi
 			fi
-		fi
-	elif frameworks::is_micronaut "${BUILD_DIR}"; then
-		if [[ -d "${BUILD_DIR}/build/libs" ]]; then
-			main_jar="$(cd "${BUILD_DIR}" && find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)"
-			if [[ -n "${main_jar}" ]]; then
-				echo "default_process_types:"
-				echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
+			;;
+		"micronaut")
+			if [[ -d "${BUILD_DIR}/build/libs" ]]; then
+				main_jar="$(cd "${BUILD_DIR}" && find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)"
+				if [[ -n "${main_jar}" ]]; then
+					echo "default_process_types:"
+					echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
+				fi
 			fi
-		fi
-	elif frameworks::is_quarkus "${BUILD_DIR}"; then
-		if [[ -f "${BUILD_DIR}/build/quarkus-app/quarkus-run.jar" ]]; then
-			echo "default_process_types:"
-			echo "  web: java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
-		fi
-	fi
+			;;
+		"quarkus")
+			if [[ -f "${BUILD_DIR}/build/quarkus-app/quarkus-run.jar" ]]; then
+				echo "default_process_types:"
+				echo "  web: java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
+			fi
+			;;
+	esac
 fi

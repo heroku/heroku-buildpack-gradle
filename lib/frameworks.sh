@@ -4,95 +4,40 @@
 # however, it helps Shellcheck realise the options under which these functions will run.
 set -euo pipefail
 
-BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 
-source "${BUILDPACK_DIR}/lib/util.sh"
-
-# Returns the path to the Gradle build file (build.gradle or build.gradle.kts)
-# for the given build directory.
+# Detects the primary framework used by the application by analyzing resolved dependencies.
+# This is much more reliable than parsing build files as it handles all DSL syntax,
+# version catalogs, variables, and transitive dependencies.
+#
+# Returns the detected framework name or empty string if none detected.
+# Priority order: spring-boot-webapp-runner, spring-boot, micronaut, quarkus (most specific first)
 #
 # Usage:
 # ```
-# build_file=$(frameworks::get_gradle_build_file "${BUILD_DIR}")
+# framework=$(frameworks::detect "${BUILD_DIR}")
+# case "${framework}" in
+#     "spring-boot-webapp-runner") echo "Spring Boot with Webapp Runner detected" ;;
+#     "spring-boot") echo "Spring Boot detected" ;;
+#     "micronaut") echo "Micronaut detected" ;;
+#     "quarkus") echo "Quarkus detected" ;;
+# esac
 # ```
-function frameworks::get_gradle_build_file() {
+function frameworks::detect() {
 	local build_directory="${1}"
-
-	if [[ -f "${build_directory}/build.gradle.kts" ]]; then
-		echo "${build_directory}/build.gradle.kts"
-	else
-		echo "${build_directory}/build.gradle"
+	
+	local dependencies
+	dependencies=$(cd "${build_directory}" && ./gradlew dependencies --configuration compileClasspath --quiet 2>/dev/null || echo "")
+	
+	if grep -qs "org.springframework.boot:" <<< "${dependencies}"; then
+		if grep -qs "webapp-runner" <<< "${dependencies}"; then
+			echo "spring-boot-webapp-runner"
+		else
+			echo "spring-boot"
+		fi
+	elif grep -qs "io.micronaut:" <<< "${dependencies}"; then
+		echo "micronaut"
+	elif grep -qs "io.quarkus:" <<< "${dependencies}"; then
+		echo "quarkus"
 	fi
 }
 
-# Detects if the application is a Spring Boot project by checking for Spring Boot
-# dependencies and plugins in the Gradle build file.
-#
-# Usage:
-# ```
-# if frameworks::is_spring_boot "${BUILD_DIR}"; then
-#     echo "Spring Boot application detected"
-# fi
-# ```
-function frameworks::is_spring_boot() {
-	local build_directory="${1}"
-	local gradle_file
-	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-
-	[[ -f "${gradle_file}" ]] && {
-		grep -qs "^[^/].*org.springframework.boot:spring-boot" "${gradle_file}" ||
-			grep -qs "^[^/].*spring-boot-gradle-plugin" "${gradle_file}" ||
-			grep -qs "^[^/].*id.*org.springframework.boot" "${gradle_file}"
-	} && ! grep -qs "org.grails:grails-" "${gradle_file}"
-}
-
-# Detects if the application uses Micronaut by checking for Micronaut
-# dependencies in the Gradle build file.
-#
-# Usage:
-# ```
-# if frameworks::is_micronaut "${BUILD_DIR}"; then
-#     echo "Micronaut application detected"
-# fi
-# ```
-function frameworks::is_micronaut() {
-	local build_directory="${1}"
-	local gradle_file
-	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-
-	[[ -f "${gradle_file}" ]] && grep -qs "io.micronaut" "${gradle_file}"
-}
-
-# Detects if the application uses Quarkus by checking for Quarkus
-# dependencies in the Gradle build file.
-#
-# Usage:
-# ```
-# if frameworks::is_quarkus "${BUILD_DIR}"; then
-#     echo "Quarkus application detected"
-# fi
-# ```
-function frameworks::is_quarkus() {
-	local build_directory="${1}"
-	local gradle_file
-	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-
-	[[ -f "${gradle_file}" ]] && grep -qs "io.quarkus" "${gradle_file}"
-}
-
-# Detects if the application uses Webapp Runner by checking for
-# webapp-runner dependencies in the Gradle build file.
-#
-# Usage:
-# ```
-# if frameworks::is_webapp_runner "${BUILD_DIR}"; then
-#     echo "Webapp Runner detected"
-# fi
-# ```
-function frameworks::is_webapp_runner() {
-	local build_directory="${1}"
-	local gradle_file
-	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-
-	[[ -f "${gradle_file}" ]] && grep -qs "webapp-runner" "${gradle_file}"
-}
