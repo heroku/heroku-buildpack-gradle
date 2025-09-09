@@ -73,4 +73,12 @@ RSpec.describe 'Gradle buildpack' do
       OUTPUT
     end
   end
+
+  it 'succeeds when GRADLE_TASK is set to a custom task' do
+    app = Hatchet::Runner.new('simple-http-service', config: { GRADLE_TASK: 'pleasefail -x check' })
+
+    app.deploy do
+      expect(app.output).to include('BUILD SUCCESSFUL')
+    end
+  end
 end
