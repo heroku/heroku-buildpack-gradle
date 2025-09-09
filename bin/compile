@@ -83,7 +83,7 @@ EOF
 
 export GRADLE_USER_HOME
 
-output::step "Starting Gradle daemon..."
+output::step "Starting Gradle daemon"
 gradle_daemon_start=$(util::nowms)
 
 gradle_daemon_output_log_files=$(mktemp)
@@ -215,7 +215,7 @@ if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | tee "${gradle_output
 	exit 1
 fi
 
-output::step "Stopping Gradle daemon..."
+output::step "Stopping Gradle daemon"
 (cd "${BUILD_DIR}" && ./gradlew -q --stop) | output::indent
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49

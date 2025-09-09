@@ -40,7 +40,7 @@ class HerokuInitPlugin implements Plugin<Gradle> {
 }
 EOF
 
-output::step "Resolving test runtime dependencies..."
+output::step "Resolving test runtime dependencies"
 (cd "${BUILD_DIR}" && ./gradlew --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
 
 # Write the Gradle user home back into the cache to make sure the test dependencies get permanently cached too.
