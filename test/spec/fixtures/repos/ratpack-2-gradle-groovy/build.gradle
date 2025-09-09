@@ -1,22 +1,9 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath "io.ratpack:ratpack-gradle:2.0.0-rc-1"
-  }
+plugins {
+    id 'io.ratpack.ratpack-java' version '2.0.0-rc-1' apply false
 }
 
-apply plugin: "io.ratpack.ratpack-java"
-apply plugin: "idea"
-
-repositories {
-  mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
-
-dependencies {
-  runtimeOnly "org.slf4j:slf4j-simple:1.7.36"
-}
-
-mainClassName = "my.app.Main"
-

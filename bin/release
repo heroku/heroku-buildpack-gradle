@@ -47,7 +47,7 @@ if [[ ! -f "${BUILD_DIR}/Procfile" ]]; then
 		;;
 	"ratpack")
 		if [[ -d "${BUILD_DIR}/build/install" ]]; then
-			executable_script="$(cd "${BUILD_DIR}" && find build/install/*/bin -type f -executable 2>/dev/null | grep -v "\.bat$" | head -1)"
+			executable_script="$(cd "${BUILD_DIR}" && find **/build/install/*/bin -type f -executable 2>/dev/null | grep -v "\.bat$" | head -1)"
 			if [[ -n "${executable_script}" ]]; then
 				echo "default_process_types:"
 				echo "  web: ${executable_script}"
