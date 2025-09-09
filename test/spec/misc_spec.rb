@@ -74,11 +74,32 @@ RSpec.describe 'Gradle buildpack' do
     end
   end
 
-  it 'succeeds when GRADLE_TASK is set to a custom task' do
-    app = Hatchet::Runner.new('simple-http-service', config: { GRADLE_TASK: 'pleasefail -x check' })
+  it 'fails with a descriptive error message when GRADLE_TASK contains a non-existent task' do
+    app = Hatchet::Runner.new('simple-http-service',
+                              allow_failure: true,
+                              config: { GRADLE_TASK: 'pleasefail -x check' })
 
     app.deploy do
-      expect(app.output).to include('BUILD SUCCESSFUL')
+      expect(clean_output(app.output)).to include(<<~OUTPUT)
+        remote:  !     Error: Gradle task 'pleasefail' not found.
+        remote:  !     
+        remote:  !     The specified Gradle task 'pleasefail' does not exist in your project.
+        remote:  !     This can happen when:
+        remote:  !     
+        remote:  !     - The task name is misspelled
+        remote:  !     - The task is defined in a plugin that hasn't been applied
+        remote:  !     - The task is only available in certain project configurations
+        remote:  !     - You're trying to run a task that doesn't exist in this project
+        remote:  !     
+        remote:  !     To see all available tasks in your project, run:
+        remote:  !     $ ./gradlew tasks
+        remote:  !     
+        remote:  !     To see all tasks including those from plugins, run:
+        remote:  !     $ ./gradlew tasks --all
+        remote:  !     
+        remote:  !     If you're setting GRADLE_TASK as an environment variable, make sure
+        remote:  !     it contains a valid task name for your project.
+      OUTPUT
     end
   end
 end
