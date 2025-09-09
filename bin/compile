@@ -128,10 +128,10 @@ gradle_version="$( (cd "${BUILD_DIR}" && ./gradlew --version 2>/dev/null | awk '
 metrics::set_string "gradle_version" "${gradle_version}"
 
 # Attempt to detect the application framework
-framework_detection_start=$(util::nowms)
+app_framework_detection_start=$(util::nowms)
 detected_app_framework=$(frameworks::detect "${BUILD_DIR}")
 metrics::set_string "app_framework" "${detected_app_framework:-unknown}"
-metrics::set_duration "framework_detection_duration" "${framework_detection_start}"
+metrics::set_duration "app_framework_detection_duration" "${app_framework_detection_start}"
 
 # Determine the Gradle task to execute
 if [ -z "${GRADLE_TASK:-}" ]; then
@@ -148,6 +148,9 @@ if [ -z "${GRADLE_TASK:-}" ]; then
 				;;
 			"quarkus")
 				GRADLE_TASK="build -x check"
+				;;
+			"ratpack")
+				GRADLE_TASK="installDist -x check"
 				;;
 			*)
 				GRADLE_TASK="stage"

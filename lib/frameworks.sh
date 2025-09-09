@@ -10,7 +10,7 @@ set -euo pipefail
 # version catalogs, variables, and transitive dependencies.
 #
 # Returns the detected framework name or empty string if none detected.
-# Priority order: spring-boot-webapp-runner, spring-boot, micronaut, quarkus (most specific first)
+# Priority order: spring-boot-webapp-runner, spring-boot, micronaut, quarkus, ratpack (most specific first)
 #
 # Usage:
 # ```
@@ -20,6 +20,7 @@ set -euo pipefail
 #     "spring-boot") echo "Spring Boot detected" ;;
 #     "micronaut") echo "Micronaut detected" ;;
 #     "quarkus") echo "Quarkus detected" ;;
+#     "ratpack") echo "Ratpack detected" ;;
 # esac
 # ```
 function frameworks::detect() {
@@ -38,6 +39,8 @@ function frameworks::detect() {
 		echo "micronaut"
 	elif grep -qs "io.quarkus:" <<< "${dependencies}"; then
 		echo "quarkus"
+	elif grep -qs "io.ratpack:" <<< "${dependencies}"; then
+		echo "ratpack"
 	fi
 }
 
