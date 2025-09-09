@@ -128,8 +128,6 @@ if [ -z "${GRADLE_TASK:-}" ]; then
 		GRADLE_TASK="shadowJar -x check"
 	elif frameworks::is_quarkus "${BUILD_DIR}"; then
 		GRADLE_TASK="build -x check"
-	elif frameworks::is_ratpack "${BUILD_DIR}"; then
-		GRADLE_TASK="installDist -x check"
 	else
 		GRADLE_TASK="stage"
 	fi

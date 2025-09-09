@@ -80,23 +80,6 @@ function frameworks::is_quarkus() {
 	[[ -f "${gradle_file}" ]] && grep -qs "io.quarkus" "${gradle_file}"
 }
 
-# Detects if the application uses Ratpack by checking for Ratpack
-# dependencies in the Gradle build file.
-#
-# Usage:
-# ```
-# if frameworks::is_ratpack "${BUILD_DIR}"; then
-#     echo "Ratpack application detected"
-# fi
-# ```
-function frameworks::is_ratpack() {
-	local build_directory="${1}"
-	local gradle_file
-	gradle_file="$(frameworks::get_gradle_build_file "${build_directory}")"
-
-	[[ -f "${gradle_file}" ]] && grep -qs "^[^/].*io.ratpack.ratpack" "${gradle_file}"
-}
-
 # Detects if the application is a Grails project by checking for Grails
 # dependencies in the Gradle build file.
 #
