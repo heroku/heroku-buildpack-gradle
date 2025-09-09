@@ -1,15 +1,13 @@
 [buildpack]
 name = "Gradle"
 
-  [publish.Ignore]
-  files = [
-    "etc/",
-    "spec/",
-    "test/",
-    "vendor/",
-    ".gitignore",
-    ".github/",
-    "hatchet.json",
-    "Gemfile",
-    "Gemfile.lock",
+[publish.Ignore]
+files = [
+  "etc/",
+  "test/",
+  ".gitignore",
+  ".github/",
+  "hatchet.json",
+  "Gemfile",
+  "Gemfile.lock",
 ]
