@@ -1,5 +1,3 @@
-package spec.fixtures.repos.`quarkus-3-gradle-kotlin`
-
 plugins {
     java
     id("io.quarkus")

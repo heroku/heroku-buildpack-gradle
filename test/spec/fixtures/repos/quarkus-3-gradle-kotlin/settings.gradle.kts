@@ -1,5 +1,3 @@
-package spec.fixtures.repos.`quarkus-3-gradle-kotlin`
-
 pluginManagement {
     val quarkusPluginVersion: String by settings
     val quarkusPluginId: String by settings

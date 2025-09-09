@@ -1,4 +1,4 @@
-package spec.fixtures.repos.micronaut;
+package com.example;
 
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
