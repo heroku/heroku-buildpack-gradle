@@ -7,15 +7,37 @@ RSpec.describe 'Gradle buildpack' do
     app = Hatchet::Runner.new('spring-3-gradle-groovy')
 
     app.run_ci do |test_run|
-      expect(clean_output(test_run.output)).to include('BUILD SUCCESSFUL')
-      expect(clean_output(test_run.output)).to match(/DemoApplicationTests/)
+      # First CI run should build from scratch
+      expect(clean_output(test_run.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
+        remote:        \\$ \\./gradlew testClasses
+        remote:        > Task :compileJava
+        remote:        > Task :processResources
+        remote:        > Task :classes
+        remote:        > Task :compileTestJava
+        remote:        > Task :processTestResources NO-SOURCE
+        remote:        > Task :testClasses
+        remote:        
+        remote:        BUILD SUCCESSFUL in [0-9]+s
+        remote:        3 actionable tasks: 3 executed
+      REGEX
 
-      expect(clean_output(test_run.output)).not_to include('UP-TO-DATE')
+      expect(clean_output(test_run.output)).to match(/DemoApplicationTests/)
 
       test_run.run_again
 
-      expect(clean_output(test_run.output)).to include('BUILD SUCCESSFUL')
-      expect(clean_output(test_run.output)).to include('UP-TO-DATE')
+      # Second CI run should use cached artifacts
+      expect(clean_output(test_run.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
+        remote:        \\$ \\./gradlew testClasses
+        remote:        > Task :compileJava FROM-CACHE
+        remote:        > Task :processResources
+        remote:        > Task :classes
+        remote:        > Task :compileTestJava FROM-CACHE
+        remote:        > Task :processTestResources NO-SOURCE
+        remote:        > Task :testClasses
+        remote:        
+        remote:        BUILD SUCCESSFUL in [0-9]+s
+        remote:        3 actionable tasks: 1 executed, 2 from cache
+      REGEX
     end
   end
 end
