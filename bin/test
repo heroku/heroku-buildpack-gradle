@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# fail fast
 set -euo pipefail
 
 (cd "${1}" && ./gradlew --no-daemon check)

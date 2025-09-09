@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# fail fast
 set -euo pipefail
 
 BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
