@@ -21,7 +21,7 @@ RSpec.describe 'Gradle buildpack' do
         	with(copySpec {
         		from(layout.buildDirectory.dir("libs"))
         		include("*.jar")
-        		rename("\\.jar", "-additional.jar")
+        		rename("\\\\.jar", "-additional.jar")
         	})
         }
       KOTLIN
