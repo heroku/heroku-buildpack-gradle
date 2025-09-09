@@ -28,9 +28,14 @@ if [ ! -f "${BUILD_DIR}/gradlew" ]; then
 	output::error <<-EOF
 		Error: Gradle Wrapper is missing.
 
-		The Gradle wrapper (gradlew) is required to build your application on Heroku.
+		The Gradle Wrapper (gradlew) is required to build your application on Heroku.
 		This ensures that your application builds with the same version of Gradle
-		that you use during development.
+		that you use during development. Projects are required to include
+		their own Wrapper for reliable, reproducible builds.
+
+		Note: The buildpack used to provide a default Gradle Wrapper (using Gradle 2.0) for
+		applications that didn't include their own wrapper. That workaround was deprecated
+		in 2014 and has now been removed.
 
 		To fix this issue, run this command in your project directory
 		locally and commit the generated files:
