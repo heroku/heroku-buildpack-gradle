@@ -98,11 +98,13 @@ if ! (cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) >"${gradle_daem
 
 		- Corrupted or missing Gradle wrapper files
 		- Invalid Gradle configuration in build.gradle or settings.gradle
-		- Insufficient memory or disk space
 		- Network connectivity issues downloading Gradle dependencies
 		- Incompatible Gradle version with the current Java runtime
 
-		Try building your application locally with the same Gradle version
+		If this appears to be a temporary network or download issue,
+		try deploying again as it may resolve itself.
+
+		Try building your application locally with ./gradlew
 		to reproduce and debug the issue.
 	EOF
 

@@ -24,11 +24,13 @@ RSpec.describe 'Gradle buildpack' do
         remote:  !     
         remote:  !     - Corrupted or missing Gradle wrapper files
         remote:  !     - Invalid Gradle configuration in build.gradle or settings.gradle
-        remote:  !     - Insufficient memory or disk space
         remote:  !     - Network connectivity issues downloading Gradle dependencies
         remote:  !     - Incompatible Gradle version with the current Java runtime
         remote:  !     
-        remote:  !     Try building your application locally with the same Gradle version
+        remote:  !     If this appears to be a temporary network or download issue,
+        remote:  !     try deploying again as it may resolve itself.
+        remote:  !     
+        remote:  !     Try building your application locally with ./gradlew
         remote:  !     to reproduce and debug the issue.
       OUTPUT
     end
