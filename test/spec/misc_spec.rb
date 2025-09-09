@@ -3,6 +3,41 @@
 require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
+  it 'fails with a descriptive error message when Gradle wrapper is missing' do
+    app = Hatchet::Runner.new('simple-http-service', allow_failure: true)
+    app.before_deploy do
+      # Remove gradle wrapper to trigger missing wrapper error
+      File.delete('gradlew')
+      `git add . && git commit -m "remove gradle wrapper"`
+    end
+
+    app.deploy do
+      expect(clean_output(app.output)).to include(<<~OUTPUT)
+        remote:  !     Error: Gradle Wrapper is missing.
+        remote:  !     
+        remote:  !     The Gradle wrapper (gradlew) is required to build your application on Heroku.
+        remote:  !     This ensures that your application builds with the same version of Gradle
+        remote:  !     that you use during development. Projects are required to include
+        remote:  !     their own wrapper for reliable, reproducible builds.
+        remote:  !     
+        remote:  !     Note: The buildpack used to provide a default Gradle wrapper (for Gradle 2.0) for
+        remote:  !     applications that didn't include their own wrapper. That workaround was deprecated
+        remote:  !     in 2014 and has now been removed.
+        remote:  !     
+        remote:  !     To fix this issue, run this command in your project directory
+        remote:  !     locally and commit the generated files:
+        remote:  !     $ gradle wrapper
+        remote:  !     
+        remote:  !     If you don't have Gradle installed locally, you can install it first:
+        remote:  !     https://gradle.org/install/
+        remote:  !     
+        remote:  !     For more information about Gradle Wrapper, see:
+        remote:  !     https://docs.gradle.org/current/userguide/gradle_wrapper.html
+        remote:  !     https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
+      OUTPUT
+    end
+  end
+
   it 'fails with a descriptive error message when Gradle daemon fails to start' do
     app = Hatchet::Runner.new('simple-http-service', allow_failure: true)
     app.before_deploy do
