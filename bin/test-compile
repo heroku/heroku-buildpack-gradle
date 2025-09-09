@@ -8,8 +8,6 @@ export GRADLE_TASK="testClasses"
 
 source "${BUILDPACK_DIR}/bin/compile"
 
-# TODO: Verify that the project cache dir works during bin/test
-
 # Copy the contents of the Gradle user home to the build directory so that configuration
 # and build caches are available as runtime for tests.
 util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
