@@ -23,15 +23,20 @@ RSpec.describe 'Gradle buildpack' do
         remote:  !     Common causes include:
         remote:  !     
         remote:  !     - Corrupted or missing Gradle wrapper files
-        remote:  !     - Invalid Gradle configuration in build.gradle or settings.gradle
+        remote:  !     - Invalid Gradle configuration in build.gradle(.kts) or settings.gradle(.kts)
         remote:  !     - Network connectivity issues downloading Gradle dependencies
         remote:  !     - Incompatible Gradle version with the current Java runtime
+        remote:  !     
+        remote:  !     To resolve this issue:
+        remote:  !     1. Verify your Gradle wrapper works locally: ./gradlew --version
+        remote:  !     2. Check your build.gradle(.kts) and settings.gradle(.kts) for syntax errors
+        remote:  !     3. Ensure you're using a supported Gradle version
         remote:  !     
         remote:  !     If this appears to be a temporary network or download issue,
         remote:  !     try deploying again as it may resolve itself.
         remote:  !     
-        remote:  !     Try building your application locally with ./gradlew
-        remote:  !     to reproduce and debug the issue.
+        remote:  !     For more information, see:
+        remote:  !     https://docs.gradle.org/current/userguide/troubleshooting.html
       OUTPUT
     end
   end
@@ -63,15 +68,20 @@ RSpec.describe 'Gradle buildpack' do
         remote:  !     First, check the build output above for specific error messages
         remote:  !     from Gradle that might indicate what went wrong. Common issues include:
         remote:  !     
-        remote:  !     - Missing or incompatible dependencies in your build.gradle
+        remote:  !     - Missing or incompatible dependencies in your build.gradle(.kts)
         remote:  !     - Compilation errors in your application source code
         remote:  !     - Test failures (if tests are enabled during the build)
         remote:  !     - Invalid Gradle configuration or settings
         remote:  !     - Using an incompatible OpenJDK version for your project
         remote:  !     
-        remote:  !     If you're unable to determine the cause from the Gradle output,
-        remote:  !     try building your application locally with the same Gradle command
-        remote:  !     to reproduce and debug the issue.
+        remote:  !     To troubleshoot this issue:
+        remote:  !     1. Try building your application locally with the same Gradle command
+        remote:  !     2. Check that your gradlew script works locally: ./gradlew build
+        remote:  !     3. Verify your Java version is compatible with your project
+        remote:  !     
+        remote:  !     If the error persists, check the documentation:
+        remote:  !     https://docs.gradle.org/current/userguide/troubleshooting.html
+        remote:  !     https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
       OUTPUT
     end
   end
@@ -93,7 +103,7 @@ RSpec.describe 'Gradle buildpack' do
         remote:  !     - The task is only available in certain project configurations
         remote:  !     - You're trying to run a task that doesn't exist in this project
         remote:  !     
-        remote:  !     To see all available tasks in your project, run:
+        remote:  !     To see all available tasks in your project, run locally:
         remote:  !     $ ./gradlew tasks
         remote:  !     
         remote:  !     To see all tasks including those from plugins, run:
@@ -101,6 +111,9 @@ RSpec.describe 'Gradle buildpack' do
         remote:  !     
         remote:  !     If you're setting GRADLE_TASK as an environment variable, make sure
         remote:  !     it contains a valid task name for your project.
+        remote:  !     
+        remote:  !     For more information about Gradle tasks, see:
+        remote:  !     https://docs.gradle.org/current/userguide/more_about_tasks.html
       OUTPUT
     end
   end

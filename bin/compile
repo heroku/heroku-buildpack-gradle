@@ -42,6 +42,7 @@ if [ ! -f "${BUILD_DIR}/gradlew" ]; then
 
 		For more information about Gradle Wrapper, see:
 		https://docs.gradle.org/current/userguide/gradle_wrapper.html
+		https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
 	EOF
 
 	metrics::set_string "failure_reason" "gradle_wrapper::missing"
@@ -96,15 +97,20 @@ if ! (cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) >"${gradle_daem
 		Common causes include:
 
 		- Corrupted or missing Gradle wrapper files
-		- Invalid Gradle configuration in build.gradle or settings.gradle
+		- Invalid Gradle configuration in build.gradle(.kts) or settings.gradle(.kts)
 		- Network connectivity issues downloading Gradle dependencies
 		- Incompatible Gradle version with the current Java runtime
+
+		To resolve this issue:
+		1. Verify your Gradle wrapper works locally: ./gradlew --version
+		2. Check your build.gradle(.kts) and settings.gradle(.kts) for syntax errors
+		3. Ensure you're using a supported Gradle version
 
 		If this appears to be a temporary network or download issue,
 		try deploying again as it may resolve itself.
 
-		Try building your application locally with ./gradlew
-		to reproduce and debug the issue.
+		For more information, see:
+		https://docs.gradle.org/current/userguide/troubleshooting.html
 	EOF
 
 	metrics::set_string "failure_reason" "gradle_daemon::start_failed"
@@ -158,7 +164,7 @@ if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | tee "${gradle_output
 			- The task is only available in certain project configurations
 			- You're trying to run a task that doesn't exist in this project
 
-			To see all available tasks in your project, run:
+			To see all available tasks in your project, run locally:
 			$ ./gradlew tasks
 
 			To see all tasks including those from plugins, run:
@@ -166,6 +172,9 @@ if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | tee "${gradle_output
 
 			If you're setting GRADLE_TASK as an environment variable, make sure
 			it contains a valid task name for your project.
+
+			For more information about Gradle tasks, see:
+			https://docs.gradle.org/current/userguide/more_about_tasks.html
 		EOF
 
 		metrics::set_string "failure_reason" "gradle_build::task_not_found"
@@ -180,15 +189,20 @@ if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | tee "${gradle_output
 			First, check the build output above for specific error messages
 			from Gradle that might indicate what went wrong. Common issues include:
 
-			- Missing or incompatible dependencies in your build.gradle
+			- Missing or incompatible dependencies in your build.gradle(.kts)
 			- Compilation errors in your application source code
 			- Test failures (if tests are enabled during the build)
 			- Invalid Gradle configuration or settings
 			- Using an incompatible OpenJDK version for your project
 
-			If you're unable to determine the cause from the Gradle output,
-			try building your application locally with the same Gradle command
-			to reproduce and debug the issue.
+			To troubleshoot this issue:
+			1. Try building your application locally with the same Gradle command
+			2. Check that your gradlew script works locally: ./gradlew build
+			3. Verify your Java version is compatible with your project
+
+			If the error persists, check the documentation:
+			https://docs.gradle.org/current/userguide/troubleshooting.html
+			https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
 		EOF
 
 		metrics::set_string "failure_reason" "gradle_build::non_zero_exit_code"
