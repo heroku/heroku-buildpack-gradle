@@ -127,15 +127,19 @@ gradle_version="unknown"
 gradle_version="$( (cd "${BUILD_DIR}" && ./gradlew --version 2>/dev/null | awk '/^Gradle/ {gsub(/\x1b\[[0-9;]*m/, ""); print $2}') || true)"
 metrics::set_string "gradle_version" "${gradle_version}"
 
+# Attempt to detect the application framework
+framework_detection_start=$(util::nowms)
+detected_app_framework=$(frameworks::detect "${BUILD_DIR}")
+metrics::set_string "app_framework" "${detected_app_framework:-unknown}"
+metrics::set_duration "framework_detection_duration" "${framework_detection_start}"
+
 # Determine the Gradle task to execute
 if [ -z "${GRADLE_TASK:-}" ]; then
 	# If a stage task is available, use it instead of trying to guess the task to run
 	if (cd "${BUILD_DIR}" && ./gradlew tasks --all 2>/dev/null | grep -q "^stage "); then
 		GRADLE_TASK="stage"
 	else
-		# Detect framework and set appropriate task
-		framework=$(frameworks::detect "${BUILD_DIR}")
-		case "${framework}" in
+		case "${detected_app_framework}" in
 			"spring-boot-webapp-runner"|"spring-boot")
 				GRADLE_TASK="build -x check"
 				;;
