@@ -4,7 +4,6 @@
 # however, it helps Shellcheck realise the options under which these functions will run.
 set -euo pipefail
 
-
 # Detects the primary framework used by the application by analyzing resolved dependencies.
 # This is much more reliable than parsing build files as it handles all DSL syntax,
 # version catalogs, variables, and transitive dependencies.
@@ -25,22 +24,21 @@ set -euo pipefail
 # ```
 function frameworks::detect() {
 	local build_directory="${1}"
-	
+
 	local dependencies
 	dependencies=$(cd "${build_directory}" && ./gradlew dependencies --configuration compileClasspath --quiet 2>/dev/null || echo "")
-	
-	if grep -qs "org.springframework.boot:" <<< "${dependencies}"; then
-		if grep -qs "webapp-runner" <<< "${dependencies}"; then
+
+	if grep -qs "org.springframework.boot:" <<<"${dependencies}"; then
+		if grep -qs "webapp-runner" <<<"${dependencies}"; then
 			echo "spring-boot-webapp-runner"
 		else
 			echo "spring-boot"
 		fi
-	elif grep -qs "io.micronaut:" <<< "${dependencies}"; then
+	elif grep -qs "io.micronaut:" <<<"${dependencies}"; then
 		echo "micronaut"
-	elif grep -qs "io.quarkus:" <<< "${dependencies}"; then
+	elif grep -qs "io.quarkus:" <<<"${dependencies}"; then
 		echo "quarkus"
-	elif grep -qs "io.ratpack:" <<< "${dependencies}"; then
+	elif grep -qs "io.ratpack:" <<<"${dependencies}"; then
 		echo "ratpack"
 	fi
 }
-

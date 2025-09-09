@@ -140,21 +140,21 @@ if [ -z "${GRADLE_TASK:-}" ]; then
 		GRADLE_TASK="stage"
 	else
 		case "${detected_app_framework}" in
-			"spring-boot-webapp-runner"|"spring-boot")
-				GRADLE_TASK="build -x check"
-				;;
-			"micronaut")
-				GRADLE_TASK="shadowJar -x check"
-				;;
-			"quarkus")
-				GRADLE_TASK="build -x check"
-				;;
-			"ratpack")
-				GRADLE_TASK="installDist -x check"
-				;;
-			*)
-				GRADLE_TASK="stage"
-				;;
+		"spring-boot-webapp-runner" | "spring-boot")
+			GRADLE_TASK="build -x check"
+			;;
+		"micronaut")
+			GRADLE_TASK="shadowJar -x check"
+			;;
+		"quarkus")
+			GRADLE_TASK="build -x check"
+			;;
+		"ratpack")
+			GRADLE_TASK="installDist -x check"
+			;;
+		*)
+			GRADLE_TASK="stage"
+			;;
 		esac
 	fi
 fi
