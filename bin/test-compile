@@ -1,21 +1,12 @@
 #!/usr/bin/env bash
-# bin/test-compile <build-dir> <cache-dir> <env-dir>
 
-# fail fast
 set -euo pipefail
 
 BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-source "${BUILDPACK_DIR}/lib/common.sh"
-source "${BUILDPACK_DIR}/lib/output.sh"
-source "${BUILDPACK_DIR}/lib/util.sh"
-
-BUILD_DIR="${1}"
-CACHE_DIR="${2}"
-ENV_DIR="${3}"
 
 export GRADLE_TASK="testClasses"
 
-"${BUILDPACK_DIR}/bin/compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
+source "${BUILDPACK_DIR}/bin/compile"
 
 # TODO: Verify that the project cache dir works during bin/test
 
@@ -23,7 +14,7 @@ export GRADLE_TASK="testClasses"
 # and build caches are available as runtime for tests.
 util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
 
-# We need to resolve the testRuntime dependencies for the tests to run, but Gradle doesn't have a built-in way to do this.
+# We need to resolve the test runtime dependencies for the tests to run, but Gradle doesn't have a built-in way to do this.
 # Instead, we use a custom init script to resolve the dependencies.
 # https://docs.gradle.org/current/userguide/init_scripts.html
 heroku_gradle_init_script=$(mktemp)
@@ -36,7 +27,14 @@ class HerokuInitPlugin implements Plugin<Gradle> {
 		gradle.allprojects{ project ->
 			project.task('resolveTestRuntime') {
 				doLast {
-				  project.configurations.testRuntime.resolve()
+					// testRuntime was replaced with testRuntimeClasspath in Gradle 7.0. 
+					// For compatibility with older versions, we check for both configurations.
+					// https://docs.gradle.org/current/userguide/upgrading_version_6.html
+					if (project.configurations.findByName('testRuntimeClasspath')) {
+						project.configurations.testRuntimeClasspath.resolve()
+					} else if (project.configurations.findByName('testRuntime')) {
+						project.configurations.testRuntime.resolve()
+					}
 				}
 			}
 		}
@@ -44,7 +42,7 @@ class HerokuInitPlugin implements Plugin<Gradle> {
 }
 EOF
 
-echo "-----> Resolving testRuntime dependencies..."
+echo "-----> Resolving test runtime dependencies..."
 (cd "${BUILD_DIR}" && ./gradlew --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
 
 # Write the Gradle user home back into the cache to make sure the test dependencies get permanently cached too.
