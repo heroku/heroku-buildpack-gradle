@@ -12,6 +12,10 @@ gradle_files=(
 	"settings.gradle.kts"
 )
 
+# We only check if any Gradle-related file exists to identify this as a Gradle project.
+# We intentionally don't validate that all required files are present (e.g., gradlew)
+# so that the compile script can provide more specific and helpful error messages
+# about what's missing, rather than failing early here with a generic message.
 for gradle_file in "${gradle_files[@]}"; do
 	if [[ -f "${BUILD_DIR}/${gradle_file}" ]]; then
 		echo "Gradle"
@@ -19,5 +23,5 @@ for gradle_file in "${gradle_files[@]}"; do
 	fi
 done
 
-(>&2 echo "Could not find a Gradle project! Please check that you have a gradlew script or build.gradle(.kts) file and that they are committed to Git.")
+(>&2 echo "Could not find a gradlew file or other supported Gradle files!")
 exit 1
