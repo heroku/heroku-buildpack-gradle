@@ -46,12 +46,10 @@ if [[ ! -f "${BUILD_DIR}/Procfile" ]]; then
 		fi
 		;;
 	"ratpack")
-		if [[ -d "${BUILD_DIR}/build/install" ]]; then
-			executable_script="$(cd "${BUILD_DIR}" && find . -path "*/build/install/*/bin/*" -executable -type f ! -name "*.bat" 2>/dev/null | head -1)"
-			if [[ -n "${executable_script}" ]]; then
-				echo "default_process_types:"
-				echo "  web: ${executable_script}"
-			fi
+		executable_script="$(cd "${BUILD_DIR}" && find . -path "*/build/install/*/bin/*" -executable -type f ! -name "*.bat" 2>/dev/null | head -1)"
+		if [[ -n "${executable_script}" ]]; then
+			echo "default_process_types:"
+			echo "  web: ${executable_script}"
 		fi
 		;;
 	esac
