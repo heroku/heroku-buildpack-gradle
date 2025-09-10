@@ -12,6 +12,24 @@ RSpec.describe 'Gradle buildpack' do
         -----> Gradle app detected
         -----> Installing Azul Zulu OpenJDK \\d+\\.\\d+\\.\\d+
         -----> Starting Gradle daemon
+
+ !     Warning: Gradle version approaching end-of-life\\.
+ !     
+ !     You are using Gradle \\d+\\.\\d+\\.\\d+, which is in maintenance mode and only
+ !     receives security fixes\\. It will become end-of-life when Gradle 10 is released\\.
+ !     
+ !     Consider upgrading to Gradle 9 for active support and the latest features\\.
+ !     
+ !     This buildpack currently supports Gradle 8, but once it becomes end-of-life
+ !     \\(when Gradle 10 is released\\), compatibility may no longer be guaranteed\\.
+ !     We recommend upgrading for the best long-term experience\\.
+ !     
+ !     For more information:
+ !     - https://docs\\.gradle\\.org/current/userguide/feature_lifecycle\\.html#eol_support
+ !     
+ !     Upgrade guide:
+ !     - https://docs\\.gradle\\.org/current/userguide/upgrading_major_version_9\\.html
+
         -----> Executing Gradle
                \\$ \\./gradlew testClasses
                > Task :compileJava
@@ -61,6 +79,24 @@ RSpec.describe 'Gradle buildpack' do
         -----> Gradle app detected
         -----> Installing Azul Zulu OpenJDK \\d+\\.\\d+\\.\\d+
         -----> Starting Gradle daemon
+
+ !     Warning: Gradle version approaching end-of-life\\.
+ !     
+ !     You are using Gradle \\d+\\.\\d+\\.\\d+, which is in maintenance mode and only
+ !     receives security fixes\\. It will become end-of-life when Gradle 10 is released\\.
+ !     
+ !     Consider upgrading to Gradle 9 for active support and the latest features\\.
+ !     
+ !     This buildpack currently supports Gradle 8, but once it becomes end-of-life
+ !     \\(when Gradle 10 is released\\), compatibility may no longer be guaranteed\\.
+ !     We recommend upgrading for the best long-term experience\\.
+ !     
+ !     For more information:
+ !     - https://docs\\.gradle\\.org/current/userguide/feature_lifecycle\\.html#eol_support
+ !     
+ !     Upgrade guide:
+ !     - https://docs\\.gradle\\.org/current/userguide/upgrading_major_version_9\\.html
+
         -----> Executing Gradle
                \\$ \\./gradlew testClasses
                > Task :compileJava FROM-CACHE
