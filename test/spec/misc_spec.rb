@@ -15,12 +15,12 @@ RSpec.describe 'Gradle buildpack' do
       expect(clean_output(app.output)).to include(<<~OUTPUT)
         remote:  !     Error: Gradle Wrapper is missing.
         remote:  !     
-        remote:  !     The Gradle wrapper (gradlew) is required to build your application on Heroku.
+        remote:  !     The Gradle Wrapper (gradlew) is required to build your application on Heroku.
         remote:  !     This ensures that your application builds with the same version of Gradle
         remote:  !     that you use during development. Projects are required to include
-        remote:  !     their own wrapper for reliable, reproducible builds.
+        remote:  !     their own Wrapper for reliable, reproducible builds.
         remote:  !     
-        remote:  !     Note: The buildpack used to provide a default Gradle wrapper (for Gradle 2.0) for
+        remote:  !     Note: The buildpack used to provide a default Gradle Wrapper (using Gradle 2.0) for
         remote:  !     applications that didn't include their own wrapper. That workaround was deprecated
         remote:  !     in 2014 and has now been removed.
         remote:  !     

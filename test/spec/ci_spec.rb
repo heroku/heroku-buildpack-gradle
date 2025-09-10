@@ -11,7 +11,7 @@ RSpec.describe 'Gradle buildpack' do
       expect(clean_output(test_run.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
         -----> Gradle app detected
         -----> Installing Azul Zulu OpenJDK \\d+\\.\\d+\\.\\d+
-        -----> Starting Gradle daemon...
+        -----> Starting Gradle daemon
         -----> Executing Gradle
                \\$ \\./gradlew testClasses
                > Task :compileJava
@@ -23,8 +23,8 @@ RSpec.describe 'Gradle buildpack' do
                
                BUILD SUCCESSFUL in \\d+s
                3 actionable tasks: 3 executed
-        -----> Stopping Gradle daemon...
-        -----> Resolving test runtime dependencies...
+        -----> Stopping Gradle daemon
+        -----> Resolving test runtime dependencies
                Starting a Gradle Daemon, \\d+ stopped Daemon could not be reused, use --status for details
                > Task :resolveTestRuntime
                
@@ -60,7 +60,7 @@ RSpec.describe 'Gradle buildpack' do
       expect(clean_output(test_run.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
         -----> Gradle app detected
         -----> Installing Azul Zulu OpenJDK \\d+\\.\\d+\\.\\d+
-        -----> Starting Gradle daemon...
+        -----> Starting Gradle daemon
         -----> Executing Gradle
                \\$ \\./gradlew testClasses
                > Task :compileJava FROM-CACHE
@@ -72,8 +72,8 @@ RSpec.describe 'Gradle buildpack' do
                
                BUILD SUCCESSFUL in \\d+s
                3 actionable tasks: 1 executed, 2 from cache
-        -----> Stopping Gradle daemon...
-        -----> Resolving test runtime dependencies...
+        -----> Stopping Gradle daemon
+        -----> Resolving test runtime dependencies
                Starting a Gradle Daemon, \\d+ stopped Daemon could not be reused, use --status for details
                > Task :resolveTestRuntime
                
