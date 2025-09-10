@@ -1,56 +1,52 @@
 #!/usr/bin/env bash
-# bin/test-compile <build-dir> <cache-dir> <env-dir>
 
-# fail fast
-set -e
+set -euo pipefail
 
-BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
-BIN_DIR=$BP_DIR/bin
-LIB_DIR=$BP_DIR/lib
-. $LIB_DIR/common.sh
-
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
+BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 
 export GRADLE_TASK="testClasses"
-export GRADLE_USER_HOME=$BUILD_DIR/.gradle
 
-cache_copy ".gradle" $CACHE_DIR $BUILD_DIR
+source "${BUILDPACK_DIR}/bin/compile"
 
-# Temporary workaround for issue #80 (https://github.com/heroku/heroku-buildpack-gradle/issues/80):
-# /bin/compile will not create a .gradle directory if it doesn't already exist. It will instead symlink
-# ${BUILD_DIR}/.gradle to ${CACHE_DIR}/.gradle-project and remove that link after /bin/compile exits. This works well
-# for normal compiles. However, /bin/test will then not have access to the cache and will do a fresh recompile.
-#
-# To work around this issue, we create ${BUILD_DIR}/.gradle here, disabling the symlink feature and allowing /bin/test
-# to make use of the cache.
-if [[ ! -d "${GRADLE_USER_HOME}" ]]; then
-  mkdir -p "${GRADLE_USER_HOME}"
-fi
+# Copy the contents of the Gradle user home to the build directory so that configuration
+# and build caches are available as runtime for tests.
+util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
 
-$BIN_DIR/compile "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR"
-
-HEROKU_GRADLE_INIT_SCRIPT="/tmp/resolve.gradle"
-cat << EOF > $HEROKU_GRADLE_INIT_SCRIPT
+# We need to resolve the test runtime dependencies for the tests to run, but Gradle doesn't have a built-in way to do this.
+# Instead, we use a custom init script to resolve the dependencies.
+# https://docs.gradle.org/current/userguide/init_scripts.html
+heroku_gradle_init_script=$(mktemp)
+cat <<EOF >"${heroku_gradle_init_script}"
 apply plugin:HerokuInitPlugin
 
 class HerokuInitPlugin implements Plugin<Gradle> {
-  @Override
-  void apply(Gradle gradle) {
-    gradle.allprojects{ project ->
-      project.task('resolveTestRuntime') {
-        doLast {
-          project.configurations.testRuntime.resolve()
-        }
-      }
-    }
-  }
+	@Override
+	void apply(Gradle gradle) {
+		gradle.allprojects{ project ->
+			project.task('resolveTestRuntime') {
+				doLast {
+					// testRuntime was replaced with testRuntimeClasspath in Gradle 7.0. 
+					// For compatibility with older versions, we check for both configurations.
+					// https://docs.gradle.org/current/userguide/upgrading_version_6.html
+					if (project.configurations.findByName('testRuntimeClasspath')) {
+						project.configurations.testRuntimeClasspath.resolve()
+					} else if (project.configurations.findByName('testRuntime')) {
+						project.configurations.testRuntime.resolve()
+					}
+				}
+			}
+		}
+	}
 }
 EOF
 
-echo "-----> Resolving testRuntime dependencies..."
-cd $BUILD_DIR
-./gradlew --no-daemon --init-script $HEROKU_GRADLE_INIT_SCRIPT resolveTestRuntime 2>&1 | output /tmp/.resolveTestRuntime.log
+output::step "Resolving test runtime dependencies"
+(cd "${BUILD_DIR}" && ./gradlew --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
 
-cache_copy ".gradle" $BUILD_DIR $CACHE_DIR
+# Write the Gradle user home back into the cache to make sure the test dependencies get permanently cached too.
+util::cache_copy ".gradle" "${BUILD_DIR}" "${CACHE_DIR}"
+
+mkdir -p "${BUILD_DIR}/.profile.d"
+cat <<-EOF >"${BUILD_DIR}/.profile.d/gradle.sh"
+	export GRADLE_USER_HOME="\${HOME}/.gradle"
+EOF

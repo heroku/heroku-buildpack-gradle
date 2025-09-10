@@ -1,0 +1,16 @@
+example_id                             | status  | run_time               |
+-------------------------------------- | ------- | ---------------------- |
+./test/spec/caching_spec.rb[1:1]       | passed  | 1 minute 52.83 seconds |
+./test/spec/caching_spec.rb[1:2]       | unknown |                        |
+./test/spec/ci_spec.rb[1:1]            | failed  | 2 minutes 27.6 seconds |
+./test/spec/micronaut_spec.rb[1:1]     | unknown |                        |
+./test/spec/misc_spec.rb[1:1]          | unknown |                        |
+./test/spec/misc_spec.rb[1:2]          | unknown |                        |
+./test/spec/misc_spec.rb[1:3]          | unknown |                        |
+./test/spec/misc_spec.rb[1:4]          | unknown |                        |
+./test/spec/multiple_jars_spec.rb[1:1] | unknown |                        |
+./test/spec/quarkus_spec.rb[1:1]       | unknown |                        |
+./test/spec/ratpack_spec.rb[1:1]       | unknown |                        |
+./test/spec/smoke_spec.rb[1:1]         | failed  | 9.63 seconds           |
+./test/spec/spring_boot_spec.rb[1:1]   | unknown |                        |
+./test/spec/spring_boot_spec.rb[1:2]   | unknown |                        |
