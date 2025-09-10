@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle exec rspec test/spec/micronaut_spec.rb --format documentation)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
