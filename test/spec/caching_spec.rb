@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
   it 'caches compiled artifacts between builds with Groovy DSL' do
-    app = Hatchet::Runner.new('spring-3-gradle-groovy')
+    app = Hatchet::Runner.new('spring-3-gradle-8-groovy')
     app.deploy do
       # First build should compile everything from scratch
       expect(clean_output(app.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
@@ -44,7 +44,7 @@ RSpec.describe 'Gradle buildpack' do
   end
 
   it 'caches compiled artifacts between builds with Kotlin DSL' do
-    app = Hatchet::Runner.new('spring-3-gradle-kotlin')
+    app = Hatchet::Runner.new('spring-3-gradle-8-kotlin')
     app.deploy do
       # First build should compile everything from scratch
       expect(clean_output(app.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))

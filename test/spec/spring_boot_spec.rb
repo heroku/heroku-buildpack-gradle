@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
   it 'can build and run Spring Boot app with Groovy DSL build script' do
-    app = Hatchet::Runner.new('spring-3-gradle-groovy')
+    app = Hatchet::Runner.new('spring-3-gradle-8-groovy')
     app.deploy do
       # Should detect Spring Boot and run build -x check by default
       expect(app.output).to include('$ ./gradlew build -x check')
@@ -15,7 +15,7 @@ RSpec.describe 'Gradle buildpack' do
   end
 
   it 'can build and run Spring Boot app with Kotlin DSL build script' do
-    app = Hatchet::Runner.new('spring-3-gradle-kotlin')
+    app = Hatchet::Runner.new('spring-3-gradle-8-kotlin')
     app.deploy do
       # Should detect Spring Boot and run build -x check by default
       expect(app.output).to include('$ ./gradlew build -x check')

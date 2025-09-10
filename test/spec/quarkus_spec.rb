@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
   it 'can build and run Quarkus app with Kotlin DSL build script' do
-    app = Hatchet::Runner.new('quarkus-3-gradle-kotlin')
+    app = Hatchet::Runner.new('quarkus-3-gradle-9-kotlin')
     app.deploy do
       # Should detect Quarkus and run build -x check by default
       expect(app.output).to include('$ ./gradlew build -x check')

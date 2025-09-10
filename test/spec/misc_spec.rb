@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
   it 'fails with a descriptive error message when Gradle wrapper is missing' do
-    app = Hatchet::Runner.new('simple-http-service', allow_failure: true)
+    app = Hatchet::Runner.new('simple-http-service-gradle-8-groovy', allow_failure: true)
     app.before_deploy do
       # Remove gradle wrapper to trigger missing wrapper error
       File.delete('gradlew')
@@ -39,7 +39,7 @@ RSpec.describe 'Gradle buildpack' do
   end
 
   it 'fails with a descriptive error message when Gradle daemon fails to start' do
-    app = Hatchet::Runner.new('simple-http-service', allow_failure: true)
+    app = Hatchet::Runner.new('simple-http-service-gradle-8-groovy', allow_failure: true)
     app.before_deploy do
       # Corrupt gradle wrapper properties to cause daemon startup failure
       File.write('gradle/wrapper/gradle-wrapper.properties', 'invalid content')
@@ -77,7 +77,7 @@ RSpec.describe 'Gradle buildpack' do
   end
 
   it 'fails with a descriptive error message on a failed build' do
-    app = Hatchet::Runner.new('simple-http-service', allow_failure: true)
+    app = Hatchet::Runner.new('simple-http-service-gradle-8-groovy', allow_failure: true)
     app.before_deploy do
       File.write('src/main/java/com/heroku/App.java', <<~JAVA)
         package com.heroku;
@@ -122,7 +122,7 @@ RSpec.describe 'Gradle buildpack' do
   end
 
   it 'fails with a descriptive error message when GRADLE_TASK contains a non-existent task' do
-    app = Hatchet::Runner.new('simple-http-service',
+    app = Hatchet::Runner.new('simple-http-service-gradle-8-groovy',
                               allow_failure: true,
                               config: { GRADLE_TASK: 'pleasefail -x check' })
 

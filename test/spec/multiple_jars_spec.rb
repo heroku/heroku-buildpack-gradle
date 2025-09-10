@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
   it 'works with Spring Boot app that duplicates JARs' do
-    app = Hatchet::Runner.new('spring-3-gradle-kotlin')
+    app = Hatchet::Runner.new('spring-3-gradle-8-kotlin')
 
     # Add the duplicate-jars task to the build script
     app.before_deploy do

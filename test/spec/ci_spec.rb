@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
   it 'runs tests on Heroku CI' do
-    app = Hatchet::Runner.new('spring-3-gradle-groovy')
+    app = Hatchet::Runner.new('spring-3-gradle-8-groovy')
 
     app.run_ci do |test_run|
       # First CI run should build from scratch
