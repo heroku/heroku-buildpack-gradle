@@ -136,7 +136,7 @@ metrics::set_duration "app_framework_detection_duration" "${app_framework_detect
 # Write the detected framework name to a file for use in bin/release. bin/release does not have the
 # Gradle caches so the already expensive framework detection would be even more expensive to run.
 mkdir -p "${BUILD_DIR}/.heroku"
-echo "${detected_app_framework}" > "${BUILD_DIR}/.heroku/gradle_buildpack_detected_app_framework"
+echo "${detected_app_framework}" >"${BUILD_DIR}/.heroku/gradle_buildpack_detected_app_framework"
 
 # Determine the Gradle task to execute
 if [ -z "${GRADLE_TASK:-}" ]; then
