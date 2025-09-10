@@ -71,13 +71,21 @@ cat <<-EOF >"${GRADLE_USER_HOME}/gradle.properties"
 	org.gradle.projectcachedir=${CACHE_DIR}/.gradle-project
 EOF
 
-# We're adding this empty task to all projects to ensure we have a task we can run when
-# we start the Gradle daemon that doesn't side effect or output anything to the console.
+# We're adding custom tasks to support buildpack functionality via a Gradle init script.
 # https://docs.gradle.org/8.3/userguide/init_scripts.html
 cat <<-EOF >"${GRADLE_USER_HOME}/init.gradle"
 	allprojects {
 		// Intentionally using task over task.register for compatibility with older Gradle versions.
 		task('heroku-start-gradle-daemon')
+
+		// There is no built-in way to list all dependencies for all projects, we're adding a custom
+		// task to do this here. Only add it to projects that have dependency configurations.
+		afterEvaluate {
+			if (configurations.findByName('compileClasspath') != null) {
+				// Intentionally using task over task.register for compatibility with older Gradle versions.
+				task('heroku-list-all-dependencies', type: DependencyReportTask)
+			}
+		}
 	}
 EOF
 

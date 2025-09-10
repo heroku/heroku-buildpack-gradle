@@ -26,7 +26,7 @@ function frameworks::detect() {
 	local build_directory="${1}"
 
 	local dependencies
-	dependencies=$(cd "${build_directory}" && ./gradlew dependencies --configuration compileClasspath --quiet 2>/dev/null || echo "")
+	dependencies=$(cd "${build_directory}" && ./gradlew heroku-list-all-dependencies --quiet 2>/dev/null || echo "")
 
 	if grep -qs "org.springframework.boot:" <<<"${dependencies}"; then
 		if grep -qs "webapp-runner" <<<"${dependencies}"; then
