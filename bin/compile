@@ -135,6 +135,51 @@ gradle_version="unknown"
 gradle_version="$( (cd "${BUILD_DIR}" && ./gradlew --version 2>/dev/null | awk '/^Gradle/ {gsub(/\x1b\[[0-9;]*m/, ""); print $2}') || true)"
 metrics::set_string "gradle_version" "${gradle_version}"
 
+case "${gradle_version}" in
+[1-7].*)
+	output::warning <<-EOF
+		Warning: Unsupported Gradle version detected.
+
+		You are using Gradle ${gradle_version}, which is end-of-life and no longer
+		receives security updates or bug fixes.
+
+		Please upgrade to Gradle 9 (current) for active support, or at minimum
+		Gradle 8 for security fixes only.
+
+		This buildpack will attempt to build your application, but compatibility
+		with unsupported Gradle versions is not guaranteed and may break in future
+		buildpack releases. We strongly recommend upgrading.
+
+		For more information:
+		- https://docs.gradle.org/current/userguide/feature_lifecycle.html#eol_support
+
+		Upgrade guides:
+		- https://docs.gradle.org/current/userguide/upgrading_version_7.html
+		- https://docs.gradle.org/current/userguide/upgrading_major_version_9.html
+	EOF
+	;;
+8.*)
+	output::warning <<-EOF
+		Warning: Gradle version approaching end-of-life.
+
+		You are using Gradle ${gradle_version}, which is in maintenance mode and only
+		receives security fixes. It will become end-of-life when Gradle 10 is released.
+
+		Consider upgrading to Gradle 9 for active support and the latest features.
+
+		This buildpack currently supports Gradle 8, but once it becomes end-of-life
+		(when Gradle 10 is released), compatibility may no longer be guaranteed.
+		We recommend upgrading for the best long-term experience.
+
+		For more information:
+		- https://docs.gradle.org/current/userguide/feature_lifecycle.html#eol_support
+
+		Upgrade guide:
+		- https://docs.gradle.org/current/userguide/upgrading_major_version_9.html
+	EOF
+	;;
+esac
+
 # Attempt to detect the application framework
 app_framework_detection_start=$(util::nowms)
 detected_app_framework=$(frameworks::detect "${BUILD_DIR}")
