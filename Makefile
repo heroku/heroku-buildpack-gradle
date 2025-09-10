@@ -2,7 +2,7 @@
 .PHONY: lint lint-scripts check-format format run publish
 
 STACK ?= heroku-24
-FIXTURE ?= test/spec/fixtures/repos/simple-http-service
+FIXTURE ?= test/spec/fixtures/repos/simple-http-service-gradle-8-groovy
 
 # Converts a stack name of `heroku-NN` to its build Docker image tag of `heroku/heroku:NN-build`.
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
