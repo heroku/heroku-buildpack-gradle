@@ -2,8 +2,5 @@
   "hatchet": {
     "directory": "test/spec/fixtures"
   },
-  "ratpack": [
-    "ratpack/example-ratpack-gradle-groovy-app",
-    "heroku/gradle-getting-started"
-  ]
+  "github": ["heroku/gradle-getting-started"]
 }

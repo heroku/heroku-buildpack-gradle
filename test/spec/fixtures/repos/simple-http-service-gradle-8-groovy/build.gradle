@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.heroku'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.undertow:undertow-core:2.3.17.Final'
+    implementation 'com.google.guava:guava:32.0.0-jre'
+    
+    testImplementation 'junit:junit:4.13.1'
+}
+
+application {
+    mainClass = 'com.heroku.App'
+}
+
+// Task to echo build information similar to Maven's echo plugin
+task buildpackIntegrationEcho {
+    doLast {
+        println()
+        println("[BUILDPACK INTEGRATION TEST - GRADLE VERSION] ${gradle.gradleVersion}")
+        println("[BUILDPACK INTEGRATION TEST - JAVA VERSION] ${System.getProperty('java.version')}")
+        println("[BUILDPACK INTEGRATION TEST - JDBC_DATABASE_URL] ${System.getenv('JDBC_DATABASE_URL')}")
+        println("[BUILDPACK INTEGRATION TEST - JDBC_DATABASE_USERNAME] ${System.getenv('JDBC_DATABASE_USERNAME')}")
+        println("[BUILDPACK INTEGRATION TEST - JDBC_DATABASE_PASSWORD] ${System.getenv('JDBC_DATABASE_PASSWORD')}")
+    }
+}
+
+// Attach the echo task to the build process
+build.finalizedBy(buildpackIntegrationEcho)
+
+// Stage task for Heroku deployment
+task stage {
+    dependsOn build
+}
