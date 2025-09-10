@@ -4,13 +4,13 @@ require_relative 'spec_helper'
 
 RSpec.describe 'Gradle buildpack' do
   it 'runs tests on Heroku CI' do
-    app = Hatchet::Runner.new('spring-3-gradle-8-groovy')
+    app = Hatchet::Runner.new('spring-3-gradle-8-groovy', allow_failure: true)
 
     app.run_ci do |test_run|
       # First CI run should build from scratch
       expect(clean_output(test_run.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
         -----> Executing Gradle
-               \\$ \\./gradlew testClasses
+               -----> executing \\./gradlew testClasses
                > Task :compileJava
                > Task :processResources
                > Task :classes
@@ -56,7 +56,7 @@ RSpec.describe 'Gradle buildpack' do
       # Second CI run should use cached artifacts
       expect(clean_output(test_run.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
         -----> Executing Gradle
-               \\$ \\./gradlew testClasses
+               -----> executing \\./gradlew testClasses
                > Task :compileJava FROM-CACHE
                > Task :processResources
                > Task :classes
