@@ -152,4 +152,30 @@ RSpec.describe 'Gradle buildpack' do
       OUTPUT
     end
   end
+
+  it 'shows EOL warning for unsupported Gradle version (7.x)' do
+    app = Hatchet::Runner.new('simple-http-service-gradle-7-groovy')
+    app.deploy do
+      expect(clean_output(app.output)).to include(<<~OUTPUT)
+        remote:  !     Warning: Unsupported Gradle version detected.
+        remote:  !     
+        remote:  !     You are using Gradle 7.6.3, which is end-of-life and no longer
+        remote:  !     receives security updates or bug fixes.
+        remote:  !     
+        remote:  !     Please upgrade to Gradle 9 (current) for active support, or at minimum
+        remote:  !     Gradle 8 for security fixes only.
+        remote:  !     
+        remote:  !     This buildpack will attempt to build your application, but compatibility
+        remote:  !     with unsupported Gradle versions is not guaranteed and may break in future
+        remote:  !     buildpack releases. We strongly recommend upgrading.
+        remote:  !     
+        remote:  !     For more information:
+        remote:  !     - https://docs.gradle.org/current/userguide/feature_lifecycle.html#eol_support
+        remote:  !     
+        remote:  !     Upgrade guides:
+        remote:  !     - https://docs.gradle.org/current/userguide/upgrading_version_7.html
+        remote:  !     - https://docs.gradle.org/current/userguide/upgrading_major_version_9.html
+      OUTPUT
+    end
+  end
 end
