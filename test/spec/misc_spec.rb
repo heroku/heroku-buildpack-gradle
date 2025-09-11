@@ -127,29 +127,41 @@ RSpec.describe 'Gradle buildpack' do
                               config: { GRADLE_TASK: 'pleasefail -x check' })
 
     app.deploy do
-      expect(clean_output(app.output)).to include(<<~OUTPUT)
-        remote:  !     Error: Gradle task 'pleasefail' not found.
-        remote:  !     
-        remote:  !     The specified Gradle task 'pleasefail' does not exist in your project.
-        remote:  !     This can happen when:
-        remote:  !     
-        remote:  !     - The task name is misspelled
-        remote:  !     - The task is defined in a plugin that hasn't been applied
-        remote:  !     - The task is only available in certain project configurations
-        remote:  !     - You're trying to run a task that doesn't exist in this project
-        remote:  !     
-        remote:  !     To see all available tasks in your project, run locally:
-        remote:  !     $ ./gradlew tasks
-        remote:  !     
-        remote:  !     To see all tasks including those from plugins, run:
-        remote:  !     $ ./gradlew tasks --all
-        remote:  !     
-        remote:  !     If you're setting GRADLE_TASK as an environment variable, make sure
-        remote:  !     it contains a valid task name for your project.
-        remote:  !     
-        remote:  !     For more information about Gradle tasks, see:
-        remote:  !     https://docs.gradle.org/current/userguide/more_about_tasks.html
-      OUTPUT
+      expect(clean_output(app.output)).to match(Regexp.new(<<~REGEX, Regexp::MULTILINE))
+        remote: -----> Gradle app detected
+        remote: -----> Installing Azul Zulu OpenJDK 11\\.0\\.28
+        remote: -----> Building Gradle app\\.\\.\\.
+        remote: -----> executing \\./gradlew pleasefail -x check
+        remote:        Downloading https://services\\.gradle\\.org/distributions/gradle-8\\.12-bin\\.zip
+        remote:        \\.+10%\\.+20%\\.+30%\\.+40%\\.+50%\\.+60%\\.+70%\\.+80%\\.+90%\\.+100%
+        remote:        To honour the JVM settings for this build a single-use Daemon process will be forked\\. For more on this, please refer to https://docs\\.gradle\\.org/8\\.12/userguide/gradle_daemon\\.html#sec:disabling_the_daemon in the Gradle documentation\\.
+        remote:        Daemon will be stopped at the end of the build 
+        remote:        
+        remote:        \\[Incubating\\] Problems report is available at: file:///tmp/build_[a-f0-9]+/build/reports/problems/problems-report\\.html
+        remote:        
+        remote:        FAILURE: Build failed with an exception\\.
+        remote:        
+        remote:        \\* What went wrong:
+        remote:        Task 'pleasefail' not found in root project 'build_[a-f0-9]+'\\.
+        remote:        
+        remote:        \\* Try:
+        remote:        > Run gradlew tasks to get a list of available tasks\\.
+        remote:        > For more on name expansion, please refer to https://docs\\.gradle\\.org/8\\.12/userguide/command_line_interface\\.html#sec:name_abbreviation in the Gradle documentation\\.
+        remote:        > Run with --stacktrace option to get the stack trace\\.
+        remote:        > Run with --info or --debug option to get more log output\\.
+        remote:        > Run with --scan to get full insights\\.
+        remote:        > Get more help at https://help\\.gradle\\.org\\.
+        remote:        
+        remote:        Deprecated Gradle features were used in this build, making it incompatible with Gradle 9\\.0\\.
+        remote:        
+        remote:        You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins\\.
+        remote:        
+        remote:        For more on this, please refer to https://docs\\.gradle\\.org/8\\.12/userguide/command_line_interface\\.html#sec:command_line_warnings in the Gradle documentation\\.
+        remote:        
+        remote:        BUILD FAILED in [0-9]+s
+        remote: 
+        remote:  !     ERROR: Failed to run Gradle!
+      REGEX
     end
   end
 
