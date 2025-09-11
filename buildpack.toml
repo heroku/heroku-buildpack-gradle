@@ -3,11 +3,14 @@ name = "Gradle"
 
 [publish.Ignore]
 files = [
+  ".github/",
   "etc/",
   "test/",
   ".gitignore",
-  ".github/",
-  "hatchet.json",
+  ".rubocop.yml",
   "Gemfile",
   "Gemfile.lock",
+  "hatchet.json",
+  "hatchet.lock",
+  "Makefile",
 ]
