@@ -1,0 +1,1 @@
+web: java -cp build/classes/java/main:build/dependencies/* com.heroku.App

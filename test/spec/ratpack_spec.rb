@@ -1,23 +1,16 @@
+# frozen_string_literal: true
+
 require_relative 'spec_helper'
 
+RSpec.describe 'Gradle buildpack' do
+  it 'can build and run Ratpack app with Groovy DSL build script' do
+    app = Hatchet::Runner.new('ratpack-2-gradle-9-groovy')
+    app.deploy do
+      # Should detect Ratpack and run installDist -x check by default
+      expect(app.output).to include('$ ./gradlew installDist -x check')
+      expect(app.output).to include('BUILD SUCCESSFUL')
 
-describe "Ratpack" do
-  context "on JDK #{DEFAULT_OPENJDK_VERSION}" do
-    it "deploys successfully" do
-      new_default_hatchet_runner("example-ratpack-gradle-groovy-app").tap do |app|
-        app.before_deploy do
-          set_java_version(DEFAULT_OPENJDK_VERSION)
-        end
-
-        app.deploy do
-          expect(app.output).to include("Ratpack detected")
-          expect(app.output).to include("Building Gradle app")
-          expect(app.output).to include("executing ./gradlew installDist -x check")
-          expect(app.output).not_to include(":test")
-          expect(app.output).to include("BUILD SUCCESSFUL")
-          expect(http_get(app)).to include("Groovy Web Console")
-        end
-      end
+      expect(successful_body(app)).to include('Hello Heroku!')
     end
   end
 end

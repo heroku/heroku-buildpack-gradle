@@ -1,7 +1,15 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
 
-gem 'heroku_hatchet'
-gem 'rspec-retry'
-gem 'rspec-expectations'
-gem 'parallel_split_test'
-gem 'java-properties'
+source 'https://rubygems.org'
+
+ruby '>= 3.2', '< 3.5'
+
+group :test, :development do
+  gem 'heroku_hatchet'
+  gem 'parallel_split_test'
+  gem 'rspec-core'
+  gem 'rspec-expectations'
+  gem 'rspec-retry'
+  gem 'rubocop', require: false
+  gem 'rubocop-rspec', require: false
+end

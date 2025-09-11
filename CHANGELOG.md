@@ -1,7 +1,24 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
 ## [Unreleased]
 
+### Added
+
+- Gradle daemon lifecycle management for faster builds. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
+
+### Changed
+
+- Framework detection now uses Gradle dependency resolution instead of build file parsing for more reliable detection across all DSL syntax, version catalogs, and dependency sources. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
+- Improved error messages with detailed troubleshooting steps, documentation links, and local reproduction guidance. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
+
+### Removed
+
+- `GRADLE_TESTPACK_LEGACY_TASK` legacy feature - always exclude `check` task during builds instead of just `test` task. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
+- Gradle wrapper installation feature. Projects must include their own Gradle wrapper (`gradlew`). To add a wrapper, run `gradle wrapper` locally and commit the generated files. The buildpack's default wrapper provision was deprecated in 2014 (see [#17](https://github.com/heroku/heroku-buildpack-gradle/pull/17)). ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
 
 ## [v43] - 2025-07-14
 

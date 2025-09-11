@@ -1,103 +1,296 @@
 #!/usr/bin/env bash
-# bin/compile <build-dir> <cache-dir> <env-dir>
 
-# fail fast
-set -e
+set -euo pipefail
 
-BPLOG_PREFIX="buildpack.gradle"
+BUILDPACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 
-BP_DIR=$(cd $(dirname $0)/..; pwd) # absolute path
-BIN_DIR=$BP_DIR/bin
-OPT_DIR=$BP_DIR/opt
-LIB_DIR=$BP_DIR/lib
+BUILD_DIR="${1}"
+CACHE_DIR="${2}"
+ENV_DIR="${3}"
 
-# parse args
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
+source "${BUILDPACK_DIR}/lib/output.sh"
+source "${BUILDPACK_DIR}/lib/util.sh"
+source "${BUILDPACK_DIR}/lib/openjdk.sh"
+source "${BUILDPACK_DIR}/lib/frameworks.sh"
+source "${BUILDPACK_DIR}/lib/metrics.sh"
 
-source $LIB_DIR/common.sh
-source $LIB_DIR/failures.sh
-source $LIB_DIR/buildpack-stdlib-v7.sh
+metrics::init "${CACHE_DIR}" "gradle"
+metrics::setup
 
-export_env $ENV_DIR "." "JAVA_OPTS|JAVA_TOOL_OPTIONS"
+# Exclude environment variables:
+# - JAVA_OPTS/JAVA_TOOL_OPTIONS: JVM options are configured by users for their application, not the build process.
+# - GRADLE_USER_HOME: Controlled by buildpack for proper caching and configuration behavior
+util::export_env_dir "${ENV_DIR}" "." "JAVA_OPTS|JAVA_TOOL_OPTIONS|GRADLE_USER_HOME"
 
-GRADLE_CHECK_TASK=check
-if [ -n "${GRADLE_TESTPACK_LEGACY_TASK:-}" ]; then
-  GRADLE_CHECK_TASK=test
+openjdk::install_openjdk_via_jvm_common_buildpack "${BUILD_DIR}" "${BUILDPACK_DIR}"
+
+if [ ! -f "${BUILD_DIR}/gradlew" ]; then
+	output::error <<-EOF
+		Error: Gradle Wrapper is missing.
+
+		The Gradle Wrapper (gradlew) is required to build your application on Heroku.
+		This ensures that your application builds with the same version of Gradle
+		that you use during development. Projects are required to include
+		their own Wrapper for reliable, reproducible builds.
+
+		Note: The buildpack used to provide a default Gradle Wrapper (using Gradle 2.0) for
+		applications that didn't include their own wrapper. That workaround was deprecated
+		in 2014 and has now been removed.
+
+		To fix this issue, run this command in your project directory
+		locally and commit the generated files:
+		$ gradle wrapper
+
+		If you don't have Gradle installed locally, you can install it first:
+		https://gradle.org/install/
+
+		For more information about Gradle Wrapper, see:
+		https://docs.gradle.org/current/userguide/gradle_wrapper.html
+		https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
+	EOF
+
+	metrics::set_string "failure_reason" "gradle_wrapper::missing"
+	exit 1
 fi
 
-if has_stage_task $BUILD_DIR; then
-  mcount "task.stage"
-  DEFAULT_GRADLE_TASK="stage"
-elif is_spring_boot $BUILD_DIR; then
-  if is_webapp_runner $BUILD_DIR; then
-    echo "-----> Spring Boot and Webapp Runner detected"
-    mcount "task.webapprunner"
-  else
-    echo "-----> Spring Boot detected"
-    mcount "task.spring"
-  fi
-  DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
-elif is_micronaut $BUILD_DIR; then
-  echo "-----> Micronaut detected"
-  DEFAULT_GRADLE_TASK="shadowJar -x ${GRADLE_CHECK_TASK}"
-elif is_quarkus $BUILD_DIR; then
-  echo "-----> Quarkus detected"
-  DEFAULT_GRADLE_TASK="build -x ${GRADLE_CHECK_TASK}"
-elif is_ratpack $BUILD_DIR; then
-  echo "-----> Ratpack detected"
-  mcount "task.ratpack"
-  DEFAULT_GRADLE_TASK="installDist -x ${GRADLE_CHECK_TASK}"
-else
-  DEFAULT_GRADLE_TASK="stage"
+chmod +x "${BUILD_DIR}/gradlew"
+
+# Setup Gradle user home with global configuration in the cache directory
+GRADLE_USER_HOME="${CACHE_DIR}/.gradle"
+mkdir -p "${GRADLE_USER_HOME}"
+
+# Remove daemon metadata from the cached directory. Among other things, it contains a list
+# of PIDs from previous runs that will clutter up the output and aren't meaningful with
+# containerized builds anyway.
+rm -rf "${GRADLE_USER_HOME}/daemon"
+
+# https://docs.gradle.org/8.3/userguide/build_environment.html#sec:gradle_configuration_properties
+cat <<-EOF >"${GRADLE_USER_HOME}/gradle.properties"
+	org.gradle.welcome=never
+	org.gradle.caching=true
+	org.gradle.projectcachedir=${CACHE_DIR}/.gradle-project
+EOF
+
+# We're adding custom tasks to support buildpack functionality via a Gradle init script.
+# https://docs.gradle.org/8.3/userguide/init_scripts.html
+cat <<-EOF >"${GRADLE_USER_HOME}/init.gradle"
+	allprojects {
+		// Intentionally using task over task.register for compatibility with older Gradle versions.
+		task('heroku-start-gradle-daemon')
+
+		// There is no built-in way to list all dependencies for all projects, we're adding a custom
+		// task to do this here. Only add it to projects that have dependency configurations.
+		afterEvaluate {
+			if (configurations.findByName('compileClasspath') != null) {
+				// Intentionally using task over task.register for compatibility with older Gradle versions.
+				task('heroku-list-all-dependencies', type: DependencyReportTask)
+			}
+		}
+	}
+EOF
+
+export GRADLE_USER_HOME
+
+output::step "Starting Gradle daemon"
+gradle_daemon_start=$(util::nowms)
+
+gradle_daemon_output_log_files=$(mktemp)
+if ! (cd "${BUILD_DIR}" && ./gradlew heroku-start-gradle-daemon) >"${gradle_daemon_output_log_files}" 2>&1; then
+	output::indent <"${gradle_daemon_output_log_files}"
+
+	output::error <<-EOF
+		Error: Failed to start Gradle daemon.
+
+		An error occurred while starting the Gradle daemon. This usually
+		indicates an issue with the Gradle wrapper, build configuration,
+		or system resources.
+
+		Check the output above for specific error messages from Gradle.
+		Common causes include:
+
+		- Corrupted or missing Gradle wrapper files
+		- Invalid Gradle configuration in build.gradle(.kts) or settings.gradle(.kts)
+		- Network connectivity issues downloading Gradle dependencies
+		- Incompatible Gradle version with the current Java runtime
+
+		To resolve this issue:
+		1. Verify your Gradle wrapper works locally: ./gradlew --version
+		2. Check your build.gradle(.kts) and settings.gradle(.kts) for syntax errors
+		3. Ensure you're using a supported Gradle version
+
+		If this appears to be a temporary network or download issue,
+		try deploying again as it may resolve itself.
+
+		For more information, see:
+		https://docs.gradle.org/current/userguide/troubleshooting.html
+	EOF
+
+	metrics::set_string "failure_reason" "gradle_daemon::start_failed"
+	exit 1
 fi
 
-if [ -z "$GRADLE_TASK" ]; then
-  GRADLE_TASK="${DEFAULT_GRADLE_TASK}"
+metrics::set_duration "gradle_daemon_start_duration" "${gradle_daemon_start}"
+
+gradle_version="unknown"
+gradle_version="$( (cd "${BUILD_DIR}" && ./gradlew --version 2>/dev/null | awk '/^Gradle/ {gsub(/\x1b\[[0-9;]*m/, ""); print $2}') || true)"
+metrics::set_string "gradle_version" "${gradle_version}"
+
+case "${gradle_version}" in
+[1-7].*)
+	output::warning <<-EOF
+		Warning: Unsupported Gradle version detected.
+
+		You are using Gradle ${gradle_version}, which is end-of-life and no longer
+		receives security updates or bug fixes.
+
+		Please upgrade to Gradle 9 (current) for active support, or at minimum
+		Gradle 8 for security fixes only.
+
+		This buildpack will attempt to build your application, but compatibility
+		with unsupported Gradle versions is not guaranteed and may break in future
+		buildpack releases. We strongly recommend upgrading.
+
+		For more information:
+		- https://docs.gradle.org/current/userguide/feature_lifecycle.html#eol_support
+
+		Upgrade guides:
+		- https://docs.gradle.org/current/userguide/upgrading_version_7.html
+		- https://docs.gradle.org/current/userguide/upgrading_major_version_9.html
+	EOF
+	;;
+8.*)
+	output::warning <<-EOF
+		Warning: Gradle version approaching end-of-life.
+
+		You are using Gradle ${gradle_version}, which is in maintenance mode and only
+		receives security fixes. It will become end-of-life when Gradle 10 is released.
+
+		Consider upgrading to Gradle 9 for active support and the latest features.
+
+		This buildpack currently supports Gradle 8, but once it becomes end-of-life
+		(when Gradle 10 is released), compatibility may no longer be guaranteed.
+		We recommend upgrading for the best long-term experience.
+
+		For more information:
+		- https://docs.gradle.org/current/userguide/feature_lifecycle.html#eol_support
+
+		Upgrade guide:
+		- https://docs.gradle.org/current/userguide/upgrading_major_version_9.html
+	EOF
+	;;
+esac
+
+# Attempt to detect the application framework
+app_framework_detection_start=$(util::nowms)
+detected_app_framework=$(frameworks::detect "${BUILD_DIR}")
+metrics::set_string "app_framework" "${detected_app_framework:-unknown}"
+metrics::set_duration "app_framework_detection_duration" "${app_framework_detection_start}"
+
+# Write the detected framework name to a file for use in bin/release. bin/release does not have the
+# Gradle caches so the already expensive framework detection would be even more expensive to run.
+mkdir -p "${BUILD_DIR}/.heroku"
+echo "${detected_app_framework}" >"${BUILD_DIR}/.heroku/gradle_buildpack_detected_app_framework"
+
+# Determine the Gradle task to execute
+if [ -z "${GRADLE_TASK:-}" ]; then
+	# If a stage task is available, use it instead of trying to guess the task to run
+	if (cd "${BUILD_DIR}" && ./gradlew tasks --all 2>/dev/null | grep -q "^stage "); then
+		GRADLE_TASK="stage"
+	else
+		case "${detected_app_framework}" in
+		"spring-boot-webapp-runner" | "spring-boot")
+			GRADLE_TASK="build -x check"
+			;;
+		"micronaut")
+			GRADLE_TASK="shadowJar -x check"
+			;;
+		"quarkus")
+			GRADLE_TASK="build -x check"
+			;;
+		"ratpack")
+			GRADLE_TASK="installDist -x check"
+			;;
+		*)
+			GRADLE_TASK="stage"
+			;;
+		esac
+	fi
 fi
 
-install_jdk "${BUILD_DIR}" "${CACHE_DIR}"
+output::step "Executing Gradle"
+echo "$ ./gradlew ${GRADLE_TASK}" | output::indent
 
-export GRADLE_OPTS="${GRADLE_OPTS}${GRADLE_OPTS:+ }-Dorg.gradle.daemon=false -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
+gradle_output_log_file=$(mktemp)
+# We rely on word splitting for GRADLE_TASK
+# shellcheck disable=SC2086
+if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | tee "${gradle_output_log_file}" | output::indent; then
+	# Check if the failure was due to a missing task
+	missing_task_line=$(grep "Task '[^']*' not found in root project" "${gradle_output_log_file}" || true)
+	if [ -n "${missing_task_line}" ]; then
+		# Extract task name from error message - using sed for clarity over parameter expansion
+		# shellcheck disable=SC2001
+		missing_task=$(echo "${missing_task_line}" | sed "s/.*Task '\([^']*\)'.*/\1/")
 
-mkdir -p "$CACHE_DIR/.gradle"
-export GRADLE_USER_HOME=${GRADLE_USER_HOME:-$CACHE_DIR/.gradle}
+		output::error <<-EOF
+			Error: Gradle task '${missing_task}' not found.
 
-create_project_cache_symlink "$CACHE_DIR" "$BUILD_DIR"
+			The specified Gradle task '${missing_task}' does not exist in your project.
+			This can happen when:
 
-if [ ! -f $BUILD_DIR/gradlew ] ; then
-  mcount "wrapperless"
-  echo "-----> Installing Gradle Wrapper..."
-  echo "       WARNING: Your application does not have it's own gradlew file."
-  echo "       We'll install one for you, but this is a deprecated feature and"
-  echo "       in the future may not be supported."
-  cp -rn ${OPT_DIR}/wrapper/* ${BUILD_DIR}
+			- The task name is misspelled
+			- The task is defined in a plugin that hasn't been applied
+			- The task is only available in certain project configurations
+			- You're trying to run a task that doesn't exist in this project
+
+			To see all available tasks in your project, run locally:
+			$ ./gradlew tasks
+
+			To see all tasks including those from plugins, run:
+			$ ./gradlew tasks --all
+
+			If you're setting GRADLE_TASK as an environment variable, make sure
+			it contains a valid task name for your project.
+
+			For more information about Gradle tasks, see:
+			https://docs.gradle.org/current/userguide/more_about_tasks.html
+		EOF
+
+		metrics::set_string "failure_reason" "gradle_build::task_not_found"
+	else
+		output::error <<-EOF
+			Error: Gradle build failed.
+
+			An error occurred during the Gradle build process. This usually
+			indicates an issue with your application's dependencies, configuration,
+			or source code.
+
+			First, check the build output above for specific error messages
+			from Gradle that might indicate what went wrong. Common issues include:
+
+			- Missing or incompatible dependencies in your build.gradle(.kts)
+			- Compilation errors in your application source code
+			- Test failures (if tests are enabled during the build)
+			- Invalid Gradle configuration or settings
+			- Using an incompatible OpenJDK version for your project
+
+			To troubleshoot this issue:
+			1. Try building your application locally with the same Gradle command
+			2. Check that your gradlew script works locally: ./gradlew build
+			3. Verify your Java version is compatible with your project
+
+			If the error persists, check the documentation:
+			https://docs.gradle.org/current/userguide/troubleshooting.html
+			https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
+		EOF
+
+		metrics::set_string "failure_reason" "gradle_build::non_zero_exit_code"
+	fi
+
+	exit 1
 fi
-BUILDCMD="./gradlew"
-chmod +x ${BUILD_DIR}/gradlew
 
-BUILDCMD="$BUILDCMD $GRADLE_TASK"
-
-cd $BUILD_DIR
-
-[ -n "$(find . -type f -name "*.kt")" ] && mcount "kotlin.source"
-[ -n "$(find . -type f -name "*.groovy")" ] && mcount "groovy.source"
-
-# build app
-echo "-----> Building Gradle app..."
-echo "-----> executing $BUILDCMD"
-
-buildLogFile=$(create_build_log_file)
-
-let start=$(nowms)
-$BUILDCMD 2>&1 | output $buildLogFile
-
-if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-  handle_gradle_errors $buildLogFile
-fi
+output::step "Stopping Gradle daemon"
+(cd "${BUILD_DIR}" && ./gradlew -q --stop) | output::indent
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49
-rm -rf "$CACHE_DIR/.gradle/nodejs"
-
-mtime "build.time" "${start}"
+rm -rf "${CACHE_DIR}/.gradle/nodejs"
