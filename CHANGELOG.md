@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Framework detection now uses Gradle dependency resolution instead of build file parsing for more reliable detection across all DSL syntax, version catalogs, and dependency sources. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
-- Buildpack output slightly changed. If you match against the buildpack output, verify your matching still works and adjust if necessary. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
+- Improved error messages with detailed troubleshooting steps, documentation links, and local reproduction guidance. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
 
 ### Removed
 
