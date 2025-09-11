@@ -9,48 +9,52 @@ BUILD_DIR="${1}"
 
 echo "---"
 
-if [[ ! -f "${BUILD_DIR}/Procfile" ]]; then
-	detected_app_framework=$(cat "${BUILD_DIR}/.heroku/gradle_buildpack_detected_app_framework" 2>/dev/null || echo "")
-	case "${detected_app_framework}" in
-	"spring-boot-webapp-runner")
-		if [[ -d "${BUILD_DIR}/build" ]]; then
-			webapp_runner_jar="$(cd "${BUILD_DIR}/build" && find . -type f -name "webapp-runner-*.jar" 2>/dev/null | head -1)"
-			if [[ -n "${webapp_runner_jar}" ]]; then
-				echo "default_process_types:"
-				echo "  web: cd build ; java \$JAVA_OPTS -jar ${webapp_runner_jar} --expand-war --port \$PORT libs/*.war"
-			fi
+if [[ -f "${BUILD_DIR}/Procfile" ]]; then
+	exit 0
+fi
+
+detected_app_framework=$(cat "${BUILD_DIR}/.heroku/gradle_buildpack_detected_app_framework" 2>/dev/null || echo "")
+default_web_process=""
+
+case "${detected_app_framework}" in
+"spring-boot-webapp-runner")
+	if [[ -d "${BUILD_DIR}/build" ]]; then
+		webapp_runner_jar="$(cd "${BUILD_DIR}/build" && find . -type f -name "webapp-runner-*.jar" 2>/dev/null | head -1)"
+		if [[ -n "${webapp_runner_jar}" ]]; then
+			default_web_process="cd build ; java \$JAVA_OPTS -jar ${webapp_runner_jar} --expand-war --port \$PORT libs/*.war"
 		fi
-		;;
-	"spring-boot")
-		if [[ -d "${BUILD_DIR}/build/libs" ]]; then
-			main_jar="$(cd "${BUILD_DIR}" && find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)"
-			if [[ -n "${main_jar}" ]]; then
-				echo "default_process_types:"
-				echo "  web: java -Dserver.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
-			fi
+	fi
+	;;
+"spring-boot")
+	if [[ -d "${BUILD_DIR}/build/libs" ]]; then
+		main_jar="$(cd "${BUILD_DIR}" && find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)"
+		if [[ -n "${main_jar}" ]]; then
+			default_web_process="java -Dserver.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
 		fi
-		;;
-	"micronaut")
-		if [[ -d "${BUILD_DIR}/build/libs" ]]; then
-			main_jar="$(cd "${BUILD_DIR}" && find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)"
-			if [[ -n "${main_jar}" ]]; then
-				echo "default_process_types:"
-				echo "  web: java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
-			fi
+	fi
+	;;
+"micronaut")
+	if [[ -d "${BUILD_DIR}/build/libs" ]]; then
+		main_jar="$(cd "${BUILD_DIR}" && find "./build/libs" -type f -name "*.jar" | grep -E -v "(plain|sources|javadoc).jar$" | head -1)"
+		if [[ -n "${main_jar}" ]]; then
+			default_web_process="java -Dmicronaut.server.port=\$PORT \$JAVA_OPTS -jar ${main_jar}"
 		fi
-		;;
-	"quarkus")
-		if [[ -f "${BUILD_DIR}/build/quarkus-app/quarkus-run.jar" ]]; then
-			echo "default_process_types:"
-			echo "  web: java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
-		fi
-		;;
-	"ratpack")
-		executable_script="$(cd "${BUILD_DIR}" && find . -path "*/build/install/*/bin/*" -executable -type f ! -name "*.bat" 2>/dev/null | head -1)"
-		if [[ -n "${executable_script}" ]]; then
-			echo "default_process_types:"
-			echo "  web: ${executable_script}"
-		fi
-		;;
-	esac
+	fi
+	;;
+"quarkus")
+	if [[ -f "${BUILD_DIR}/build/quarkus-app/quarkus-run.jar" ]]; then
+		default_web_process="java -Dquarkus.http.port=\$PORT \$JAVA_OPTS -jar build/quarkus-app/quarkus-run.jar"
+	fi
+	;;
+"ratpack")
+	executable_script="$(cd "${BUILD_DIR}" && find . -path "*/build/install/*/bin/*" -executable -type f ! -name "*.bat" 2>/dev/null | head -1)"
+	if [[ -n "${executable_script}" ]]; then
+		default_web_process="${executable_script}"
+	fi
+	;;
+esac
+
+if [[ -n "${default_web_process}" ]]; then
+	echo "default_process_types:"
+	echo "  web: ${default_web_process}"
 fi
