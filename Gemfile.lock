@@ -82,7 +82,6 @@ PLATFORMS
 
 DEPENDENCIES
   heroku_hatchet
-  logger
   parallel_split_test
   rspec-core
   rspec-expectations
