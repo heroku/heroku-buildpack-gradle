@@ -190,7 +190,10 @@ RSpec.describe 'Gradle buildpack' do
 
     app.deploy do
       expect(app).to be_deployed
-      expect(clean_output(app.output)).not_to include('Enabling file system watching via --watch-fs (or via the org.gradle.vfs.watch property) with --project-cache-dir also specified is not supported; remove either option to fix this problem')
+      expect(clean_output(app.output)).not_to include(
+        'Enabling file system watching via --watch-fs (or via the org.gradle.vfs.watch property) ' \
+        'with --project-cache-dir also specified is not supported; remove either option to fix this problem'
+      )
     end
   end
 end
