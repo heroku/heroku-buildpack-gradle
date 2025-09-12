@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Framework detection now uses Gradle dependency resolution instead of build file parsing for more reliable detection across all DSL syntax, version catalogs, and dependency sources. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
 - Improved error messages with detailed troubleshooting steps, documentation links, and local reproduction guidance. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
-- Improve detection error message with better user experience and guidance for other build tools ([#168](https://github.com/heroku/heroku-buildpack-gradle/pull/168))
+- Improve detection error message with better user experience and guidance for other build tools. ([#168](https://github.com/heroku/heroku-buildpack-gradle/pull/168))
 
 ### Removed
 
