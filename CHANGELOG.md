@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v44] - 2025-09-12
+
 ### Added
 
 - Gradle daemon lifecycle management for faster builds. ([#165](https://github.com/heroku/heroku-buildpack-gradle/pull/165))
@@ -100,7 +103,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v43...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v44...main
+[v44]: https://github.com/heroku/heroku-buildpack-gradle/compare/v43...v44
 [v43]: https://github.com/heroku/heroku-buildpack-gradle/compare/v42...v43
 [v42]: https://github.com/heroku/heroku-buildpack-gradle/compare/v41...v42
 [v41]: https://github.com/heroku/heroku-buildpack-gradle/compare/v40...v41
