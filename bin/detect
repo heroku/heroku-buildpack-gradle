@@ -4,6 +4,10 @@ set -euo pipefail
 
 BUILD_DIR="${1}"
 
+BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
+
+source "${BUILDPACK_DIR}/lib/output.sh"
+
 gradle_files=(
 	"gradlew"
 	"build.gradle"
@@ -23,5 +27,33 @@ for gradle_file in "${gradle_files[@]}"; do
 	fi
 done
 
-(>&2 echo "Could not find a gradlew file or other supported Gradle files!")
+output::error <<-EOF
+	Error: Your app is configured to use the Gradle buildpack,
+	but we couldn't find any supported Gradle project files.
+
+	The Gradle buildpack requires at least one of the following files
+	in the root directory of your source code:
+
+	Supported Gradle files: $(printf "%s, " "${gradle_files[@]}" | sed 's/, $//')
+
+	IMPORTANT: If your project uses a different build tool:
+	- For Maven projects, use the heroku/java buildpack instead
+	- For sbt projects, use the heroku/scala buildpack instead
+
+	Currently the root directory of your app contains:
+
+	$(ls -1A --indicator-style=slash "${BUILD_DIR}" 2>/dev/null || echo "Unable to list directory contents")
+
+	If your app already has Gradle files, check that they:
+
+	1. Are in the top level directory (not a subdirectory).
+	2. Have the correct spelling (the filenames are case-sensitive).
+	3. Aren't listed in '.gitignore' or '.slugignore'.
+	4. Have been added to the Git repository using 'git add --all'
+	   and then committed using 'git commit'.
+
+	For help with using Gradle on Heroku, see:
+	https://devcenter.heroku.com/articles/deploying-gradle-apps-on-heroku
+EOF
+
 exit 1
