@@ -178,4 +178,22 @@ RSpec.describe 'Gradle buildpack' do
       OUTPUT
     end
   end
+
+  it 'builds successfully when user enables file system watching via gradle.properties' do
+    app = Hatchet::Runner.new('simple-http-service-gradle-8-groovy')
+    app.before_deploy do
+      File.write('gradle.properties', <<~PROPERTIES)
+        org.gradle.vfs.watch=true
+      PROPERTIES
+      `git add . && git commit -m "enable file system watching"`
+    end
+
+    app.deploy do
+      expect(app).to be_deployed
+      expect(clean_output(app.output)).not_to include(
+        'Enabling file system watching via --watch-fs (or via the org.gradle.vfs.watch property) ' \
+        'with --project-cache-dir also specified is not supported; remove either option to fix this problem'
+      )
+    end
+  end
 end
