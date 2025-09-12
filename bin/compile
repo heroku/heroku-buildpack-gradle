@@ -69,6 +69,10 @@ cat <<-EOF >"${GRADLE_USER_HOME}/gradle.properties"
 	org.gradle.welcome=never
 	org.gradle.caching=true
 	org.gradle.projectcachedir=${CACHE_DIR}/.gradle-project
+	# Disable file system watching because org.gradle.vfs.watch is incompatible with
+	# org.gradle.projectcachedir. This prevents build failures when users have
+	# org.gradle.vfs.watch=true in their project gradle.properties.
+	org.gradle.vfs.watch=false
 EOF
 
 # We're adding custom tasks to support buildpack functionality via a Gradle init script.
