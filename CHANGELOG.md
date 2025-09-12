@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix build failures when users have `org.gradle.vfs.watch=true` in their project gradle.properties by explicitly disabling file system watching in buildpack configuration, as it's incompatible with `org.gradle.projectcachedir`. ([#170](https://github.com/heroku/heroku-buildpack-gradle/pull/170))
 
 ## [v44] - 2025-09-12
 
