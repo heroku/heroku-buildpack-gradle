@@ -179,12 +179,16 @@ RSpec.describe 'Gradle buildpack' do
     end
   end
 
-  it 'builds successfully with --watch-fs flag set explicitly' do
-    app = Hatchet::Runner.new('simple-http-service-gradle-8-groovy',
-                              config: { GRADLE_TASK: 'build --watch-fs -x check' })
+  it 'builds successfully with file system watching enabled via gradle.properties' do
+    app = Hatchet::Runner.new('simple-http-service-gradle-8-groovy')
+    app.before_deploy do
+      File.write('gradle.properties', <<~PROPERTIES)
+        org.gradle.vfs.watch=true
+      PROPERTIES
+      `git add . && git commit -m "enable file system watching"`
+    end
 
     app.deploy do
-      expect(clean_output(app.output)).to include('$ ./gradlew build --watch-fs -x check')
       expect(app).to be_deployed
     end
   end
