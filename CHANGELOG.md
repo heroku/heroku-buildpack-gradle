@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v45] - 2025-09-12
+
 ### Fixed
 
 - Fix build failures when users have `org.gradle.vfs.watch=true` in their project gradle.properties by explicitly disabling file system watching in buildpack configuration, as it's incompatible with `org.gradle.projectcachedir`. ([#170](https://github.com/heroku/heroku-buildpack-gradle/pull/170))
@@ -106,7 +109,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v44...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v45...main
+[v45]: https://github.com/heroku/heroku-buildpack-gradle/compare/v44...v45
 [v44]: https://github.com/heroku/heroku-buildpack-gradle/compare/v43...v44
 [v43]: https://github.com/heroku/heroku-buildpack-gradle/compare/v42...v43
 [v42]: https://github.com/heroku/heroku-buildpack-gradle/compare/v41...v42
