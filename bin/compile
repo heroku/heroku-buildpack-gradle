@@ -295,7 +295,22 @@ if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | tee "${gradle_output
 fi
 
 output::step "Stopping Gradle daemon"
-(cd "${BUILD_DIR}" && ./gradlew -q --stop) | output::indent
+if [[ -f "${BUILD_DIR}/gradlew" ]]; then
+	(cd "${BUILD_DIR}" && ./gradlew -q --stop) | output::indent
+else
+	output::warning <<-EOF
+		Warning: Gradle wrapper (gradlew) not found during daemon cleanup.
+
+		The gradlew script was present at the beginning of the build but was removed
+		during the build process. This is unexpected behavior.
+
+		While this did not fail your current build, we strongly recommend fixing the
+		issue to prevent unexpected behavior in future builds. Check your Gradle tasks or
+		build scripts to see if they're removing the Gradle wrapper from your project directory.
+	EOF
+
+	metrics::set_raw "gradle_daemon_cleanup_gradlew_missing" "true"
+fi
 
 # https://github.com/heroku/heroku-buildpack-gradle/issues/49
 rm -rf "${CACHE_DIR}/.gradle/nodejs"
