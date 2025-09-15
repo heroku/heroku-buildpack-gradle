@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v46] - 2025-09-15
+
 ### Fixed
 
 - Guard against missing gradlew during daemon cleanup to prevent "No such file or directory" errors. ([#172](https://github.com/heroku/heroku-buildpack-gradle/pull/172))
@@ -112,7 +115,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v45...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v46...main
+[v46]: https://github.com/heroku/heroku-buildpack-gradle/compare/v45...v46
 [v45]: https://github.com/heroku/heroku-buildpack-gradle/compare/v44...v45
 [v44]: https://github.com/heroku/heroku-buildpack-gradle/compare/v43...v44
 [v43]: https://github.com/heroku/heroku-buildpack-gradle/compare/v42...v43
