@@ -20,7 +20,7 @@ RSpec.describe 'Gradle buildpack' do
                
                BUILD SUCCESSFUL in \\d+s
                3 actionable tasks: 3 executed
-        -----> Stopping Gradle daemon
+        -----> REDACTED
         -----> Resolving test runtime dependencies
                Starting a Gradle Daemon, \\d+ stopped Daemon could not be reused, use --status for details
                > Task :resolveTestRuntime
@@ -66,7 +66,7 @@ RSpec.describe 'Gradle buildpack' do
                
                BUILD SUCCESSFUL in \\d+s
                3 actionable tasks: 1 executed, 2 from cache
-        -----> Stopping Gradle daemon
+        -----> REDACTED
         -----> Resolving test runtime dependencies
                Starting a Gradle Daemon, \\d+ stopped Daemon could not be reused, use --status for details
                > Task :resolveTestRuntime
