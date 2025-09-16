@@ -294,23 +294,37 @@ if ! (cd "${BUILD_DIR}" && ./gradlew ${GRADLE_TASK}) 2>&1 | tee "${gradle_output
 	exit 1
 fi
 
-output::step "Stopping Gradle daemon"
-if [[ -f "${BUILD_DIR}/gradlew" ]]; then
-	(cd "${BUILD_DIR}" && ./gradlew -q --stop) | output::indent
-else
-	output::warning <<-EOF
-		Warning: Gradle wrapper (gradlew) not found during daemon cleanup.
+# We use an EXIT trap for cleanup to ensure it runs after all tasks are complete, even when sourced.
+# When bin/compile runs standalone, cleanup executes immediately since the script ends here.
+# When the script is sourced by bin/test-compile, cleanup is deferred until test-compile finishes.
 
-		The gradlew script was present at the beginning of the build but was removed
-		during the build process. This is unexpected behavior.
+exit_cleanup() {
+	# Only run cleanup when the script exits successfully (exit code 0).
+	# The $? variable contains the exit status of the script when the EXIT trap fires.
+	if [[ "${?}" -ne 0 ]]; then
+		return
+	fi
 
-		While this did not fail your current build, we strongly recommend fixing the
-		issue to prevent unexpected behavior in future builds. Check your Gradle tasks or
-		build scripts to see if they're removing the Gradle wrapper from your project directory.
-	EOF
+	if [[ -f "${BUILD_DIR}/gradlew" ]]; then
+		output::step "Stopping Gradle daemon"
+		(cd "${BUILD_DIR}" && ./gradlew -q --stop) | output::indent
+	else
+		output::warning <<-EOF
+			Warning: Gradle wrapper (gradlew) not found during daemon cleanup.
 
-	metrics::set_raw "gradle_daemon_cleanup_gradlew_missing" "true"
-fi
+			The gradlew script was present at the beginning of the build but was removed
+			during the build process. This is unexpected behavior.
 
-# https://github.com/heroku/heroku-buildpack-gradle/issues/49
-rm -rf "${CACHE_DIR}/.gradle/nodejs"
+			While this did not fail your current build, we strongly recommend fixing the
+			issue to prevent unexpected behavior in future builds. Check your Gradle tasks or
+			build scripts to see if they're removing the Gradle wrapper from your project directory.
+		EOF
+
+		metrics::set_raw "gradle_daemon_cleanup_gradlew_missing" "true"
+	fi
+
+	# https://github.com/heroku/heroku-buildpack-gradle/issues/49
+	rm -rf "${CACHE_DIR}/.gradle/nodejs"
+}
+
+trap exit_cleanup EXIT
