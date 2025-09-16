@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v47] - 2025-09-16
+
 - Improve test-compile resilience and performance. ([#175](https://github.com/heroku/heroku-buildpack-gradle/pull/175))
 
 ## [v46] - 2025-09-15
@@ -116,7 +119,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v46...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v47...main
+[v47]: https://github.com/heroku/heroku-buildpack-gradle/compare/v46...v47
 [v46]: https://github.com/heroku/heroku-buildpack-gradle/compare/v45...v46
 [v45]: https://github.com/heroku/heroku-buildpack-gradle/compare/v44...v45
 [v44]: https://github.com/heroku/heroku-buildpack-gradle/compare/v43...v44
