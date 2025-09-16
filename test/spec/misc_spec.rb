@@ -196,4 +196,41 @@ RSpec.describe 'Gradle buildpack' do
       )
     end
   end
+
+  it 'uses stage task (with description) when available' do
+    app = Hatchet::Runner.new('spring-3-gradle-8-groovy')
+    app.before_deploy do
+      stage_task = <<~GROOVY
+        task stage {
+            description = 'Custom stage task for deployment'
+            dependsOn build
+        }
+      GROOVY
+
+      File.write('build.gradle', "#{File.read('build.gradle')}\n#{stage_task}")
+    end
+
+    app.deploy do
+      expect(app).to be_deployed
+      expect(clean_output(app.output)).to include('$ ./gradlew stage')
+    end
+  end
+
+  it 'uses stage task (without description) when available' do
+    app = Hatchet::Runner.new('spring-3-gradle-8-groovy')
+    app.before_deploy do
+      stage_task = <<~GROOVY
+        task stage {
+            dependsOn build
+        }
+      GROOVY
+
+      File.write('build.gradle', "#{File.read('build.gradle')}\n#{stage_task}")
+    end
+
+    app.deploy do
+      expect(app).to be_deployed
+      expect(clean_output(app.output)).to include('$ ./gradlew stage')
+    end
+  end
 end
