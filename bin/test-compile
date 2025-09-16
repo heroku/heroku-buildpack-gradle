@@ -40,7 +40,7 @@ output::step "Resolving test runtime dependencies"
 (cd "${BUILD_DIR}" && ./gradlew --init-script "${heroku_gradle_init_script}" resolveTestRuntime) 2>&1 | output::indent
 
 # Copy the contents of the Gradle user home to the build directory so that configuration
-# and build caches are available as runtime for tests.
+# and build caches are available at runtime for tests.
 util::cache_copy ".gradle" "${CACHE_DIR}" "${BUILD_DIR}"
 
 mkdir -p "${BUILD_DIR}/.profile.d"
