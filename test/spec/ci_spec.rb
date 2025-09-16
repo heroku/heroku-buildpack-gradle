@@ -20,13 +20,12 @@ RSpec.describe 'Gradle buildpack' do
                
                BUILD SUCCESSFUL in \\d+s
                3 actionable tasks: 3 executed
-        -----> Stopping Gradle daemon
         -----> Resolving test runtime dependencies
-               Starting a Gradle Daemon, \\d+ stopped Daemon could not be reused, use --status for details
                > Task :resolveTestRuntime
                
                BUILD SUCCESSFUL in \\d+s
                1 actionable task: 1 executed
+        -----> Stopping Gradle daemon
         -----> No test-setup command provided\\. Skipping\\.
         -----> Running Gradle buildpack tests...
         Picked up JAVA_TOOL_OPTIONS: -Dfile\\.encoding=UTF-8 -XX:MaxRAM=2684354560 -XX:MaxRAMPercentage=80\\.0
@@ -66,13 +65,12 @@ RSpec.describe 'Gradle buildpack' do
                
                BUILD SUCCESSFUL in \\d+s
                3 actionable tasks: 1 executed, 2 from cache
-        -----> Stopping Gradle daemon
         -----> Resolving test runtime dependencies
-               Starting a Gradle Daemon, \\d+ stopped Daemon could not be reused, use --status for details
                > Task :resolveTestRuntime
                
                BUILD SUCCESSFUL in \\d+s
                1 actionable task: 1 executed
+        -----> Stopping Gradle daemon
         -----> No test-setup command provided\\. Skipping\\.
         -----> Running Gradle buildpack tests...
         Picked up JAVA_TOOL_OPTIONS: -Dfile\\.encoding=UTF-8 -XX:MaxRAM=2684354560 -XX:MaxRAMPercentage=80\\.0

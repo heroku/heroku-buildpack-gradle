@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+- Improve test-compile resilience and performance. ([#175](https://github.com/heroku/heroku-buildpack-gradle/pull/175))
 
 ## [v46] - 2025-09-15
 
