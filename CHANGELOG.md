@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `stage` task detection to work regardless of whether task has a description. ([#177](https://github.com/heroku/heroku-buildpack-gradle/pull/177))
 
 ## [v47] - 2025-09-16
 
