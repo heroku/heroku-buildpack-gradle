@@ -199,7 +199,7 @@ echo "${detected_app_framework}" >"${BUILD_DIR}/.heroku/gradle_buildpack_detecte
 # Determine the Gradle task to execute
 if [ -z "${GRADLE_TASK:-}" ]; then
 	# If a stage task is available, use it instead of trying to guess the task to run
-	if (cd "${BUILD_DIR}" && ./gradlew tasks --all 2>/dev/null | grep -q "^stage "); then
+	if (cd "${BUILD_DIR}" && ./gradlew tasks --all 2>/dev/null | grep -qE "^stage($| )"); then
 		GRADLE_TASK="stage"
 	else
 		case "${detected_app_framework}" in
