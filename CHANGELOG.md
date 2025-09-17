@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v48] - 2025-09-17
+
 ### Fixed
 
 - Fix `stage` task detection to work regardless of whether task has a description. ([#177](https://github.com/heroku/heroku-buildpack-gradle/pull/177))
@@ -122,7 +125,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project .gradle to the cache
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v47...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v48...main
+[v48]: https://github.com/heroku/heroku-buildpack-gradle/compare/v47...v48
 [v47]: https://github.com/heroku/heroku-buildpack-gradle/compare/v46...v47
 [v46]: https://github.com/heroku/heroku-buildpack-gradle/compare/v45...v46
 [v45]: https://github.com/heroku/heroku-buildpack-gradle/compare/v44...v45
