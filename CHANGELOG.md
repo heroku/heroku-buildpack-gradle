@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+* Improve OpenJDK installation via jvm-common buildpack to prevent function overrides and fix environment variable handling ([#181](https://github.com/heroku/heroku-buildpack-gradle/pull/181))
 
 ## [v48] - 2025-09-17
 
