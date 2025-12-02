@@ -1,4 +1,4 @@
-![gradle](https://cloud.githubusercontent.com/assets/51578/18790734/e1a0bba8-817d-11e6-864e-de501a437ec5.png)
+![gradle](https://raw.githubusercontent.com/heroku/buildpacks/refs/heads/main/assets/images/buildpack-banner-gradle.png)
 
 # Heroku Buildpack: Gradle [![CI](https://github.com/heroku/heroku-buildpack-gradle/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-buildpack-gradle/actions/workflows/ci.yml)
 
