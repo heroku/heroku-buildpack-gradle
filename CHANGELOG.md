@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v49] - 2026-02-24
+
 ### Changed
 
 * Improve OpenJDK installation via `jvm-common` buildpack to prevent function overrides and fix environment variable handling. ([#181](https://github.com/heroku/heroku-buildpack-gradle/pull/181))
@@ -125,7 +128,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project `.gradle` to the cache. ([#40](https://github.com/heroku/heroku-buildpack-gradle/pull/40))
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v48...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v49...main
+[v49]: https://github.com/heroku/heroku-buildpack-gradle/compare/v48...v49
 [v48]: https://github.com/heroku/heroku-buildpack-gradle/compare/v47...v48
 [v47]: https://github.com/heroku/heroku-buildpack-gradle/compare/v46...v47
 [v46]: https://github.com/heroku/heroku-buildpack-gradle/compare/v45...v46
