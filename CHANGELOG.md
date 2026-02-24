@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 * Improve OpenJDK installation via `jvm-common` buildpack to prevent function overrides and fix environment variable handling. ([#181](https://github.com/heroku/heroku-buildpack-gradle/pull/181))
+* Changed the S3 URLs used for downloads to use AWS' dual-stack (IPv6 compatible) endpoint. ([#191](https://github.com/heroku/heroku-buildpack-gradle/pull/191))
 
 ## [v48] - 2025-09-17
 
