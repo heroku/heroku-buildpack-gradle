@@ -21,6 +21,8 @@ RSpec.configure do |config|
   config.filter_run_excluding stacks: ->(stacks) { !stacks.include?(ENV.fetch('HATCHET_DEFAULT_STACK')) }
   # Make rspec-retry output a retry message when its had to retry a test.
   config.verbose_retry = true
+  # Retry intermittently failing integration tests when running in CI.
+  config.default_retry_count = 2 if ENV['CI']
 end
 
 def successful_body(app, options = {})
