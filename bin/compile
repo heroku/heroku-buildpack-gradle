@@ -103,28 +103,70 @@ else
 
 	cat <<-'EOF' >>"${GRADLE_USER_HOME}/init.gradle"
 
+		def herokuMavenCentralMirrorUrl = 'https://maven-central.storage-download.googleapis.com/maven2/'
+
+		def herokuNormalizedUrl = { ArtifactRepository repository ->
+			repository instanceof MavenArtifactRepository ? repository.url?.toString()?.replaceFirst('/+$', '') : null
+		}
+
 		def herokuMirrorMavenCentral = { RepositoryHandler repositories ->
 			repositories.withType(MavenArtifactRepository).all { repository ->
-				def url = repository.url?.toString()?.replaceFirst('/+$', '')
-				if (url in ['https://repo.maven.apache.org/maven2', 'https://repo1.maven.org/maven2']) {
-					repository.url = 'https://maven-central.storage-download.googleapis.com/maven2/'
+				if (herokuNormalizedUrl(repository) in ['https://repo.maven.apache.org/maven2', 'https://repo1.maven.org/maven2']) {
+					repository.url = herokuMavenCentralMirrorUrl
 				}
 			}
 		}
 
-		// Settings repositories can only be configured before the settings script runs. Gradle versions
-		// older than 6.8 lack the APIs for this and only get their project repositories mirrored.
+		// The Gradle Plugin Portal redirects requests for artifacts that are also on Maven Central to
+		// repo.maven.apache.org. Adding the mirror right before the Plugin Portal resolves these artifacts
+		// from the mirror instead, while artifacts only available on the Plugin Portal still resolve from it.
+		def herokuMirrorGradlePluginPortal = { RepositoryHandler repositories ->
+			def all = repositories.toList()
+			def portalIndex = all.findIndexOf { herokuNormalizedUrl(it) == 'https://plugins.gradle.org/m2' }
+			if (portalIndex < 0) {
+				return
+			}
+
+			def following = all.drop(portalIndex)
+			repositories.removeAll(following)
+			repositories.maven { repository ->
+				repository.name = 'HerokuMavenCentralMirror'
+				repository.url = herokuMavenCentralMirrorUrl
+			}
+			repositories.addAll(following)
+		}
+
+		// Gradle versions older than 6.8 lack the settings APIs used here and only get their project
+		// repositories mirrored.
 		if (GradleVersion.current() >= GradleVersion.version('6.8')) {
+			// Repositories need to be rewritten as they're added since the settings script can resolve
+			// dependencies itself.
 			beforeSettings { settings ->
 				herokuMirrorMavenCentral(settings.buildscript.repositories)
 				herokuMirrorMavenCentral(settings.pluginManagement.repositories)
 				herokuMirrorMavenCentral(settings.dependencyResolutionManagement.repositories)
+			}
+
+			settingsEvaluated { settings ->
+				def pluginRepositories = settings.pluginManagement.repositories
+
+				// Without any declared plugin repositories, Gradle uses the Plugin Portal.
+				if (pluginRepositories.isEmpty()) {
+					pluginRepositories.gradlePluginPortal()
+				}
+
+				herokuMirrorGradlePluginPortal(pluginRepositories)
+				herokuMirrorGradlePluginPortal(settings.dependencyResolutionManagement.repositories)
 			}
 		}
 
 		allprojects {
 			herokuMirrorMavenCentral(buildscript.repositories)
 			herokuMirrorMavenCentral(repositories)
+
+			afterEvaluate {
+				herokuMirrorGradlePluginPortal(repositories)
+			}
 		}
 	EOF
 fi
