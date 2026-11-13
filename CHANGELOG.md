@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v50] - 2026-11-13
+
 ### Changed
 
 * Resolve Maven Central artifacts from the Google Maven Central mirror to avoid Maven Central rate limiting. Set `MAVEN_CENTRAL_MIRROR` to `false` to opt out. ([#223](https://github.com/heroku/heroku-buildpack-gradle/pull/223))
@@ -131,7 +134,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project `.gradle` to the cache. ([#40](https://github.com/heroku/heroku-buildpack-gradle/pull/40))
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v49...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v50...main
+[v50]: https://github.com/heroku/heroku-buildpack-gradle/compare/v49...v50
 [v49]: https://github.com/heroku/heroku-buildpack-gradle/compare/v48...v49
 [v48]: https://github.com/heroku/heroku-buildpack-gradle/compare/v47...v48
 [v47]: https://github.com/heroku/heroku-buildpack-gradle/compare/v46...v47
