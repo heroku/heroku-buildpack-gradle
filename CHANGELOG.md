@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+* Resolve Maven Central artifacts from the Google Maven Central mirror to avoid Maven Central rate limiting. Set `MAVEN_CENTRAL_MIRROR` to `false` to opt out. ([#223](https://github.com/heroku/heroku-buildpack-gradle/pull/223))
 
 ## [v49] - 2026-02-24
 
