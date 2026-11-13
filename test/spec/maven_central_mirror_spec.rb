@@ -12,10 +12,12 @@ RSpec.describe 'Gradle buildpack' do
     end
   end
 
+  # Maven Central rate limiting can fail this build, so it only checks which repository was requested.
   it 'resolves Maven Central artifacts from Maven Central when MAVEN_CENTRAL_MIRROR is false' do
     app = Hatchet::Runner.new(
       'simple-http-service-gradle-8-groovy',
-      config: { GRADLE_TASK: 'stage --info', MAVEN_CENTRAL_MIRROR: 'false' }
+      config: { GRADLE_TASK: 'stage --info', MAVEN_CENTRAL_MIRROR: 'false' },
+      allow_failure: true
     )
     app.deploy do
       expect(clean_output(app.output)).to include('https://repo.maven.apache.org/maven2/')
