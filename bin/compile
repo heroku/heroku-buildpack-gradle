@@ -94,6 +94,41 @@ cat <<-EOF >"${GRADLE_USER_HOME}/init.gradle"
 	}
 EOF
 
+# Maven Central rate limits builds that resolve dependencies and plugins from it. As a temporary
+# workaround, this points all Maven Central repositories at the Google Maven Central mirror.
+if [[ "${MAVEN_CENTRAL_MIRROR:-}" == "false" ]]; then
+	metrics::set_raw "maven_central_mirror" "false"
+else
+	metrics::set_raw "maven_central_mirror" "true"
+
+	cat <<-'EOF' >>"${GRADLE_USER_HOME}/init.gradle"
+
+		def herokuMirrorMavenCentral = { RepositoryHandler repositories ->
+			repositories.withType(MavenArtifactRepository).all { repository ->
+				def url = repository.url?.toString()?.replaceFirst('/+$', '')
+				if (url in ['https://repo.maven.apache.org/maven2', 'https://repo1.maven.org/maven2']) {
+					repository.url = 'https://maven-central.storage-download.googleapis.com/maven2/'
+				}
+			}
+		}
+
+		// Settings repositories can only be configured before the settings script runs. Gradle versions
+		// older than 6.8 lack the APIs for this and only get their project repositories mirrored.
+		if (GradleVersion.current() >= GradleVersion.version('6.8')) {
+			beforeSettings { settings ->
+				herokuMirrorMavenCentral(settings.buildscript.repositories)
+				herokuMirrorMavenCentral(settings.pluginManagement.repositories)
+				herokuMirrorMavenCentral(settings.dependencyResolutionManagement.repositories)
+			}
+		}
+
+		allprojects {
+			herokuMirrorMavenCentral(buildscript.repositories)
+			herokuMirrorMavenCentral(repositories)
+		}
+	EOF
+fi
+
 export GRADLE_USER_HOME
 
 output::step "Starting Gradle daemon"

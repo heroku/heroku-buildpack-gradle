@@ -49,6 +49,7 @@ Configure the buildpack by setting environment variables:
 | Environment Variable | Description | Default |
 |---------------------|-------------|---------|
 | `GRADLE_TASK` | Gradle task to execute | `stage`* |
+| `MAVEN_CENTRAL_MIRROR` | Set to `false` to resolve Maven Central artifacts from `repo.maven.apache.org` instead of the Google Maven Central mirror | `true` |
 
 \* The buildpack may use a different default task based on detected frameworks (e.g., `build` for [Spring Boot](https://spring.io/projects/spring-boot) and [Quarkus](https://quarkus.io/), `shadowJar` for [Micronaut](https://micronaut.io/)).
 
