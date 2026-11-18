@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+* Fix builds failing with `Could not get unknown property 'GradleVersion'` on Gradle 6. ([#225](https://github.com/heroku/heroku-buildpack-gradle/pull/225))
 
 ## [v50] - 2026-11-13
 

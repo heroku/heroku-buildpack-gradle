@@ -137,8 +137,9 @@ else
 		}
 
 		// Gradle versions older than 6.8 lack the settings APIs used here and only get their project
-		// repositories mirrored.
-		if (GradleVersion.current() >= GradleVersion.version('6.8')) {
+		// repositories mirrored. GradleVersion is fully qualified because Gradle 6 doesn't import it
+		// in init scripts by default.
+		if (org.gradle.util.GradleVersion.current() >= org.gradle.util.GradleVersion.version('6.8')) {
 			// Repositories need to be rewritten as they're added since the settings script can resolve
 			// dependencies itself.
 			beforeSettings { settings ->
