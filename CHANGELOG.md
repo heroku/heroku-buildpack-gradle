@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+
+## [v51] - 2026-11-18
+
 ### Fixed
 
 * Fix builds failing with `Could not get unknown property 'GradleVersion'` on Gradle 6. ([#225](https://github.com/heroku/heroku-buildpack-gradle/pull/225))
@@ -137,7 +140,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 * Add symlink from project `.gradle` to the cache. ([#40](https://github.com/heroku/heroku-buildpack-gradle/pull/40))
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v50...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-gradle/compare/v51...main
+[v51]: https://github.com/heroku/heroku-buildpack-gradle/compare/v50...v51
 [v50]: https://github.com/heroku/heroku-buildpack-gradle/compare/v49...v50
 [v49]: https://github.com/heroku/heroku-buildpack-gradle/compare/v48...v49
 [v48]: https://github.com/heroku/heroku-buildpack-gradle/compare/v47...v48
